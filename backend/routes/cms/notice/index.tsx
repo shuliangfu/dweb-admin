@@ -1,12 +1,10 @@
-/**
- * Skeleton: cms/notice — Vue 公告列表 / Notices.
- * No `CmsNotice` model in common/model — keep StubList (Vue-shaped columns/search).
- * Do not fake list/CRUD APIs. Wire when a domain model lands; see docs/handoff.md.
- */
-import { stubLoad, StubPageView } from "@backend/components/stub-page.tsx";
+/** Resource page "cms.notice" — real, MongoDB-backed list via the generic DataPanel. */
+import type { LoadContext } from "@dreamer/dweb";
+import { ResPage } from "@backend/components/res-page.tsx";
 
-export const load = stubLoad("cms.notice");
-
-export default function Page(props: { data?: { locale?: "zh-CN" | "en-US"; pageKey?: string } }) {
-  return <StubPageView data={props.data} pageKey="cms.notice" />;
+export async function load(ctx: LoadContext) {
+  const { resLoad } = await import("@backend/res-load.ts");
+  return resLoad("cms.notice")(ctx);
 }
+
+export default ResPage;

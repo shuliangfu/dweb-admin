@@ -10,6 +10,7 @@ import {
   rolesResource,
   routesResource,
 } from "./system.ts";
+import { stubResources } from "./stubs.ts";
 import { type ListResult, type ResourceDef, type ResourceMeta, pick, type ListQuery } from "./types.ts";
 
 const defs: ResourceDef[] = [
@@ -20,6 +21,7 @@ const defs: ResourceDef[] = [
   routesResource,
   menusResource,
   onlineResource,
+  ...stubResources,
 ];
 
 const registry = new Map<string, ResourceDef>(defs.map((d) => [d.key, d]));

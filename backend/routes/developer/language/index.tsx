@@ -1,11 +1,10 @@
-/**
- * Stub: /developer/language — Vue developer/… (系统语言列表 / Languages).
- * Demo data only; replace when domain models exist.
- */
-import { stubLoad, StubPageView } from "@backend/components/stub-page.tsx";
+/** Resource page "developer.language" — real, MongoDB-backed list via the generic DataPanel. */
+import type { LoadContext } from "@dreamer/dweb";
+import { ResPage } from "@backend/components/res-page.tsx";
 
-export const load = stubLoad("developer.language");
-
-export default function Page(props: { data?: { locale?: "zh-CN" | "en-US"; pageKey?: string } }) {
-  return <StubPageView data={props.data} pageKey="developer.language" />;
+export async function load(ctx: LoadContext) {
+  const { resLoad } = await import("@backend/res-load.ts");
+  return resLoad("developer.language")(ctx);
 }
+
+export default ResPage;

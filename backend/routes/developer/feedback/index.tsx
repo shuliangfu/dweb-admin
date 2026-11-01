@@ -1,11 +1,10 @@
-/**
- * Stub: /developer/feedback — Vue developer/… (问题反馈列表 / Feedback).
- * Demo data only; replace when domain models exist.
- */
-import { stubLoad, StubPageView } from "@backend/components/stub-page.tsx";
+/** Resource page "developer.feedback" — real, MongoDB-backed list via the generic DataPanel. */
+import type { LoadContext } from "@dreamer/dweb";
+import { ResPage } from "@backend/components/res-page.tsx";
 
-export const load = stubLoad("developer.feedback");
-
-export default function Page(props: { data?: { locale?: "zh-CN" | "en-US"; pageKey?: string } }) {
-  return <StubPageView data={props.data} pageKey="developer.feedback" />;
+export async function load(ctx: LoadContext) {
+  const { resLoad } = await import("@backend/res-load.ts");
+  return resLoad("developer.feedback")(ctx);
 }
+
+export default ResPage;

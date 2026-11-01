@@ -91,6 +91,20 @@ const g = globalThis as unknown as {
   open?: (u?: string, t?: string) => PrintWin | null;
 };
 
+/**
+ * ui-view's Button does not forward `data-testid` / `aria-label`, so tag the wrapper: stable E2E selectors and
+ * an accessible name without touching the shared component.
+ */
+// deno-lint-ignore no-explicit-any
+function Btn(props: any) {
+  const { "data-testid": testid, "aria-label": label, ...rest } = props;
+  return (
+    <span class="inline-flex" data-testid={testid} title={label}>
+      <Button {...rest} />
+    </span>
+  );
+}
+
 /** Boolean attribute that SSR renders correctly: present only when true (`checked={false}` would serialize as checked="false"). */
 const bool = (k: string, v: unknown): Record<string, true> => (v ? { [k]: true } : {});
 
@@ -461,9 +475,9 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
 
   // ---- toolbar
   const toolBtn = (label: string, onClick: () => void, icon: unknown, testid: string) => (
-    <Button type="button" size="sm" aria-label={label} onClick={onClick} data-testid={testid}>
+    <Btn type="button" size="sm" aria-label={label} onClick={onClick} data-testid={testid}>
       {icon}
-    </Button>
+    </Btn>
   );
 
   const exportMenu = (
@@ -521,14 +535,14 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
         {toolBtn(tr("panel.print"), printTable, <IconPrinter size="sm" />, "dp-print")}
         {(meta.caps.import || props.onImportRows) && toolBtn(tr("panel.import"), pickImport, <IconUpload size="sm" />, "dp-import")}
         <Dropdown overlay={exportMenu} placement="bottomRight" trigger="click">
-          <Button type="button" size="sm" class="px-2.5" aria-label={tr("panel.export")} data-testid="dp-export">
+          <Btn type="button" size="sm" class="px-2.5" aria-label={tr("panel.export")} data-testid="dp-export">
             <IconDownload size="sm" />
-          </Button>
+          </Btn>
         </Dropdown>
         <Dropdown overlay={columnMenu()} placement="bottomRight" trigger="click">
-          <Button type="button" size="sm" class="px-2.5" aria-label={tr("panel.column")} data-testid="dp-columns">
+          <Btn type="button" size="sm" class="px-2.5" aria-label={tr("panel.column")} data-testid="dp-columns">
             <IconColumns size="sm" />
-          </Button>
+          </Btn>
         </Dropdown>
       </ButtonGroup>
     </div>
@@ -573,8 +587,8 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
               )}
           </label>
         ))}
-        <Button type="submit" variant="primary" size="sm" data-testid="dp-search-submit">{tr("crud.search")}</Button>
-        <Button
+        <Btn type="submit" variant="primary" size="sm" data-testid="dp-search-submit">{tr("crud.search")}</Btn>
+        <Btn
           type="button"
           size="sm"
           data-testid="dp-search-reset"
@@ -584,7 +598,7 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
           }}
         >
           {tr("crud.reset")}
-        </Button>
+        </Btn>
       </form>
     );
   };
@@ -598,18 +612,18 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
       <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 bg-sky-50 px-4 py-2 text-sm dark:border-slate-700 dark:bg-slate-800" data-testid="dp-batch-bar">
         <span data-testid="dp-selected-count">{tr("panel.selected", { n: ids.length })}</span>
         {meta.caps.batchStatus && sv.map((s) => (
-          <Button type="button" size="sm" data-testid={`dp-batch-status-${s.value}`} onClick={() => askStatus(ids, s.value, s.label)}>
+          <Btn type="button" size="sm" data-testid={`dp-batch-status-${s.value}`} onClick={() => askStatus(ids, s.value, s.label)}>
             {tr("panel.batchSet", { status: s.label })}
-          </Button>
+          </Btn>
         ))}
         {meta.caps.remove && (
-          <Button type="button" size="sm" variant="danger" data-testid="dp-batch-delete" onClick={() => askDelete(ids, "")}>
+          <Btn type="button" size="sm" variant="danger" data-testid="dp-batch-delete" onClick={() => askDelete(ids, "")}>
             {tr("panel.batchDelete")}
-          </Button>
+          </Btn>
         )}
-        <Button type="button" size="sm" variant="ghost" data-testid="dp-batch-clear" onClick={() => (selected.value = [])}>
+        <Btn type="button" size="sm" variant="ghost" data-testid="dp-batch-clear" onClick={() => (selected.value = [])}>
           {tr("panel.clearSel")}
-        </Button>
+        </Btn>
       </div>
     );
   };
@@ -784,17 +798,17 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
                     <td class="whitespace-nowrap border border-slate-200 px-2 py-1.5 text-center dark:border-slate-700">
                       {props.rowExtra?.(r)}
                       {(meta.caps.view || props.onView) && (
-                        <Button type="button" size="sm" variant="ghost" class={ICON_BTN} aria-label={tr("rbac.view")} data-testid={`dp-view-${r.id}`} onClick={() => doView(r)}>
+                        <Btn type="button" size="sm" variant="ghost" class={ICON_BTN} aria-label={tr("rbac.view")} data-testid={`dp-view-${r.id}`} onClick={() => doView(r)}>
                           <IconEye size="xs" />
-                        </Button>
+                        </Btn>
                       )}
                       {(meta.caps.update || props.onEdit) && (
-                        <Button type="button" size="sm" variant="ghost" class={ICON_BTN} aria-label={tr("crud.edit")} data-testid={`dp-edit-${r.id}`} onClick={() => doEdit(r)}>
+                        <Btn type="button" size="sm" variant="ghost" class={ICON_BTN} aria-label={tr("crud.edit")} data-testid={`dp-edit-${r.id}`} onClick={() => doEdit(r)}>
                           <IconEdit size="xs" />
-                        </Button>
+                        </Btn>
                       )}
                       {meta.caps.remove && (
-                        <Button
+                        <Btn
                           type="button"
                           size="sm"
                           variant="ghost"
@@ -805,7 +819,7 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
                           onClick={() => askDelete([r.id], rowName(r))}
                         >
                           <IconTrash size="xs" />
-                        </Button>
+                        </Btn>
                       )}
                     </td>
                   )}
@@ -921,13 +935,14 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
           let control: unknown;
           if (type === "textarea") {
             control = (
-              <Textarea
-                rows={4}
-                value={sig}
-                {...bool("disabled", ro)}
-                data-testid={`dp-fld-${f.name}`}
-                onInput={(e: Event) => (sig.value = (e.target as unknown as { value: string }).value)}
-              />
+              <div class="w-full" data-testid={`dp-fld-${f.name}`}>
+                <Textarea
+                  rows={4}
+                  value={sig}
+                  {...bool("disabled", ro)}
+                  onInput={(e: Event) => (sig.value = (e.target as unknown as { value: string }).value)}
+                />
+              </div>
             );
           } else if (type === "select") {
             control = (
@@ -978,15 +993,16 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
             );
           } else {
             control = (
-              <Input
-                type={type === "number" ? "number" : type === "password" ? "password" : type === "date" ? "date" : type === "datetime" ? "datetime-local" : "text"}
-                value={sig}
-                {...bool("readOnly", ro)}
-                autoComplete={type === "password" ? "new-password" : "off"}
-                placeholder={f.placeholder}
-                data-testid={`dp-fld-${f.name}`}
-                onInput={(e: Event) => (sig.value = (e.target as unknown as { value: string }).value)}
-              />
+              <div class="w-full" data-testid={`dp-fld-${f.name}`}>
+                <Input
+                  type={type === "number" ? "number" : type === "password" ? "password" : type === "date" ? "date" : type === "datetime" ? "datetime-local" : "text"}
+                  value={sig}
+                  {...bool("readOnly", ro)}
+                  autoComplete={type === "password" ? "new-password" : "off"}
+                  placeholder={f.placeholder}
+                  onInput={(e: Event) => (sig.value = (e.target as unknown as { value: string }).value)}
+                />
+              </div>
             );
           }
           return (
@@ -997,8 +1013,8 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
         })}
         {formTop.value && !Object.keys(errs).length && <p class="m-0 text-sm text-red-600" data-testid="dp-form-error">{formTop.value}</p>}
         <div class="mt-2 flex justify-end gap-2">
-          <Button type="button" onClick={() => (formOpen.value = false)} data-testid="dp-form-cancel">{tr("crud.cancel")}</Button>
-          <Button type="submit" variant="primary" loading={formBusy.value} data-testid="dp-form-submit">{tr("crud.confirm")}</Button>
+          <Btn type="button" onClick={() => (formOpen.value = false)} data-testid="dp-form-cancel">{tr("crud.cancel")}</Btn>
+          <Btn type="submit" variant="primary" loading={formBusy.value} data-testid="dp-form-submit">{tr("crud.confirm")}</Btn>
         </div>
       </form>
     );
@@ -1076,8 +1092,8 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
           <div data-testid="dp-confirm">
             <p class="mb-5 text-sm" data-testid="dp-confirm-text">{confirm.value?.text}</p>
             <div class="flex justify-end gap-2">
-              <Button type="button" data-testid="dp-confirm-cancel" onClick={() => (confirm.value = null)}>{tr("crud.cancel")}</Button>
-              <Button
+              <Btn type="button" data-testid="dp-confirm-cancel" onClick={() => (confirm.value = null)}>{tr("crud.cancel")}</Btn>
+              <Btn
                 type="button"
                 variant={confirm.value?.danger ? "danger" : "primary"}
                 loading={confirmBusy.value}
@@ -1095,7 +1111,7 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
                 }}
               >
                 {confirm.value?.okText}
-              </Button>
+              </Btn>
             </div>
           </div>
         )}
