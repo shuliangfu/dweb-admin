@@ -16,6 +16,9 @@ _client.dep.tsx
 # Docker 缓存（deno cache 预填目录）
 runtime/
 
+# docker.sh export 写出的镜像包
+backups/
+
 # 环境
 .env
 .env.local
