@@ -48,5 +48,14 @@ export async function scanRoutes(root = "./backend/routes"): Promise<ScannedRout
   } catch {
     // routes dir not present (e.g. compiled build): nothing to scan
   }
+  // Virtual write routes of the generic resource API: POST /api/res/<key> (create/update/remove/field).
+  try {
+    const { allResources } = await import("@common/resources/mod.ts");
+    for (const d of allResources()) {
+      if (d.create || d.update || d.remove || d.setField) {
+        found.set(`POST /api/res/${d.key}`, { method: "POST", path: `/api/res/${d.key}` });
+      }
+    }
+  } catch { /* resources unavailable */ }
   return [...found.values()].sort((a, b) => a.path.localeCompare(b.path) || a.method.localeCompare(b.method));
 }

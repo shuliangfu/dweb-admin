@@ -113,3 +113,54 @@ export async function cdpShot(ctx: any, page: any, file?: string): Promise<Uint8
   if (file) await Deno.writeFile(file, bytes);
   return bytes;
 }
+
+// ------------------------------------------------------------------ data helpers
+
+export const rand = () => Math.random().toString(36).slice(2, 8);
+
+/** RFC 6238 TOTP (SHA-1, 6 digits, 30 s) from a base32 secret. */
+export async function totpCode(secret: string, atMs = Date.now()): Promise<string> {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+  let bits = "";
+  for (const ch of secret.replace(/=+$/, "").toUpperCase()) bits += alphabet.indexOf(ch).toString(2).padStart(5, "0");
+  const bytes = new Uint8Array(Math.floor(bits.length / 8));
+  for (let i = 0; i < bytes.length; i++) bytes[i] = parseInt(bits.slice(i * 8, i * 8 + 8), 2);
+  const counter = Math.floor(atMs / 1000 / 30);
+  const msg = new Uint8Array(8);
+  new DataView(msg.buffer).setUint32(4, counter);
+  const key = await crypto.subtle.importKey("raw", bytes, { name: "HMAC", hash: "SHA-1" }, false, ["sign"]);
+  const h = new Uint8Array(await crypto.subtle.sign("HMAC", key, msg));
+  const o = h[h.length - 1] & 0xf;
+  const n = ((h[o] & 0x7f) << 24) | (h[o + 1] << 16) | (h[o + 2] << 8) | h[o + 3];
+  return String(n % 1_000_000).padStart(6, "0");
+}
+
+export interface TestUser {
+  id: string;
+  username: string;
+  password: string;
+}
+
+/** Create an admin user through the generic resource API (as admin) and return its credentials. */
+export async function makeUser(admin: Api, roleCodes: string[] = [], extra: Record<string, unknown> = {}): Promise<TestUser> {
+  const username = `t_${rand()}`;
+  const password = "Passw0rd!x";
+  const r = await admin.post("/api/res/create", {
+    res: "admins",
+    username,
+    email: `${username}@example.com`,
+    password,
+    password2: password,
+    roleCodes,
+    status: "active",
+    ...extra,
+  });
+  if (r.status !== 201) throw new Error(`makeUser failed ${r.status} ${JSON.stringify(r.data)}`);
+  const list = await admin.get(`/api/res?res=admins&username=${username}`);
+  const id = list.data.rows.find((x: any) => x.username === username)?.id;
+  return { id, username, password };
+}
+
+export async function removeUser(admin: Api, u: TestUser | string): Promise<void> {
+  await admin.post("/api/res/remove", { res: "admins", ids: [typeof u === "string" ? u : u.id] });
+}
