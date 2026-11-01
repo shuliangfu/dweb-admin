@@ -10,4 +10,3 @@ export async function logout(ctx: ApiContext) {
   });
 }
 
-export const POST = logout;

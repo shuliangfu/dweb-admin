@@ -11,4 +11,3 @@ export async function enable(ctx: ApiContext) {
   return respond(ctx.req, await totpEnable(me.id, String((await readBody(ctx)).code ?? "")));
 }
 
-export const POST = enable;

@@ -38,7 +38,7 @@ export function ProfileModal(props: { locale: Locale }) {
   async function save() {
     if (busy.value) return;
     busy.value = true;
-    const r = await api("PUT", "/api/account/profile", { nickname: nickname.value, email: email.value });
+    const r = await api("POST", "/api/account/profile/updateProfile", { nickname: nickname.value, email: email.value });
     busy.value = false;
     errors.value = r.ok ? [] : (r.data.fields ?? []);
     if (toastResult(r, tr("profile.saved"), net)) {

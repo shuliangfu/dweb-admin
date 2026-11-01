@@ -19,4 +19,3 @@ export async function verify(ctx: ApiContext) {
   return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
 }
 
-export const POST = verify;

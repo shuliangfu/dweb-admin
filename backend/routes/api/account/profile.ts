@@ -22,5 +22,3 @@ export async function updateProfile(ctx: ApiContext) {
   return respond(ctx.req, await saveProfile(me.id, await readBody(ctx)));
 }
 
-export const GET = profile;
-export const PUT = updateProfile;

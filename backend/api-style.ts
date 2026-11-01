@@ -1,49 +1,39 @@
 /**
- * Dual API export helpers for `@dreamer/router` / dweb.
+ * API style for `@dreamer/router` / dweb — **action mode only** in this app.
  *
- * ## Two templates (framework-native; pick via `router.apiMode`)
+ * Config: `router.apiMode: "action"` in `backend/config/main.ts` and `api/config/main.ts`
+ * (global per app; cannot mix with restful per file).
  *
- * 1. **restful** (this app's default): export `GET` / `POST` / `PUT` / `DELETE` / `PATCH`.
- *    URL = file path. Example: `routes/api/users/index.ts` → `GET|POST /api/users`.
+ * ## How to write handlers
  *
- * 2. **action**: export the method name directly (`login`, `index`, `create`, …).
- *    Router also registers `…/:method` on static API files so
- *    `POST /api/auth/login` matches export `login` (see `@dreamer/server` RouterAdapter
- *    `params.method` / path-segment / kebab→camel).
- *
- * `apiMode` is **global** for an app (`backend/config/main.ts`); the router does not
- * mix modes per file. To keep either config working, **dual-export**: write the
- * action-named function as the source of truth, then alias the HTTP verb:
+ * Export the **action name** as a function (or const). Do **not** export
+ * `GET` / `POST` / `PUT` / `DELETE` / `PATCH` aliases.
  *
  * ```ts
- * export async function login(ctx: ApiContext) { ... }
- * export const POST = login; // restful alias
+ * export async function login(ctx: ApiContext) { /* … */ }
+ * export function index(ctx: ApiContext) { /* … */ }
+ * export async function create(ctx: ApiContext) { /* … */ }
  * ```
  *
- * One-handler-per-file paths (auth, kick, …) share the same URL under both modes.
- * Collection endpoints that distinguish verbs on one path (`GET`+`POST /api/users`)
- * are restful-first; under `apiMode: "action"` call `/api/users/create` (etc.) or
- * keep `apiMode: "restful"`. Dynamic `[id].ts` routes are restful-oriented.
+ * ## URL matching (@dreamer/server@1.2.1 + router@1.2.1)
  *
- * Reuses framework loading only — do not invent a second dispatcher.
+ * 1. `params.method` / `params.action` from routes like `/api/auth/:method` or `/api/users/:method`
+ * 2. Else last path segment (kebab-case → camelCase), e.g. `/api/auth/login` → `login`
+ * 3. Else for **web** paths `/api/<resource>` (exactly two segments, first `api`): fall back to export `index`
+ *
+ * ### kind:"api" (this repo’s `api/` app, port 3003)
+ *
+ * Routes live at the URL root (no `/api` prefix). The `/api/<resource>` → `index` fallback
+ * does **not** apply. Use explicit action URLs:
+ * - `GET /index` → `api/routes/index.ts` export `index` (via `/:method`)
+ * - `GET /` alone does **not** auto-dispatch `index` (framework limit; do not bump dweb/server for this)
+ * - `GET /users/index` or rely on short `/users/:method` for `index` / `create`
+ *
+ * Dynamic resources: one action per file under the param folder, e.g.
+ * `users/[id]/update.ts` → `/api/users/:id/update`.
  */
 import type { ApiContext } from "@dreamer/dweb";
 
 export type ApiHandler = (
   ctx: ApiContext,
 ) => Response | Promise<Response>;
-
-export type HttpVerb = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-
-/**
- * Build a `{ VERB, actionName }` map for tests / composition.
- * Route modules should still `export function action` + `export const VERB = action`
- * so the file-based loader sees real named exports.
- */
-export function dualExport<T extends ApiHandler>(
-  verb: HttpVerb,
-  actionName: string,
-  handler: T,
-): Record<string, T> {
-  return { [verb]: handler, [actionName]: handler };
-}

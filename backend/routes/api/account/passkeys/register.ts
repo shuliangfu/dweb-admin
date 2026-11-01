@@ -16,4 +16,3 @@ export async function register(ctx: ApiContext) {
   );
 }
 
-export const POST = register;

@@ -11,4 +11,3 @@ export async function disable(ctx: ApiContext) {
   return respond(ctx.req, await totpDisable(me.id, String((await readBody(ctx)).code ?? "")));
 }
 
-export const POST = disable;

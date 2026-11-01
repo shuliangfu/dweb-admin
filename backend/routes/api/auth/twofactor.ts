@@ -28,4 +28,3 @@ export async function twofactor(ctx: ApiContext) {
     });
 }
 
-export const POST = twofactor;

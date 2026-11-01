@@ -12,4 +12,3 @@ export async function options(ctx: ApiContext) {
   return jsonResponse({ options: r.options }, 200, { "set-cookie": challengeCookie(r.token) });
 }
 
-export const POST = options;

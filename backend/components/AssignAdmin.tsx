@@ -45,7 +45,7 @@ export function AssignAdmin(props: {
     const row = current.value;
     if (!row || busy.value) return;
     busy.value = true;
-    const r = await api("PUT", `/api/users/${row.id}`, { roleCodes: targetKeys.value });
+    const r = await api("POST", `/api/users/${row.id}/update`, { roleCodes: targetKeys.value });
     busy.value = false;
     if (toastResult(r, tr("crud.saved"), tr("crud.networkError"))) {
       open.value = false;

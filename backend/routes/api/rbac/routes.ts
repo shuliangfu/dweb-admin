@@ -26,6 +26,3 @@ export async function sync(ctx: ApiContext) {
   return respond(ctx.req, await removeRoutes(arr(b.remove)));
 }
 
-export const GET = index;
-export const POST = create;
-export const PUT = sync;

@@ -61,7 +61,7 @@ export function MenusAdmin(props: { locale: Locale; rows: MenuRow[] }) {
     };
     const k = editing.value;
     if (!k) body.key = fKey.value;
-    const r = k ? await api("PUT", `/api/menus/${encodeURIComponent(k)}`, body) : await api("POST", "/api/menus", body);
+    const r = k ? await api("POST", `/api/menus/${encodeURIComponent(k)}/update`, body) : await api("POST", "/api/menus/create", body);
     busy.value = false;
     if (!r.ok) errors.value = r.data.fields ?? [];
     if (toastResult(r, tr("crud.saved"), tr("crud.networkError"))) reload();
@@ -221,7 +221,7 @@ export function MenusAdmin(props: { locale: Locale; rows: MenuRow[] }) {
         okText={tr("crud.delete")}
         cancelText={tr("crud.cancel")}
         onConfirm={async (k) => {
-          const r = await api("DELETE", `/api/menus/${encodeURIComponent(k)}`);
+          const r = await api("POST", `/api/menus/${encodeURIComponent(k)}/remove`);
           if (toastResult(r, tr("crud.deleted"), tr("crud.networkError"))) reload();
         }}
       />

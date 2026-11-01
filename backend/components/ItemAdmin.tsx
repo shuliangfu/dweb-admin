@@ -88,8 +88,8 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
     busy.value = true;
     const create = mode.value === "create";
     const r = create
-      ? await api("POST", base, { name: fName.value, ruleName: fRule.value, description: fDesc.value })
-      : await api("PUT", url(fName.value), { ruleName: fRule.value, description: fDesc.value });
+      ? await api("POST", `${base}/create`, { name: fName.value, ruleName: fRule.value, description: fDesc.value })
+      : await api("POST", `${url(fName.value)}/update`, { ruleName: fRule.value, description: fDesc.value });
     busy.value = false;
     if (toastResult(r, tr("crud.saved"), tr("crud.networkError"))) reload();
   }
@@ -100,7 +100,7 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
     const add = next.filter((k) => !prev.includes(k));
     const remove = prev.filter((k) => !next.includes(k));
     targetKeys.value = next;
-    const r = await api("PUT", `${url(fName.value)}/children`, { add, remove });
+    const r = await api("POST", `${url(fName.value)}/children`, { add, remove });
     if (!toastResult(r, tr("crud.saved"), tr("crud.networkError"))) targetKeys.value = prev;
   }
 
@@ -313,7 +313,7 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
         okText={tr("crud.delete")}
         cancelText={tr("crud.cancel")}
         onConfirm={async (name) => {
-          const r = await api("DELETE", url(name));
+          const r = await api("POST", `${url(name)}/remove`);
           if (toastResult(r, tr("crud.deleted"), tr("crud.networkError"))) reload();
         }}
       />

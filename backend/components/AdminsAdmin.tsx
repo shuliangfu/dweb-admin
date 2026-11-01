@@ -61,7 +61,7 @@ export function AdminsAdmin(props: {
     };
     if (fPassword.value) body.password = fPassword.value;
     if (!id) body.username = fUsername.value;
-    const r = id ? await api("PUT", `/api/users/${id}`, body) : await api("POST", "/api/users", body);
+    const r = id ? await api("POST", `/api/users/${id}/update`, body) : await api("POST", "/api/users/create", body);
     busy.value = false;
     if (!r.ok) errors.value = r.data.fields ?? [];
     if (toastResult(r, tr("crud.saved"), tr("crud.networkError"))) reload();
@@ -229,7 +229,7 @@ export function AdminsAdmin(props: {
         okText={tr("crud.delete")}
         cancelText={tr("crud.cancel")}
         onConfirm={async (id) => {
-          const r = await api("DELETE", `/api/users/${id}`);
+          const r = await api("POST", `/api/users/${id}/remove`);
           if (toastResult(r, tr("crud.deleted"), tr("crud.networkError"))) reload();
         }}
       />

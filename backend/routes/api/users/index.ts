@@ -1,7 +1,5 @@
 /**
- * Users collection — dual exports.
- * restful (default): GET|POST /api/users
- * action: `index` / `create` via /api/users/index/:method or /api/users/:method on a flat file
+ * Action-mode list/index handler (apiMode: action).
  */
 import type { ApiContext } from "@dreamer/dweb";
 import { createUser, listUsers, readPage } from "@common/service/admin-crud.ts";
@@ -16,5 +14,3 @@ export async function create(ctx: ApiContext) {
   return respond(ctx.req, await createUser(await readBody(ctx)), 201);
 }
 
-export const GET = index;
-export const POST = create;

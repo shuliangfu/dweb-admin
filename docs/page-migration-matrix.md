@@ -1,5 +1,7 @@
 # dreamer-admin ↔ dweb-admin page migration matrix
 
+> **API (2026-11-01):** apps use `apiMode: "action"` (see `docs/handoff.md`). On dweb 3.7.5, kind:api bare `/` does **not** auto-run `index` — use `/index`.
+
 Generated: 2026-11-01 (Asia/Shanghai) · updated same day (handoff + assign gap UI + DataPanel children/CSV)
 
 ## Path note (confirmed)

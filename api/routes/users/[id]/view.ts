@@ -1,6 +1,4 @@
-/**
- * Sample user detail — dual: `view` (action) + `GET` (restful).
- */
+/** Action `view` (apiMode: "action"). */
 import type { ApiContext } from "@dreamer/dweb";
 import { json } from "@dreamer/router";
 
@@ -18,4 +16,3 @@ export function view(ctx: ApiContext) {
   return json({ user });
 }
 
-export const GET = view;

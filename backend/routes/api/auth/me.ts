@@ -9,4 +9,3 @@ export async function me(ctx: ApiContext) {
   return jsonResponse({ user });
 }
 
-export const GET = me;

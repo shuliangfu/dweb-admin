@@ -11,4 +11,3 @@ export async function toggle(ctx: ApiContext) {
   return respond(ctx.req, await passkeySetEnabled(me.id, (await readBody(ctx)).enabled === true));
 }
 
-export const POST = toggle;

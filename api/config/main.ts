@@ -16,8 +16,8 @@ export default {
   router: {
     /** 路由文件所在目录（基于文件的路由）。kind:"api" → handlers live directly under routes/. */
     routesDir: "./api/routes",
-    /** Same dual-template rule as backend; samples in api/routes/hello.ts export both. See handoff. */
-    apiMode: "restful",
+    /** apiMode: "action" — export action names only (index/create/…); no GET/POST aliases. See handoff. */
+    apiMode: "action",
   },
   /** 日志：level、format、output（console、file）、color、showTime、showLevel、tags、filter、maxMessageLength。 */
   logger: {

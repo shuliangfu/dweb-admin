@@ -12,4 +12,3 @@ export async function setup(ctx: ApiContext) {
   return r.ok ? jsonResponse(r) : respond(ctx.req, r);
 }
 
-export const POST = setup;

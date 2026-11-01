@@ -10,4 +10,3 @@ export async function security(ctx: ApiContext) {
   return data ? jsonResponse(data) : jsonResponse({ error: "unauthorized" }, 401);
 }
 
-export const GET = security;

@@ -10,4 +10,3 @@ export async function loginOptions(_ctx: ApiContext) {
   return jsonResponse(await loginFeatures(), 200, { "cache-control": "no-store" });
 }
 
-export const GET = loginOptions;

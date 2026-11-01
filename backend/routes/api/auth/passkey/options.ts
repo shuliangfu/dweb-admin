@@ -9,4 +9,3 @@ export async function options(ctx: ApiContext) {
   return jsonResponse({ options: webauthn }, 200, { "set-cookie": challengeCookie(token) });
 }
 
-export const POST = options;

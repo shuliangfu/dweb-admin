@@ -12,4 +12,3 @@ export async function mine(ctx: ApiContext) {
   return jsonResponse({ locale, menu: await buildMenuTree(user.roleCodes, locale) });
 }
 
-export const GET = mine;

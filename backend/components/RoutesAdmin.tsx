@@ -26,14 +26,14 @@ export function RoutesAdmin(props: { locale: Locale; managed: string[]; availabl
     const add = next.filter((k) => !props.managed.includes(k));
     const remove = props.managed.filter((k) => !next.includes(k));
     if (!add.length && !remove.length) return void toastResult({ ok: true, status: 200, data: {} }, tr("rbac.routeNone"), "");
-    const r = await api("PUT", "/api/rbac/routes", { add, remove });
+    const r = await api("POST", "/api/rbac/routes/sync", { add, remove });
     if (toastResult(r, tr("crud.saved"), tr("crud.networkError"))) reload();
   }
 
   async function addManual() {
     if (busy.value) return;
     busy.value = true;
-    const r = await api("POST", "/api/rbac/routes", { routes: addText.value });
+    const r = await api("POST", "/api/rbac/routes/create", { routes: addText.value });
     busy.value = false;
     if (toastResult(r, tr("crud.saved"), tr("crud.networkError"))) reload();
   }

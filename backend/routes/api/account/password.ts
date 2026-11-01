@@ -11,4 +11,3 @@ export async function password(ctx: ApiContext) {
   return respond(ctx.req, await changePassword(me.id, readToken(ctx.req), await readBody(ctx)));
 }
 
-export const POST = password;

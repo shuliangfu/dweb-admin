@@ -45,4 +45,3 @@ export async function login(ctx: ApiContext) {
 }
 
 /** RESTful alias (apiMode: "restful", default). */
-export const POST = login;

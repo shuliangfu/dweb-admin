@@ -92,7 +92,7 @@ export function OnlineAdmin(props: { locale: Locale; rows: OnlineRow[] }) {
         okText={tr("online.kick")}
         cancelText={tr("crud.cancel")}
         onConfirm={async (id) => {
-          const r = await api("DELETE", `/api/sessions/${id}`);
+          const r = await api("POST", `/api/sessions/${id}/remove`);
           if (toastResult(r, tr("online.kicked"), tr("crud.networkError"))) reload();
         }}
       />

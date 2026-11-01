@@ -3,4 +3,3 @@ import { itemHandlers } from "@backend/api-util.ts";
 
 const h = itemHandlers("permission");
 export const children = h.children;
-export const PUT = children;

@@ -11,4 +11,3 @@ export async function remove(ctx: ApiContext) {
   return respond(ctx.req, await passkeyRemove(me.id, String((await readBody(ctx)).id ?? "")));
 }
 
-export const POST = remove;

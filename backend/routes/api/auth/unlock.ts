@@ -14,4 +14,3 @@ export async function unlock(ctx: ApiContext) {
   return jsonResponse({ ok: true });
 }
 
-export const POST = unlock;

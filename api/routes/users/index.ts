@@ -13,4 +13,3 @@ export function index(_ctx: ApiContext) {
   return json({ users });
 }
 
-export const GET = index;

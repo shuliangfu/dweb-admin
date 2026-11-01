@@ -1,7 +1,5 @@
 /**
- * Menus collection — dual exports.
- * restful: GET|POST /api/menus
- * action:  `index` / `create` (+ /api/menus/index/:method)
+ * Action-mode list/index handler (apiMode: action).
  */
 import type { ApiContext } from "@dreamer/dweb";
 import { createMenu, listAllMenus } from "@common/service/admin-crud.ts";
@@ -16,5 +14,3 @@ export async function create(ctx: ApiContext) {
   return respond(ctx.req, await createMenu(await readBody(ctx)), 201);
 }
 
-export const GET = index;
-export const POST = create;

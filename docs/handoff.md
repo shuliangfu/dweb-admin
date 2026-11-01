@@ -118,28 +118,21 @@ dweb-admin 对应物：
 - `_app.tsx` / `_layout.tsx` / `_404.tsx` / `_error.tsx` 为壳与错误页。
 - JSON API 同树下 `backend/routes/api/**`（如 `/api/users`、`/api/rbac/*`）。
 
-### API 两种模板（restful / action）
+### API 写法（本仓：`apiMode: "action"`）
 
-dweb 经 `@dreamer/router` + `@dreamer/server` RouterAdapter 支持 **两种** API 写法；由应用配置 **`router.apiMode`** 全局选择（**不可按文件混用**）：
+框架（dweb **3.7.5** + `@dreamer/router` / `@dreamer/server` **1.2.1**）支持 `restful` 与 `action` 两种全局模式；**本仓两应用均固定 `action`**，handler **只导出方法名**，**禁止** `export const GET|POST|… = …` 别名。
 
-| 模板 | `apiMode` | 模块导出 | URL 约定 |
-|------|-----------|----------|----------|
-| **1. RESTful**（本仓默认） | `"restful"` | `GET` / `POST` / `PUT` / `DELETE` / `PATCH` | 文件路径＝资源路径，如 `routes/api/users/index.ts` → `GET|POST /api/users` |
-| **2. Action（直接写方法）** | `"action"` | 方法名本身，如 `login(ctx)`、`index(ctx)`、`create(ctx)` | 静态 API 文件额外注册 `…/:method`；也可按**路径末段**匹配（含 kebab→camel）。例：`export function login` ↔ `POST /api/auth/login` |
+| 项 | 约定 |
+|----|------|
+| 配置 | `backend/config/main.ts`、`api/config/main.ts` → `router.apiMode: "action"` |
+| 导出 | `export function index` / `login` / `create` / `update` / `remove` … |
+| 匹配 | ① `params.method`（`…/:method`）② 路径末段（kebab→camel）③ **仅 web**：`/api/<resource>`（两段且首段 `api`）回落 `index` |
+| 动态资源 | 一动作一文件：`users/[id]/update.ts` → `/api/users/:id/update` |
+| 纯 API 应用（`kind:"api"`，`:3003`） | 无 `/api` 前缀；**`GET /` 不会**自动调 `index`（server 回落未覆盖 apiOnly 根路径）。验证用 **`GET /index`**。`index.ts` 负责路由 `/` 的注册，但默认 action 需显式 `/index` 或等框架扩展——**勿为此升 dweb/server**（JSR 已是最新 3.7.5 / 1.2.1） |
+| 示例 | `api/routes/index.ts`（`index`+`create`）；管理端 auth／account／users／rbac／menus 均为 action 导出 |
 
-配置位置：`backend/config/main.ts`（管理端）、`api/config/main.ts`（纯 API 应用）。约定与类型说明见 **`backend/api-style.ts`**。
+细节见 `backend/api-style.ts`。
 
-**本仓写法（复用框架，勿自建分发器）**：每个 handler **双导出**——以 action 名为源，再别名 HTTP 动词。这样默认 `restful` 与切换到 `action` 时，**单文件单动作**路径（登录、登出、踢下线等）URL 不变：
-
-```ts
-// backend/routes/api/auth/login.ts
-export async function login(ctx: ApiContext) { /* … */ }
-export const POST = login; // restful 别名
-```
-
-集合 CRUD（同一路径用动词区分，如 `GET`+`POST /api/users`）以 **restful 为主**；若整站改 `apiMode: "action"`，请改用 `/api/users/create` 等 `:method` URL，或继续保持 restful。动态段 `[id].ts` / `[name].ts` 更适合 restful。
-
-示例对照：`api/routes/hello.ts`（`hello`+`GET`，`create`+`POST`）；管理端 auth／account／users／rbac／menus 均已双导出。
 
 ### RBAC（Yii2 风格，非 Vue 直绑）
 
@@ -291,3 +284,4 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 |---|---|
 | 2026-11-01 | 初版 handoff + matrix + extension-packages；模型扫仓／online kick；TW4 约定 |
 | 2026-11-01 | API 双模板：handlers 双导出 restful+action；`backend/api-style.ts`；handoff § API；DataPanel 多格式导出／壳层视觉对齐 |
+| 2026-11-01 | API 改 `apiMode:"action"`：hello→`index.ts`、去掉 REST 别名、动态一动作一文件；handoff 记明 kind:api 根 `/` 不回落 index；壳层 lock/login/TagView 打磨 |

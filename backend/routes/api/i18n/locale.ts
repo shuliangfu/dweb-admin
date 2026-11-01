@@ -18,4 +18,3 @@ export function locale(ctx: ApiContext) {
   });
 }
 
-export const GET = locale;
