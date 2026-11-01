@@ -1,11 +1,11 @@
 /**
  * Admin role assignment — Vue `/admin/assign` (CardPanel + Access Transfer).
- * dweb model assigns roles via AdminUser.roleCodes (PUT /api/users/:id).
- * Allow/deny + direct route grants on a user are not in the Yii2-style graph yet;
- * role ↔ permission ↔ route stays on ItemAdmin.
+ * Runnable path: roles → AdminUser.roleCodes (PUT /api/users/:id), shown as allow-style tags.
+ * Vue allow/deny + user-direct routes are NOT in AuthItem/Child/Route + roleCodes;
+ * modal keeps a disabled extensible gap panel (no fake API). Permission/route trees: ItemAdmin.
  */
 import { createSignal } from "@dreamer/view";
-import { Button, Modal, Tag, Transfer } from "@dreamer/ui-view";
+import { Alert, Button, Modal, Tag, Transfer } from "@dreamer/ui-view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { api, reload, toastResult } from "@backend/components/crud-kit.tsx";
 import { DataPanel } from "@common/components/DataPanel.tsx";
@@ -65,6 +65,7 @@ export function AssignAdmin(props: {
     excel: "Excel",
     xml: "XML",
     html: "HTML",
+    unsupportedFormat: tr("panel.unsupportedFormat"),
   };
 
   const columns = [
@@ -78,7 +79,12 @@ export function AssignAdmin(props: {
       render: (_v: unknown, r: AssignUserRow & { idx: number }) => (
         <span class="flex flex-wrap gap-1">
           {(r.roleCodes ?? []).length
-            ? r.roleCodes.map((c) => <Tag size="xs" variant="primary">{c}</Tag>)
+            ? r.roleCodes.map((c) => (
+              <Tag size="xs" variant="success">
+                <span class="mr-1 opacity-70">{tr("assign.allowAction")}</span>
+                {c}
+              </Tag>
+            ))
             : <span class="text-xs text-slate-400">—</span>}
         </span>
       ),
@@ -150,26 +156,60 @@ export function AssignAdmin(props: {
           open.value = false;
         }}
       >
-        <div class="grid gap-3">
+        <div class="grid gap-4">
           <p class="m-0 text-xs text-slate-500 dark:text-slate-400">{tr("assign.hint")}</p>
-          <Transfer
-            dataSource={props.roles.map((r) => ({
-              key: r.name,
-              title: r.description ? `${r.name} · ${r.description}` : r.name,
-            }))}
-            targetKeys={targetKeys}
-            showSearch
-            titles={[tr("rbac.available"), tr("rbac.assigned")]}
-            searchPlaceholder={[tr("rbac.transferSearch"), tr("rbac.transferSearch")]}
-            listStyle={{ width: 300, height: 320 }}
-            onChange={(next: string[]) => {
-              targetKeys.value = next;
-            }}
-            messages={{
-              count: (n: number) => `${n}`,
-              selectedSuffix: (n: number) => ` / ${n}`,
-            }}
-          />
+
+          <section class="grid gap-2">
+            <h3 class="m-0 text-sm font-medium text-slate-700 dark:text-slate-200">
+              {tr("assign.rolesSection")}
+            </h3>
+            <Transfer
+              dataSource={props.roles.map((r) => ({
+                key: r.name,
+                title: r.description ? `${r.name} · ${r.description}` : r.name,
+              }))}
+              targetKeys={targetKeys}
+              showSearch
+              titles={[tr("rbac.available"), tr("rbac.assigned")]}
+              searchPlaceholder={[tr("rbac.transferSearch"), tr("rbac.transferSearch")]}
+              listStyle={{ width: 300, height: 280 }}
+              onChange={(next: string[]) => {
+                targetKeys.value = next;
+              }}
+              messages={{
+                count: (n: number) => `${n}`,
+                selectedSuffix: (n: number) => ` / ${n}`,
+              }}
+            />
+          </section>
+
+          {/* Extensible gap: Vue allow/deny + user-direct routes — no model/API; do not post. */}
+          <section
+            class="grid gap-2 rounded-md border border-dashed border-slate-300 p-3 opacity-70 dark:border-slate-600"
+            aria-disabled="true"
+          >
+            <div class="flex items-center gap-2">
+              <h3 class="m-0 text-sm font-medium text-slate-700 dark:text-slate-200">
+                {tr("assign.gapTitle")}
+              </h3>
+              <Tag size="xs" variant="warning">{tr("assign.gapBadge")}</Tag>
+            </div>
+            <Alert type="info" message={tr("assign.gapBody")} />
+            <div class="pointer-events-none select-none grid gap-2 sm:grid-cols-2">
+              <label class="flex items-center gap-2 text-xs text-slate-500">
+                <input type="radio" name="assign-action-gap" disabled checked />
+                {tr("assign.allowAction")}
+              </label>
+              <label class="flex items-center gap-2 text-xs text-slate-500">
+                <input type="radio" name="assign-action-gap" disabled />
+                {tr("assign.denyAction")}
+              </label>
+              <div class="sm:col-span-2 rounded border border-slate-200 bg-slate-50 px-2 py-2 text-xs text-slate-400 dark:border-slate-700 dark:bg-slate-900/40">
+                {tr("assign.gapBadge")} · Transfer
+              </div>
+            </div>
+          </section>
+
           <div class="flex justify-end gap-2">
             <Button
               type="button"

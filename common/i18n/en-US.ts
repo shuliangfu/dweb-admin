@@ -88,7 +88,13 @@ export default {
   assign: {
     info: "{n} administrator(s)",
     modalTitle: "{name} — assign roles",
-    hint: "Move roles with the transfer; save writes user roleCodes. Tune permission/route trees on the role or permission pages.",
+    hint: "Roles below map to allow-style grants via AdminUser.roleCodes. Permission/route trees stay on the role or permission pages.",
+    allowAction: "allow",
+    denyAction: "deny",
+    rolesSection: "Roles (allow)",
+    gapTitle: "Allow / deny & direct routes",
+    gapBody: "Vue assign supports per-item allow/deny and binding routes directly on a user. This stack has AuthItem/Child/Route + roleCodes only — no AuthAssignment, no user-level deny, no user-direct routes. UI reserved for a future model; nothing is posted from this panel.",
+    gapBadge: "Not modeled",
   },
   panel: {
     search: "Search",
@@ -98,6 +104,7 @@ export default {
     column: "Columns",
     resetColumns: "Reset columns",
     soon: "Coming soon",
+    unsupportedFormat: "Excel/XML/HTML need a library — not bundled; use CSV",
   },
   stub: {
     demoInfo: "{n} demo row(s) — domain model pending; needs super role or an explicit route grant",
@@ -107,6 +114,7 @@ export default {
     refresh: "Refresh",
     export: "Export",
     soon: "Coming soon",
+    importParsed: "Parsed {n} CSV row(s) — no domain import API yet",
     authNote: "This page is not on the AUTH_ONLY allowlist; non-super roles need a bound route.",
   },
   passwordFlow: {

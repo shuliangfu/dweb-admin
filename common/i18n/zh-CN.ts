@@ -88,7 +88,13 @@ export default {
   assign: {
     info: "共 {n} 名管理员",
     modalTitle: "{name} — 分配角色",
-    hint: "左右穿梭分配角色；保存后即时写入用户 roleCodes。权限/路由请在角色或权限页调整。",
+    hint: "下方角色对应允许型授权（写入 AdminUser.roleCodes）。权限/路由树仍在角色或权限页维护。",
+    allowAction: "允许",
+    denyAction: "拒绝",
+    rolesSection: "角色（允许）",
+    gapTitle: "允许／拒绝与直绑路由",
+    gapBody: "Vue 分配页支持条目级允许/拒绝，以及把路由直接绑到用户。本栈仅有 AuthItem/Child/Route + roleCodes，无 AuthAssignment、无用户级拒绝、无用户直绑路由。此区为可扩展占位，不会向后端提交。",
+    gapBadge: "模型未支持",
   },
   panel: {
     search: "搜索",
@@ -98,6 +104,7 @@ export default {
     column: "列设置",
     resetColumns: "重置列",
     soon: "功能即将接入",
+    unsupportedFormat: "Excel/XML/HTML 需额外依赖（未打包）；请用 CSV",
   },
   stub: {
     demoInfo: "演示数据 {n} 条（待接领域模型；需超级角色或显式路由授权）",
@@ -107,6 +114,7 @@ export default {
     refresh: "刷新",
     export: "导出",
     soon: "功能即将接入",
+    importParsed: "已解析 CSV {n} 行（尚无领域导入 API）",
     authNote: "本页不在 AUTH_ONLY 白名单；非超级角色需绑定对应路由。",
   },
   passwordFlow: {
