@@ -395,9 +395,9 @@
   --adm-accent: var(--color-adminlte-accent);
   --adm-content: var(--color-adminlte-content);
   --adm-fg: #334155;
-  --adm-brand-strip: #0f172a /* light: logo strip = 1 shade darker than sidebar (slate-900) */;
+  --adm-brand-strip: #18212f /* light: logo strip = navbar, ~3.5% lightness below the sidebar #1e293b */;
   --adm-brand-fg: #ffffff;
-  --adm-top-bg: #0f172a /* light: navbar = logo strip = 1 shade darker than sidebar (slate-900) */;
+  --adm-top-bg: #18212f /* light: navbar = logo strip */;
   --adm-top-fg: #ffffff;
   --adm-tag-bg: #f8fafc;
   --adm-tag-border: #e2e8f0;
