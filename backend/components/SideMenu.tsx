@@ -52,6 +52,7 @@ const ICON_BY_KEY: Record<string, string> = {
   "workspace": "grid",
   "rbac": "shield",
   "rbac.admins": "users",
+  "rbac.assign": "shieldcheck",
   "rbac.roles": "shieldcheck",
   "rbac.permissions": "key",
   "rbac.routes": "list",

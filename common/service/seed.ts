@@ -32,6 +32,7 @@ const ITEMS: { name: string; type: ItemType; description: string; isSuper?: bool
 const CHILDREN: { parent: string; type: ChildType; child: string }[] = [
   { parent: OPERATOR_ROLE, type: "permission", child: "admin.view" },
   { parent: "admin.view", type: "route", child: routeKey("GET", "/rbac/admins") },
+  { parent: "admin.view", type: "route", child: routeKey("GET", "/rbac/assign") },
   { parent: "admin.view", type: "route", child: routeKey("GET", "/system/online") },
   { parent: "admin.view", type: "route", child: routeKey("GET", "/api/users") },
 ];
@@ -71,6 +72,15 @@ const MENUS: Omit<MenuDocument, "_id" | "createdAt" | "updatedAt">[] = [
     path: "/rbac/admins",
     icon: "users",
     sort: 10,
+    status: "active",
+  },
+  {
+    key: "rbac.assign",
+    parentKey: "rbac",
+    title: { "zh-CN": "权限分配", "en-US": "Assign" },
+    path: "/rbac/assign",
+    icon: "shieldcheck",
+    sort: 15,
     status: "active",
   },
   {
