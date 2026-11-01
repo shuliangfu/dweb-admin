@@ -1,6 +1,6 @@
 /**
  * Dashboard (/) - Vue home/dashboard.vue shape.
- * LIVE: dashboard-live-kpis - AdminUser.count, visible menus, current roleCodes.length.
+ * Dashboard shows member KPIs, finance strip and charts (no live admin/menu/role cards).
  * DEMO (no Member/Finance models; docs/handoff.md): member KPIs, finance strip, charts.
  */
 import { Card, ChartBar, ChartDoughnut, ChartLine, IconUsers } from "@dreamer/ui-view";
@@ -98,10 +98,6 @@ export default function Home(props: { data?: Data } & Data) {
     { key: "zombie", label: tr("dashboard.kpiMembersZombie"), value: demoMembers.zombie, tone: "bg-rose-500/10 text-rose-600" },
   ];
 
-  const liveKpis = [
-    { key: "admins", label: tr("dashboard.kpiAdmins"), value: d.adminTotal ?? 0 },
-  ];
-
   const incomeBits = [
     { label: tr("dashboard.financeIncomeToday"), value: demoFinance.today },
     { label: tr("dashboard.financeIncomeYesterday"), value: demoFinance.yesterday },
@@ -162,21 +158,6 @@ export default function Home(props: { data?: Data } & Data) {
           </div>
         </div>
       </Card>
-
-      {/* Live admin count — same 4-column grid as the member row so the card width lines up */}
-      <section class="adm-dash-grid grid grid-cols-2 lg:grid-cols-4" data-testid="dashboard-live-kpis">
-        {liveKpis.map((k) => (
-          <Card bordered size="sm" class="adm-panel-card" data-testid={`kpi-${k.key}`}>
-            <p class="m-0 text-xs text-slate-500 dark:text-slate-400">
-              {k.label}
-              <span class="ml-1 rounded bg-emerald-50 px-1 text-xs text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
-                {tr("dashboard.liveBadge")}
-              </span>
-            </p>
-            <p class="m-0 mt-1 text-xl font-semibold">{k.value}</p>
-          </Card>
-        ))}
-      </section>
 
       <section class="adm-dash-grid grid grid-cols-1 lg:grid-cols-3" data-testid="dashboard-charts">
         <Card bordered class="adm-panel-card lg:col-span-2" title={tr("dashboard.chartVisits")} bodyClass="pt-2">

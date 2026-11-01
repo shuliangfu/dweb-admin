@@ -89,14 +89,14 @@ const OTHER: OtherTok[] = [
     cssVar: "--adm-side",
     labelKey: "shell.tokSide",
     light: "#020617",
-    dark: "#020617",
+    dark: "#0f172a",
   },
   {
     id: "sub",
     cssVar: "--adm-sub",
     labelKey: "shell.tokSub",
     light: "#020617",
-    dark: "#020617",
+    dark: "#0f172a",
   },
   {
     id: "subHover",
@@ -277,6 +277,9 @@ const SUPERSEDED_OTHER: Record<string, string> = {
   // Earlier light-mode navbar/logo defaults that a browser may have persisted; drop them so #1e293b applies.
   brandStrip: "#0f172a",
   topBg: "#0f172a",
+  // Old dark-mode sidebar default (now equal to the navbar #0f172a).
+  side: "#020617",
+  sub: "#020617",
 };
 
 /** Vue length tokens (menu item height / radius) — not colors. */

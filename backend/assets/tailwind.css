@@ -423,8 +423,8 @@
   --adm-split: #334155;
 }
 .dark {
-  --adm-side: var(--color-adminlte-sidebar-dark);
-  --adm-sub: var(--color-adminlte-sidebar-dark);
+  --adm-side: var(--color-adminlte-header) /* dark: sidebar = navbar = logo area (#0f172a) */;
+  --adm-sub: var(--color-adminlte-header);
   --adm-sub-hover: #1e293b;
   --adm-active-bg: transparent;
   --adm-text: #cbd5e1;
@@ -482,6 +482,7 @@ button[data-variant="primary"]:hover:not(:disabled) {
   background-color: var(--color-primary-500) !important;
 }
 .adm-content {
+  padding: var(--adm-content-pad);
   background: var(--adm-content);
   color: var(--adm-fg);
 }
@@ -701,7 +702,7 @@ button[data-variant="primary"]:hover:not(:disabled) {
 
 /* TagView — Vue header-x strip */
 .adm-tag-view {
-  padding: 5px 2px 0;
+  padding: 5px var(--adm-content-pad) 0;
   border: 1px solid var(--adm-tag-border);
   border-left: none;
   border-right: none;
@@ -725,9 +726,10 @@ button[data-variant="primary"]:hover:not(:disabled) {
   gap: 4px;
   min-width: 40px;
   max-width: 160px;
-  margin-left: 2px;
-  margin-right: 8px;
-  padding: 6px 4px;
+  /* flush tabs: no gap, and each tab overlaps its neighbour's left border by 1px so adjacent tabs share ONE line */
+  margin: 0 0 0 -1px;
+  position: relative;
+  padding: 6px 8px;
   height: 30px;
   box-sizing: border-box;
   border: 1px solid var(--adm-tag-item-border);
@@ -739,6 +741,9 @@ button[data-variant="primary"]:hover:not(:disabled) {
 }
 .adm-tag-item:first-child {
   margin-left: 0;
+}
+.adm-tag-item.adm-tag-on {
+  z-index: 1; /* the active tab's accent border wins over the shared line */
 }
 .adm-tag-item.adm-tag-on {
   color: var(--adm-tag-on-fg);
@@ -931,6 +936,8 @@ button[data-variant="primary"]:hover:not(:disabled) {
    ONE token drives every horizontal and vertical gap between dashboard cards (matches the top stat row). */
 :root {
   --adm-dash-gap: 12px;
+  /* ONE horizontal inset shared by the content area and the tab strip, so the first tab lines up with the content */
+  --adm-content-pad: 10px;
 }
 .adm-dash {
   display: flex;

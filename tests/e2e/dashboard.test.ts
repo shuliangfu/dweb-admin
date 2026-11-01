@@ -3,6 +3,8 @@
 import { assert, assertEquals } from "@std/assert";
 import { BASE, browserLoggedIn, ensureServer } from "../helpers.ts";
 
+const lines0 = (t: string) => t.split("\n").map((x) => x.trim());
+
 Deno.test({ name: "dashboard: role / visible-menu cards are gone and remaining cards are aligned", sanitizeOps: false, sanitizeResources: false, fn: async () => {
   await ensureServer();
   const { browser, ctx } = await browserLoggedIn();
@@ -11,7 +13,9 @@ Deno.test({ name: "dashboard: role / visible-menu cards are gone and remaining c
     await page.goto(BASE + "/");
     await page.waitForSelector("[data-testid=dashboard]");
     assertEquals(await page.locator("[data-testid=kpi-menus],[data-testid=kpi-roles]").count(), 0, "visible-menu / current-role live cards removed");
-    assertEquals(await page.locator("[data-testid=dashboard-live-kpis] > *").count(), 1, "only the admin-count live card remains");
+    assertEquals(await page.locator("[data-testid=dashboard-live-kpis]").count(), 0, "live admin/menu/role row removed");
+    assertEquals(await page.locator("[data-testid=kpi-admins]").count(), 0, "admin (live) card removed");
+    assert(!lines0(await page.locator("[data-testid=dashboard]").innerText()).includes("管理员"), "no standalone admin card text");
     assertEquals(await page.locator("[data-testid=roles]").count(), 0, "current-role card removed");
     assertEquals(await page.locator("[data-testid=menu-count]").count(), 0, "visible-menu card removed");
     const body = await page.locator("[data-testid=dashboard]").innerText();
@@ -30,18 +34,17 @@ Deno.test({ name: "dashboard: role / visible-menu cards are gone and remaining c
       assert(r.every((x) => Math.abs(x.h - r[0].h) < 0.5), `${sel}: equal heights`);
       assert(r.every((x) => Math.abs(x.w - r[0].w) < 0.5), `${sel}: equal widths`);
     }
-    // left/right edges of both KPI rows line up with the content column
+    // the first stat card lines up with the content column (heading left edge)
     const m = await rects("[data-testid=dashboard-member-kpis] > *");
-    const l = await rects("[data-testid=dashboard-live-kpis] > *");
-    near(m[0].x, l[0].x, "admin card left edge lines up with the first stat card");
-    near(m[0].w, l[0].w, "admin card is as wide as a stat card");
+    const h = await rects("[data-testid=dashboard] h1");
+    near(m[0].x, h[0].x, "first stat card lines up with the heading");
 
     // ---- one shared gap token for every row: horizontal gaps inside rows and vertical gaps between rows
     const token = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--adm-dash-gap").trim());
     assertEquals(token, "12px");
     const gap = 12;
     const rowRects = async (sel: string) => await rects(sel);
-    for (const sel of ["[data-testid=dashboard-member-kpis] > *", "[data-testid=dashboard-live-kpis] > *"]) {
+    for (const sel of ["[data-testid=dashboard-member-kpis] > *"]) {
       const r = await rowRects(sel);
       for (let i = 1; i < r.length; i++) near(r[i].x - (r[i - 1].x + r[i - 1].w), gap, `${sel}: horizontal gap`);
     }

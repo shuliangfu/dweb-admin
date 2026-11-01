@@ -95,7 +95,12 @@ export default function Layout(props: { children?: VNode | VNode[]; data?: Layou
   const tr = createT(locale);
   const pathname = data.pathname ?? "/";
   const menu = data.menu ?? [];
-  const pageTitle = resolvePageTitle(menu, pathname, tr("nav.dashboard"));
+  const pageTitle = resolvePageTitle(
+    menu,
+    pathname,
+    // only the home page may fall back to "Dashboard"; other pages missing from the menu tree use their last path segment
+    pathname === "/" ? tr("nav.dashboard") : (pathname.split("/").filter(Boolean).pop() ?? tr("nav.dashboard")),
+  );
 
   return (
     <div class={`adm-shell flex h-screen overflow-hidden${data.collapsed ? " adm-collapsed" : ""}`}>
@@ -126,7 +131,7 @@ export default function Layout(props: { children?: VNode | VNode[]; data?: Layou
             closeAll: tr("shell.closeAll"),
           }}
         />
-        <main class="adm-content min-h-0 min-w-0 flex-1 overflow-y-auto p-2.5">
+        <main class="adm-content min-h-0 min-w-0 flex-1 overflow-y-auto">
           {/* Vue el-main: 10px pad, no outer card — pages/DataPanel supply Card */}
           <div class="adm-content-inner min-h-full">
             {props.children}

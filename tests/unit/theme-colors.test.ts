@@ -48,10 +48,12 @@ const darkVars = varsOf(block(/\.dark/));
 const L = (k: string) => resolve(lightVars.get(k));
 const D = (k: string) => resolve(darkVars.get(k));
 
-Deno.test("dark mode chrome colours are unchanged", () => {
-  assertEquals(D("--adm-side").toLowerCase(), "#020617");
+Deno.test("dark mode: sidebar, navbar and logo area are all #0f172a", () => {
   assertEquals(D("--adm-top-bg").toLowerCase(), "#0f172a");
   assertEquals(D("--adm-brand-strip").toLowerCase(), "#0f172a");
+  assertEquals(D("--adm-side").toLowerCase(), D("--adm-top-bg").toLowerCase(), "dark sidebar must equal the navbar");
+  assertEquals(D("--adm-sub").toLowerCase(), D("--adm-top-bg").toLowerCase());
+  assert(contrast(D("--adm-side"), D("--adm-text")) >= 4.5, "dark sidebar text contrast");
 });
 
 Deno.test("light sidebar is slate-800 (lighter than the dark-mode sidebar)", () => {
