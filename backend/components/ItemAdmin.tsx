@@ -5,10 +5,10 @@
  *  - create / edit forms are Modals as well
  */
 import { createSignal } from "@dreamer/view";
-import { Button, Descriptions, FormItem, Input, Modal, Table, Tag, Transfer } from "@dreamer/ui-view";
+import { Button, Descriptions, FormItem, Input, Modal, Tag, Transfer } from "@dreamer/ui-view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
-import { api, ConfirmDelete, reload, toastResult } from "@backend/components/crud-kit.tsx";
-import { DataPanel, RowActions, type DataPanelChildrenCtx } from "@common/components/DataPanel.tsx";
+import { api, toastResult } from "@backend/components/crud-kit.tsx";
+import { DataPanel, type PanelInitial, refreshPanel } from "@common/components/DataPanel.tsx";
 
 export interface ItemRow {
   name: string;
@@ -46,10 +46,9 @@ const targetKeys = createSignal<string[]>([]);
 const fName = createSignal("");
 const fRule = createSignal("");
 const fDesc = createSignal("");
-const deleting = createSignal("");
 const busy = createSignal(false);
 
-export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; rows: ItemRow[]; keyword: string; nameQ?: string; infoQ?: string }) {
+export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; initial: PanelInitial }) {
   const tr = createT(props.locale);
   const base = props.kind === "role" ? "/api/rbac/roles" : "/api/rbac/permissions";
   const url = (name: string) => `${base}/${encodeURIComponent(name)}`;
@@ -98,7 +97,10 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
       ? await api("POST", `${base}/create`, { name: fName.value, ruleName: fRule.value, description: fDesc.value })
       : await api("POST", `${url(fName.value)}/update`, { ruleName: fRule.value, description: fDesc.value });
     busy.value = false;
-    if (toastResult(r, tr("crud.saved"), tr("crud.networkError"))) reload();
+    if (toastResult(r, tr("crud.saved"), tr("crud.networkError"))) {
+      open.value = false;
+      await refreshPanel(props.initial.meta.key);
+    }
   }
 
   /** Transfer onChange: diff against the previous right-hand list and persist. */
@@ -142,7 +144,13 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
               />
             )
             : (
-              <div class="grid gap-3">
+              <form
+                class="grid gap-3"
+                onSubmit={(e: Event) => {
+                  e.preventDefault();
+                  void save();
+                }}
+              >
                 <FormItem label={tr("rbac.name")} required>
                   <Input
                     value={fName}
@@ -178,11 +186,11 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
                   >
                     {tr("crud.cancel")}
                   </Button>
-                  <Button type="button" variant="primary" onClick={save}>
+                  <Button type="submit" variant="primary" loading={busy.value}>
                     {tr("crud.confirm")}
                   </Button>
                 </div>
-              </div>
+              </form>
             )}
         </section>
         {m !== "create" && d
@@ -223,106 +231,13 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
   };
 
   return (
-    <div>
-      <DataPanel
-        title={T.list}
-        tools={{ create: true, search: true, refresh: true, export: true, print: true, column: true }}
-        onCreate={openCreate}
-        onRefresh={reload}
-        toolLabels={{
-          export: tr("panel.export"),
-          print: tr("panel.print"),
-          column: tr("panel.column"),
-          search: tr("panel.search"),
-          soon: tr("panel.soon"),
-          resetColumns: tr("panel.resetColumns"),
-          create: tr("panel.create"),
-          refresh: tr("panel.refresh"),
-          range: tr("panel.range"),
-          csv: "CSV",
-          excel: "Excel",
-          xml: "XML",
-          html: "HTML",
-        }}
-        columns={[
-          { prop: "idx", label: tr("rbac.index") },
-          { prop: "name", label: tr("rbac.name") },
-          { prop: "description", label: tr("rbac.description") },
-          { prop: "createdAt", label: tr("common.createdAt") },
-          { prop: "updatedAt", label: tr("common.updatedAt") },
-          { prop: "actions", label: tr("common.actions") },
-        ]}
-        rows={props.rows.map((r, i) => ({ ...r, idx: i + 1 })) as never}
-        searchSchemas={[
-          {
-            name: "name",
-            label: tr("rbac.name"),
-            placeholder: tr("rbac.namePlaceholder"),
-            defaultValue: props.nameQ ?? props.keyword ?? "",
-          },
-          {
-            name: "info",
-            label: tr("rbac.description"),
-            placeholder: tr("rbac.description"),
-            defaultValue: props.infoQ ?? "",
-          },
-        ]}
-        searchLabels={{ open: tr("panel.search"), submit: tr("crud.search"), reset: tr("crud.reset") }}
-      >
-        {(ctx: DataPanelChildrenCtx) => (
-          <Table
-                  bordered
-                  hoverable
-                  size="sm"
-                  rowKey="name"
-                  dataSource={props.rows.map((r, i) => ({ ...r, idx: i + 1 }))}
-                  pagination={{ pageSize: 20, total: props.rows.length }}
-                  locale={{ emptyText: tr("common.empty") }}
-                  columns={ctx.filterTableColumns(([
-          { key: "idx", title: tr("rbac.index"), dataIndex: "idx", width: 60 },
-          {
-            key: "name",
-            title: tr("rbac.name"),
-            render: (_v: unknown, r: ItemRow) => (
-              <span>
-                {r.name} {r.isSuper ? <Tag size="xs" variant="warning">super</Tag> : null}
-              </span>
-            ),
-          },
-          { key: "description", title: tr("rbac.description"), dataIndex: "description" },
-          {
-            key: "createdAt",
-            title: tr("common.createdAt"),
-            render: (_v: unknown, r: ItemRow) => fmtTs(r.createdAt),
-          },
-          {
-            key: "updatedAt",
-            title: tr("common.updatedAt"),
-            render: (_v: unknown, r: ItemRow) => fmtTs(r.updatedAt),
-          },
-          {
-            key: "actions",
-            title: tr("common.actions"),
-            render: (_v: unknown, r: ItemRow) => (
-              <RowActions
-                viewLabel={tr("rbac.view")}
-                updateLabel={tr("crud.edit")}
-                deleteLabel={tr("crud.delete")}
-                confirmDelete={false}
-                deleteDisabled={r.isSuper}
-                onView={() => openDetail(r.name, "view")}
-                onUpdate={() => openDetail(r.name, "edit")}
-                onDelete={() => {
-                  deleting.value = r.name;
-                }}
-              />
-            ),
-          },
-                  ] as never))}
-                />
-        )}
-      </DataPanel>
-
+    <DataPanel
+      initial={props.initial}
+      locale={props.locale}
+      onCreate={openCreate}
+      onEdit={(r) => void openDetail(r.id, "edit")}
+      onView={(r) => void openDetail(r.id, "view")}
+    >
       <Modal
         open={open}
         title={() => (mode.value === "create" ? T.add : mode.value === "edit" ? T.edit : T.view)}
@@ -334,18 +249,6 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
         }}
         children={body}
       />
-
-      <ConfirmDelete
-        target={deleting}
-        title={tr("crud.deleteTitle")}
-        ask={(n) => tr("crud.deleteAsk", { name: n })}
-        okText={tr("crud.delete")}
-        cancelText={tr("crud.cancel")}
-        onConfirm={async (name) => {
-          const r = await api("POST", `${url(name)}/remove`);
-          if (toastResult(r, tr("crud.deleted"), tr("crud.networkError"))) reload();
-        }}
-      />
-    </div>
+    </DataPanel>
   );
 }

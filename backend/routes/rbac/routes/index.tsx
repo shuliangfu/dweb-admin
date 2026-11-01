@@ -1,38 +1,20 @@
 /** Managed routes + auto-scan. Route: /rbac/routes */
 import type { LoadContext } from "@dreamer/dweb";
-import { type Locale, resolveLocale } from "@common/i18n/mod.ts";
-import { RoutesAdmin, type ManagedRouteRow } from "@backend/components/RoutesAdmin.tsx";
+import type { ResData } from "@backend/components/res-page.tsx";
+import { RoutesAdmin } from "@backend/components/RoutesAdmin.tsx";
 
 export async function load(ctx: LoadContext) {
+  const { resLoad } = await import("@backend/res-load.ts");
+  const base = await resLoad("routes")(ctx);
   const { listRoutes } = await import("@common/service/rbac-admin.ts");
-  const url = new URL(ctx.req.url);
-  return {
-    locale: resolveLocale(ctx.req),
-    ...(await listRoutes()),
-    pathQ: url.searchParams.get("path") ?? "",
-    methodQ: url.searchParams.get("method") ?? "",
-  };
+  const r = await listRoutes();
+  return { ...base, managed: r.managed, available: r.available };
 }
 
-type Data = {
-  locale?: Locale;
-  managed?: string[];
-  available?: string[];
-  managedDetail?: ManagedRouteRow[];
-  pathQ?: string;
-  methodQ?: string;
-};
+type Data = ResData & { managed?: string[]; available?: string[] };
 
 export default function Page(props: { data?: Data } & Data) {
   const d: Data = props.data ?? props;
-  return (
-    <RoutesAdmin
-      locale={d.locale ?? "zh-CN"}
-      managed={d.managed ?? []}
-      available={d.available ?? []}
-      managedDetail={d.managedDetail ?? []}
-      pathQ={d.pathQ ?? ""}
-      methodQ={d.methodQ ?? ""}
-    />
-  );
+  if (!d.initial) return null;
+  return <RoutesAdmin locale={d.locale ?? "zh-CN"} initial={d.initial} managed={d.managed ?? []} available={d.available ?? []} />;
 }

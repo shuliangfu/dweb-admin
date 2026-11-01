@@ -1,42 +1,15 @@
-/** roles list (Yii2 style RBAC). Route: /rbac/roles */
+/** role list (Yii2 style RBAC) — server-side list; bespoke detail modal with Transfer. */
 import type { LoadContext } from "@dreamer/dweb";
-import { type Locale, resolveLocale } from "@common/i18n/mod.ts";
-import { ItemAdmin, type ItemRow } from "@backend/components/ItemAdmin.tsx";
+import type { ResData } from "@backend/components/res-page.tsx";
+import { ItemAdmin } from "@backend/components/ItemAdmin.tsx";
 
 export async function load(ctx: LoadContext) {
-  const { listItems } = await import("@common/service/rbac-admin.ts");
-  const url = new URL(ctx.req.url);
-  const keyword = url.searchParams.get("keyword") ?? "";
-  const name = url.searchParams.get("name") ?? "";
-  const info = url.searchParams.get("info") ?? "";
-  const r = await listItems("role", { page: 1, pageSize: 500, keyword, name, info });
-  return {
-    locale: resolveLocale(ctx.req),
-    keyword,
-    nameQ: name,
-    infoQ: info,
-    rows: r.items as ItemRow[],
-  };
+  const { resLoad } = await import("@backend/res-load.ts");
+  return resLoad("roles")(ctx);
 }
 
-type Data = {
-  locale?: Locale;
-  keyword?: string;
-  nameQ?: string;
-  infoQ?: string;
-  rows?: ItemRow[];
-};
-
-export default function Page(props: { data?: Data } & Data) {
-  const d: Data = props.data ?? props;
-  return (
-    <ItemAdmin
-      kind="role"
-      locale={d.locale ?? "zh-CN"}
-      rows={d.rows ?? []}
-      keyword={d.keyword ?? ""}
-      nameQ={d.nameQ ?? ""}
-      infoQ={d.infoQ ?? ""}
-    />
-  );
+export default function Page(props: { data?: ResData } & ResData) {
+  const d: ResData = props.data ?? props;
+  if (!d.initial) return null;
+  return <ItemAdmin kind="role" locale={d.locale ?? "zh-CN"} initial={d.initial} />;
 }
