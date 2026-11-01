@@ -118,15 +118,16 @@ export function AdminsAdmin(props: {
           </form>
         }
       >
-      <Table
-        bordered
-        hoverable
-        size="sm"
-        rowKey="id"
-        dataSource={props.rows.map((r, i) => ({ ...r, idx: i + 1 }))}
-        pagination={{ pageSize: 20, total: props.rows.length }}
-        locale={{ emptyText: tr("common.empty") }}
-        columns={([
+        {(ctx) => (
+          <Table
+                  bordered
+                  hoverable
+                  size="sm"
+                  rowKey="id"
+                  dataSource={props.rows.map((r, i) => ({ ...r, idx: i + 1 }))}
+                  pagination={{ pageSize: 20, total: props.rows.length }}
+                  locale={{ emptyText: tr("common.empty") }}
+                  columns={ctx.filterTableColumns(([
           { key: "idx", title: tr("rbac.index"), dataIndex: "idx", width: 60 },
           { key: "username", title: tr("users.username"), dataIndex: "username" },
           { key: "nickname", title: tr("users.nickname"), dataIndex: "nickname" },
@@ -168,8 +169,9 @@ export function AdminsAdmin(props: {
               </div>
             ),
           },
-        ] as never)}
-      />
+                  ] as never))}
+                />
+        )}
       </DataPanel>
 
       <Modal

@@ -69,6 +69,10 @@ export function StubList(props: { locale: Locale; page: StubPage }) {
         excel: "Excel",
         xml: "XML",
         html: "HTML",
+        unsupportedFormat: tr("panel.unsupportedFormat"),
+      }}
+      onImportRows={(rows) => {
+        message.info(tr("stub.importParsed", { n: rows.length }));
       }}
     />
   );

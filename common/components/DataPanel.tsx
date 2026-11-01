@@ -16,23 +16,6 @@ import {
   type TableProps,
 } from "@dreamer/ui-view";
 
-
-type DomDoc = {
-  createElement: (tag: string) => {
-    href?: string;
-    download?: string;
-    click: () => void;
-    type?: string;
-    accept?: string;
-    files?: { 0?: File; length: number } | null;
-    onchange: ((ev: Event) => void) | null;
-  };
-  documentElement?: { style: { setProperty: (k: string, v: string) => void } };
-};
-function dom(): DomDoc | undefined {
-  return (globalThis as { document?: DomDoc }).document;
-}
-
 /** Mirrors Vue CardPanel `table.tools` flags. */
 export type DataPanelTools = {
   create?: boolean;
@@ -63,43 +46,41 @@ export type DataPanelSearchField = {
   defaultValue?: string;
 };
 
+/** Context passed to function `children` so custom Tables can hide columns. */
+export type DataPanelChildrenCtx = {
+  /** prop → hidden */
+  hidden: Record<string, boolean>;
+  isColumnHidden: (prop: string) => boolean;
+  /** Filter ui-view Table column defs that use `key` === prop (or dataIndex). */
+  filterTableColumns: <C extends { key?: string; dataIndex?: string }>(cols: C[]) => C[];
+};
+
 export type DataPanelProps<T extends Record<string, unknown> = Record<string, unknown>> = {
-  /** Panel title (Vue `table.title`). */
   title: string;
-  /** Optional subtitle / store info line (Vue `store.info`). */
   info?: string;
-  /** Toolbar capability flags (Vue `table.tools`). */
   tools?: DataPanelTools;
-  /** Row action hints for callers (Vue `table.actions`) — reserved. */
   actions?: { view?: boolean; update?: boolean; delete?: boolean };
-  /** Column defs when using built-in Table; also drives column dropdown + CSV. */
   columns?: DataPanelColumn<T>[];
-  /** Row data when using built-in Table / default export. */
   rows?: T[];
   rowKey?: string;
-  /** Custom search slot (takes precedence over searchSchemas form body). */
   searchSlot?: unknown;
-  /** Schema-driven GET search form (Vue FormSearch subset). */
   searchSchemas?: DataPanelSearchField[];
-  /** Labels for search open / submit / reset. */
   searchLabels?: { open?: string; submit?: string; reset?: string };
-  /** Extra toolbar nodes (right side). */
   toolbarExtra?: unknown;
-  /** Replace built-in Table entirely (e.g. existing Admin table). */
-  children?: unknown;
+  /**
+   * Custom body. Prefer a function so column toggles can hide cells:
+   * `children={(ctx) => <Table columns={ctx.filterTableColumns(cols)} ... />}`.
+   */
+  children?: unknown | ((ctx: DataPanelChildrenCtx) => unknown);
   onCreate?: () => void;
   onRefresh?: () => void;
-  /** Override default CSV download of visible columns. */
   onExport?: (format?: string) => void;
-  /** Override default file-picker import. */
   onImport?: () => void;
-  /** Called with selected File when default import picker is used. */
   onImportFile?: (file: File) => void;
-  /** Override default window.print(). */
+  /** Parsed CSV rows (header → values) after default import picker. */
+  onImportRows?: (rows: Record<string, string>[], file: File) => void;
   onPrint?: () => void;
-  /** Called when column visibility changes (prop → hidden). */
   onColumnVisibilityChange?: (hidden: Record<string, boolean>) => void;
-  /** Labels for toolbar tools. */
   toolLabels?: Partial<
     Record<
       | "export"
@@ -110,17 +91,30 @@ export type DataPanelProps<T extends Record<string, unknown> = Record<string, un
       | "search"
       | "resetColumns"
       | "csv"
-      | "excel"
-      | "xml"
-      | "html",
+      | "unsupportedFormat",
       string
     >
   >;
-  /** Forwarded to ui-view Table when using built-in table. */
   tableProps?: Partial<TableProps<T>>;
   emptyText?: string;
   class?: string;
 };
+
+type DomDoc = {
+  createElement: (tag: string) => {
+    href?: string;
+    download?: string;
+    click: () => void;
+    type?: string;
+    accept?: string;
+    files?: { 0?: File; length: number; item?: (i: number) => File | null } | null;
+    onchange: ((ev: Event) => void) | null;
+  };
+};
+
+function dom(): DomDoc | undefined {
+  return (globalThis as { document?: DomDoc }).document;
+}
 
 function toTableColumns<T extends Record<string, unknown>>(
   columns: DataPanelColumn<T>[],
@@ -139,23 +133,23 @@ function toTableColumns<T extends Record<string, unknown>>(
     })) as TableProps<T>["columns"];
 }
 
-function downloadCsv(
+/** Escape one CSV cell (RFC-style quotes). */
+function escCsv(v: unknown): string {
+  const s = v == null ? "" : String(v);
+  if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+  return s;
+}
+
+export function downloadCsv(
   columns: { prop: string; label: string }[],
   rows: Record<string, unknown>[],
   filename = "export.csv",
 ): void {
-  const esc = (v: unknown) => {
-    const s = v == null ? "" : String(v);
-    if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
-    return s;
-  };
-  const header = columns.map((c) => esc(c.label)).join(",");
-  const body = rows
-    .map((r) => columns.map((c) => esc(r[c.prop])).join(","))
-    .join("\n");
   const doc = dom();
   if (!doc) return;
-  const blob = new Blob([`${header}\n${body}`], { type: "text/csv;charset=utf-8" });
+  const header = columns.map((c) => escCsv(c.label)).join(",");
+  const body = rows.map((r) => columns.map((c) => escCsv(r[c.prop])).join(",")).join("\n");
+  const blob = new Blob([`\ufeff${header}\n${body}`], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const a = doc.createElement("a");
   a.href = url;
@@ -164,9 +158,76 @@ function downloadCsv(
   URL.revokeObjectURL(url);
 }
 
+/** Minimal CSV parser (quoted fields, comma sep, first row = headers). */
+export function parseCsv(text: string): Record<string, string>[] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cur = "";
+  let inQuotes = false;
+  const src = text.replace(/^\ufeff/, "");
+  for (let i = 0; i < src.length; i++) {
+    const ch = src[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (src[i + 1] === '"') {
+          cur += '"';
+          i++;
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        cur += ch;
+      }
+      continue;
+    }
+    if (ch === '"') {
+      inQuotes = true;
+      continue;
+    }
+    if (ch === ",") {
+      row.push(cur);
+      cur = "";
+      continue;
+    }
+    if (ch === "\n" || ch === "\r") {
+      if (ch === "\r" && src[i + 1] === "\n") i++;
+      row.push(cur);
+      cur = "";
+      if (row.some((c) => c.length)) rows.push(row);
+      row = [];
+      continue;
+    }
+    cur += ch;
+  }
+  row.push(cur);
+  if (row.some((c) => c.length)) rows.push(row);
+  if (rows.length < 2) return [];
+  const headers = rows[0].map((h) => h.trim());
+  return rows.slice(1).map((cells) => {
+    const obj: Record<string, string> = {};
+    headers.forEach((h, i) => {
+      if (h) obj[h] = cells[i] ?? "";
+    });
+    return obj;
+  });
+}
+
+function makeChildrenCtx(hidden: Record<string, boolean>): DataPanelChildrenCtx {
+  return {
+    hidden,
+    isColumnHidden: (prop: string) => !!(hidden[prop]),
+    filterTableColumns: <C extends { key?: string; dataIndex?: string }>(cols: C[]) =>
+      cols.filter((c) => {
+        const prop = String(c.key ?? c.dataIndex ?? "");
+        if (!prop || prop === "selection") return true;
+        return !hidden[prop];
+      }),
+  };
+}
+
 /**
- * Shared list panel chrome. Prefer passing `children` while migrating existing
- * Admin pages; switch to `columns`+`rows` once each page drops bespoke tables.
+ * Shared list panel chrome. Prefer function `children` when embedding a custom
+ * Table so column toggles can hide columns; or use `columns`+`rows` built-in.
  */
 export function DataPanel<T extends Record<string, unknown> = Record<string, unknown>>(
   props: DataPanelProps<T>,
@@ -186,7 +247,9 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
 
   function visibleExportColumns() {
     const h = hiddenCols.value;
-    return columns.filter((c) => !(h[c.prop] ?? false) && c.prop !== "actions" && c.prop !== "selection");
+    return columns.filter(
+      (c) => !(h[c.prop] ?? false) && c.prop !== "actions" && c.prop !== "selection",
+    );
   }
 
   function doExport(format = "csv") {
@@ -194,12 +257,12 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
       props.onExport(format);
       return;
     }
-    if (!columns.length || !rows.length) {
-      soon();
+    if (format !== "csv") {
+      message.info(labels.unsupportedFormat ?? labels.soon ?? "Format not available");
       return;
     }
-    if (format !== "csv") {
-      message.info(labels.soon ?? "Coming soon");
+    if (!columns.length || !rows.length) {
+      soon();
       return;
     }
     downloadCsv(
@@ -217,12 +280,22 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
     if (!doc) return;
     const input = doc.createElement("input");
     input.type = "file";
-    input.accept = ".csv,.xlsx,.xls,.json";
-    input.onchange = () => {
-      const file = input.files?.[0];
+    input.accept = ".csv,text/csv";
+    input.onchange = async () => {
+      const file = (input.files?.item?.(0) ?? input.files?.[0]) as File | undefined;
       if (!file) return;
-      if (props.onImportFile) props.onImportFile(file);
-      else message.info(`${labels.import ?? "Import"}: ${file.name}`);
+      props.onImportFile?.(file);
+      if (props.onImportRows) {
+        try {
+          const text = await file.text();
+          const parsed = parseCsv(text);
+          props.onImportRows(parsed, file);
+        } catch {
+          message.info(labels.soon ?? "Import failed");
+        }
+      } else if (!props.onImportFile) {
+        message.info(`${labels.import ?? "Import"}: ${file.name}`);
+      }
     };
     input.click();
   }
@@ -236,8 +309,9 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
   }
 
   function toggleColumn(prop: string) {
-    const next = { ...hiddenCols.value, [prop]: !hiddenCols.value[prop] };
-    if (!next[prop]) delete next[prop];
+    const next = { ...hiddenCols.value };
+    if (next[prop]) delete next[prop];
+    else next[prop] = true;
     hiddenCols.value = next;
     props.onColumnVisibilityChange?.(next);
   }
@@ -249,17 +323,25 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
 
   const hasSearchUi = !!(tools.search && (props.searchSlot || (props.searchSchemas && props.searchSchemas.length)));
 
+  // CSV only by default — no xlsx/exceljs in deps; other formats stay unavailable.
   const exportOverlay = (
-    <div class="flex min-w-[7rem] flex-col gap-0.5 p-1">
-      {(["csv", "excel", "xml", "html"] as const).map((fmt) => (
-        <button
-          type="button"
-          class="rounded px-2 py-1.5 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800"
-          onClick={() => doExport(fmt)}
-        >
-          {(labels[fmt] ?? fmt).toUpperCase()}
-        </button>
-      ))}
+    <div class="flex min-w-[8rem] flex-col gap-0.5 p-1">
+      <button
+        type="button"
+        class="rounded px-2 py-1.5 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800"
+        onClick={() => doExport("csv")}
+      >
+        {labels.csv ?? "CSV"}
+      </button>
+      <button
+        type="button"
+        class="rounded px-2 py-1.5 text-left text-xs text-slate-400"
+        onClick={() =>
+          message.info(labels.unsupportedFormat ?? "Excel/XML/HTML need a library — not bundled")
+        }
+      >
+        Excel / XML / HTML
+      </button>
     </div>
   );
 
@@ -395,6 +477,28 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
     );
   };
 
+  const ctx = makeChildrenCtx(hiddenCols.value);
+  const body = (() => {
+    const ch = props.children;
+    if (typeof ch === "function") {
+      return (ch as (c: DataPanelChildrenCtx) => unknown)(ctx);
+    }
+    if (ch != null) return ch;
+    return (
+      <Table
+        bordered
+        hoverable
+        size="sm"
+        rowKey={props.rowKey ?? "id"}
+        dataSource={rows}
+        columns={toTableColumns(columns, hiddenCols.value)}
+        pagination={{ pageSize: 20, total: rows.length }}
+        locale={{ emptyText: props.emptyText ?? "—" }}
+        {...(props.tableProps as object)}
+      />
+    );
+  })();
+
   return (
     <Card
       bordered
@@ -405,21 +509,7 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
       bodyClass="pt-3"
     >
       {searchBar()}
-      {props.children != null ? (
-        props.children
-      ) : (
-        <Table
-          bordered
-          hoverable
-          size="sm"
-          rowKey={props.rowKey ?? "id"}
-          dataSource={rows}
-          columns={toTableColumns(columns, hiddenCols.value)}
-          pagination={{ pageSize: 20, total: rows.length }}
-          locale={{ emptyText: props.emptyText ?? "—" }}
-          {...(props.tableProps as object)}
-        />
-      )}
+      {body}
     </Card>
   );
 }

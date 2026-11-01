@@ -246,15 +246,16 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
           </form>
         }
       >
-      <Table
-        bordered
-        hoverable
-        size="sm"
-        rowKey="name"
-        dataSource={props.rows.map((r, i) => ({ ...r, idx: i + 1 }))}
-        pagination={{ pageSize: 20, total: props.rows.length }}
-        locale={{ emptyText: tr("common.empty") }}
-        columns={([
+        {(ctx) => (
+          <Table
+                  bordered
+                  hoverable
+                  size="sm"
+                  rowKey="name"
+                  dataSource={props.rows.map((r, i) => ({ ...r, idx: i + 1 }))}
+                  pagination={{ pageSize: 20, total: props.rows.length }}
+                  locale={{ emptyText: tr("common.empty") }}
+                  columns={ctx.filterTableColumns(([
           { key: "idx", title: tr("rbac.index"), dataIndex: "idx", width: 60 },
           {
             key: "name",
@@ -288,8 +289,9 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
               </div>
             ),
           },
-        ] as never)}
-      />
+                  ] as never))}
+                />
+        )}
       </DataPanel>
 
       <Modal

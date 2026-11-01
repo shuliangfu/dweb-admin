@@ -113,15 +113,16 @@ export function MenusAdmin(props: { locale: Locale; rows: MenuRow[] }) {
           title: typeof r.title === "object" ? (r.title["zh-CN"] ?? r.key) : r.title,
         })) as never}
       >
-      <Table
-        bordered
-        hoverable
-        size="sm"
-        rowKey="key"
-        dataSource={props.rows.map((r, i) => ({ ...r, idx: i + 1 }))}
-        pagination={{ pageSize: 50, total: props.rows.length }}
-        locale={{ emptyText: tr("common.empty") }}
-        columns={([
+        {(ctx) => (
+          <Table
+                  bordered
+                  hoverable
+                  size="sm"
+                  rowKey="key"
+                  dataSource={props.rows.map((r, i) => ({ ...r, idx: i + 1 }))}
+                  pagination={{ pageSize: 50, total: props.rows.length }}
+                  locale={{ emptyText: tr("common.empty") }}
+                  columns={ctx.filterTableColumns(([
           { key: "idx", title: tr("rbac.index"), dataIndex: "idx", width: 60 },
           { key: "key", title: tr("menus.key"), dataIndex: "key" },
           { key: "parentKey", title: tr("menus.parent"), render: (_v: unknown, r: MenuRow) => r.parentKey || "-" },
@@ -156,8 +157,9 @@ export function MenusAdmin(props: { locale: Locale; rows: MenuRow[] }) {
               </div>
             ),
           },
-        ] as never)}
-      />
+                  ] as never))}
+                />
+        )}
       </DataPanel>
 
       <Modal
