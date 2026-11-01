@@ -28,6 +28,8 @@ const PUBLIC_EXACT = new Set([
   "/api/auth/login",
   "/api/auth/twofactor",
   "/api/auth/login-options",
+  "/api/auth/captcha",
+  "/api/auth/captcha/check",
   "/api/health",
 ]);
 const PUBLIC_PREFIX = ["/assets/", "/_client", "/__hmr", "/api/i18n/", "/api/auth/passkey/"];

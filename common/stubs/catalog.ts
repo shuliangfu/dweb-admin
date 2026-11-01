@@ -50,7 +50,7 @@ export const STUB_PAGES: StubPage[] = [
     kind: "settings",
     columns: [],
     settings: [
-      { label: { "zh-CN": "网站名称", "en-US": "Site name" }, value: "Dreamer Admin" },
+      { label: { "zh-CN": "网站名称", "en-US": "Site name" }, value: "Dweb 管理后台" },
       { label: { "zh-CN": "公司名称", "en-US": "Company" }, value: "Demo Co." },
       { label: { "zh-CN": "验证码类型", "en-US": "Captcha" }, value: "字符验证码 / Character" },
       { label: { "zh-CN": "年份格式", "en-US": "Year format" }, value: "YYYY" },

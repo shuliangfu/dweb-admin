@@ -81,6 +81,7 @@ export function RoutesAdmin(props: {
           print: tr("panel.print"),
           column: tr("panel.column"),
           export: tr("panel.export"),
+          range: tr("panel.range"),
           soon: tr("panel.soon"),
           resetColumns: tr("panel.resetColumns"),
           csv: "CSV",

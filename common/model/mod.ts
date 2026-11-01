@@ -16,6 +16,7 @@ export {
   type RouteMethod,
 } from "./rbac.ts";
 export { Menu, type MenuDocument } from "./menu.ts";
+export { SiteSetting, type SiteSettingDocument } from "./site.ts";
 export { AdminSession, type AdminSessionDocument } from "./session.ts";
 export {
   AdminChallenge,

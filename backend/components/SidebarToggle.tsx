@@ -40,7 +40,7 @@ export function SidebarToggle(props: { label: string }) {
       onClick={toggle}
       class="inline-flex items-center rounded px-2 py-1.5 text-slate-600 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700"
     >
-      <IconMenu size="md" />
+      <IconMenu size="xs" />
     </button>
   );
 }

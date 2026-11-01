@@ -32,8 +32,11 @@ export default {
   render: {
     /** UI 引擎：view（推荐）、preact 或 react。 */
     engine: "view",
-    /** 渲染模式：ssr（服务端渲染 + 当前页 hydrate，菜单点击整页跳转，适合带鉴权的后台）。 */
-    mode: "ssr",
+    /**
+     * hybrid：首屏仍 SSR（鉴权、菜单在服务端），之后链接走客户端路由。
+     * ssr 会在每次点菜单时整页跳转，壳层重绘，闪动明显；前台同样用 hybrid。
+     */
+    mode: "hybrid",
     // debug: false,
     // /** 仅 SSR：是否启用客户端激活（hydrate），默认 true。设为 false 时仅输出服务端 HTML：不注入 _client.js、不执行 hydrate；链接为整页跳转；可避免刷新时闪动。 */
     // ssr: {

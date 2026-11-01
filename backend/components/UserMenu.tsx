@@ -79,11 +79,11 @@ export function UserMenu(props: { locale: Locale; nickname: string; roles: strin
       }
     >
       <span
-        class="inline-flex h-9 w-9 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-slate-300 text-slate-600 hover:bg-slate-100 dark:border-slate-500 dark:text-slate-200 dark:hover:bg-slate-700"
+        class="inline-flex h-7 w-7 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-slate-300 text-slate-600 hover:bg-slate-100 dark:border-slate-500 dark:text-slate-200 dark:hover:bg-slate-700"
         data-testid="user-menu"
         title={props.nickname}
       >
-        <IconUser size="sm" />
+        <IconUser size="xs" />
       </span>
     </Dropdown>
   );

@@ -1,83 +1,302 @@
 /**
- * Page settings drawer — Vue TopHeader settings panel.
- * Breadcrumb + primary (theme.main) + Vue theme.other → --adm-* (incl. card/desc zebra,
- * menu heights, radius, sub-hover, text-regular). Size tokens use length inputs.
+ * Page settings drawer.
+ * Defaults follow senvis backend chrome (teal primary, slate sidebar/header).
+ * Saved picks still override --adm-* and semantic colors.
  */
 import { createSignal, onMount } from "@dreamer/view";
-import { ColorPicker, Drawer, Switch } from "@dreamer/ui-view";
+import { ColorPicker, Drawer } from "@dreamer/ui-view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 
 export const settingsOpen = createSignal(false);
-export const breadcrumbOn = createSignal(true);
-export const primaryColor = createSignal("#3c8dbc");
+export const primaryColor = createSignal("#14b8a6");
 
-const BREADCRUMB_KEY = "dweb-admin-breadcrumb";
 const PRIMARY_KEY = "dweb-admin-primary";
 const OTHER_KEY = "dweb-admin-theme-other";
 const SEMANTIC_KEY = "dweb-admin-theme-semantic";
 
+const DEFAULT_PRIMARY = "#14b8a6";
+/** Previous template auto-saved this Vue blue; treat it as unset so senvis teal applies. */
+const LEGACY_PRIMARY = "#3c8dbc";
+
 const PRESETS = [
-  "#3c8dbc",
+  "#14b8a6",
+  "#0d9488",
   "#2563eb",
+  "#3c8dbc",
   "#409eff",
   "#7c3aed",
   "#db2777",
   "#dc2626",
   "#ea580c",
   "#16a34a",
-  "#0d9488",
   "#475569",
 ];
 
-/** Vue theme.main status colors → Tailwind semantic 600/500 used by ui-view. */
-type SemanticTok = { id: string; cssVars: string[]; labelKey: string; def: string };
+/** Senvis semantic 500. A saved pick writes both 500 and 600. */
+type SemanticTok = {
+  id: string;
+  cssVars: string[];
+  labelKey: string;
+  def: string;
+};
 const SEMANTIC: SemanticTok[] = [
-  { id: "success", cssVars: ["--color-success-600", "--color-success-500"], labelKey: "shell.colorSuccess", def: "#00a65a" },
-  { id: "info", cssVars: ["--color-info-600", "--color-info-500"], labelKey: "shell.colorInfo", def: "#00c0ef" },
-  { id: "warning", cssVars: ["--color-warning-600", "--color-warning-500"], labelKey: "shell.colorWarning", def: "#f39c12" },
-  { id: "danger", cssVars: ["--color-danger-600", "--color-danger-500"], labelKey: "shell.colorDanger", def: "#dd4b39" },
+  {
+    id: "success",
+    cssVars: ["--color-success-600", "--color-success-500"],
+    labelKey: "shell.colorSuccess",
+    def: "#22c55e",
+  },
+  {
+    id: "info",
+    cssVars: ["--color-info-600", "--color-info-500"],
+    labelKey: "shell.colorInfo",
+    def: "#06b6d4",
+  },
+  {
+    id: "warning",
+    cssVars: ["--color-warning-600", "--color-warning-500"],
+    labelKey: "shell.colorWarning",
+    def: "#f59e0b",
+  },
+  {
+    id: "danger",
+    cssVars: ["--color-danger-600", "--color-danger-500"],
+    labelKey: "shell.colorDanger",
+    def: "#ef4444",
+  },
 ];
+const LEGACY_SEMANTIC: Record<string, string> = {
+  success: "#00a65a",
+  info: "#00c0ef",
+  warning: "#f39c12",
+  danger: "#dd4b39",
+};
 
 /**
  * Vue theme.other keys that map onto live --adm-* chrome vars.
  * Residual Vue tokens (tag bottom-border merge, light top blue default): see docs/handoff.md.
  */
-type OtherTok = { id: string; cssVar: string; labelKey: string; light: string; dark: string };
+type OtherTok = {
+  id: string;
+  cssVar: string;
+  labelKey: string;
+  light: string;
+  dark: string;
+};
 const OTHER: OtherTok[] = [
-  { id: "side", cssVar: "--adm-side", labelKey: "shell.tokSide", light: "#222e32", dark: "#11181b" },
-  { id: "sub", cssVar: "--adm-sub", labelKey: "shell.tokSub", light: "#2c3b41", dark: "#182226" },
-  { id: "subHover", cssVar: "--adm-sub-hover", labelKey: "shell.tokSubHover", light: "#2c3b41", dark: "#182226" },
-  { id: "activeBg", cssVar: "--adm-active-bg", labelKey: "shell.tokActiveBg", light: "#1e282c", dark: "#0b1113" },
-  { id: "text", cssVar: "--adm-text", labelKey: "shell.tokMenuText", light: "#8aa4af", dark: "#b7b7b7" },
-  { id: "textHover", cssVar: "--adm-text-hover", labelKey: "shell.tokMenuActive", light: "#ffffff", dark: "#ffffff" },
-  { id: "brandStrip", cssVar: "--adm-brand-strip", labelKey: "shell.tokBrand", light: "#367fa9", dark: "#0b1113" },
-  { id: "brandFg", cssVar: "--adm-brand-fg", labelKey: "shell.tokBrandFg", light: "#ffffff", dark: "#b7b7b7" },
-  { id: "topBg", cssVar: "--adm-top-bg", labelKey: "shell.tokTopBg", light: "#ffffff", dark: "#1e2937" },
-  { id: "topFg", cssVar: "--adm-top-fg", labelKey: "shell.tokTopFg", light: "#334155", dark: "#e2e8f0" },
-  { id: "tagBg", cssVar: "--adm-tag-bg", labelKey: "shell.tokTagBg", light: "#f9f9f9", dark: "#1d1e20" },
-  { id: "tagBorder", cssVar: "--adm-tag-border", labelKey: "shell.tokTagBorder", light: "#e4e7ed", dark: "#334155" },
-  { id: "tagItemBorder", cssVar: "--adm-tag-item-border", labelKey: "shell.tokTagItemBorder", light: "#dcdfe6", dark: "#475569" },
-  { id: "tagFg", cssVar: "--adm-tag-fg", labelKey: "shell.tokTagFg", light: "#606266", dark: "#b7b7b7" },
-  { id: "content", cssVar: "--adm-content", labelKey: "shell.tokContent", light: "#f2f3f5", dark: "#1d1e20" },
-  { id: "fg", cssVar: "--adm-fg", labelKey: "shell.tokFg", light: "#606266", dark: "#b7b7b7" },
-  { id: "cardTitleBg", cssVar: "--adm-card-title-bg", labelKey: "shell.tokCardTitleBg", light: "#d9edf7", dark: "#141414" },
-  { id: "cardTitleFg", cssVar: "--adm-card-title-fg", labelKey: "shell.tokCardTitleFg", light: "#367fa9", dark: "#b7b7b7" },
-  { id: "cardBorder", cssVar: "--adm-card-border", labelKey: "shell.tokCardBorder", light: "#bce8f1", dark: "#363637" },
-  { id: "descKey", cssVar: "--adm-desc-key", labelKey: "shell.tokDescKey", light: "#606266", dark: "#a6a6a6" },
-  { id: "descBg", cssVar: "--adm-desc-bg", labelKey: "shell.tokDescBg", light: "#ffffff", dark: "#141414" },
-  { id: "descZebra", cssVar: "--adm-desc-zebra", labelKey: "shell.tokDescZebra", light: "#fafafa", dark: "#1d1d1d" },
-  { id: "descValue", cssVar: "--adm-desc-value", labelKey: "shell.tokDescValue", light: "#303133", dark: "#a6a6a6" },
-  { id: "descLine", cssVar: "--adm-desc-line", labelKey: "shell.tokDescLine", light: "#ebeef5", dark: "#363637" },
-  { id: "dialogTitle", cssVar: "--adm-dialog-title", labelKey: "shell.tokDialogTitle", light: "#303133", dark: "#a6a6a6" },
-  { id: "dialogLine", cssVar: "--adm-dialog-line", labelKey: "shell.tokDialogLine", light: "#ebeef5", dark: "#363637" },
+  {
+    id: "side",
+    cssVar: "--adm-side",
+    labelKey: "shell.tokSide",
+    light: "#020617",
+    dark: "#020617",
+  },
+  {
+    id: "sub",
+    cssVar: "--adm-sub",
+    labelKey: "shell.tokSub",
+    light: "#020617",
+    dark: "#020617",
+  },
+  {
+    id: "subHover",
+    cssVar: "--adm-sub-hover",
+    labelKey: "shell.tokSubHover",
+    light: "#1e293b",
+    dark: "#1e293b",
+  },
+  {
+    id: "activeBg",
+    cssVar: "--adm-active-bg",
+    labelKey: "shell.tokActiveBg",
+    light: "#020617",
+    dark: "#020617",
+  },
+  {
+    id: "text",
+    cssVar: "--adm-text",
+    labelKey: "shell.tokMenuText",
+    light: "#cbd5e1",
+    dark: "#cbd5e1",
+  },
+  {
+    id: "textHover",
+    cssVar: "--adm-text-hover",
+    labelKey: "shell.tokMenuActive",
+    light: "#ffffff",
+    dark: "#ffffff",
+  },
+  {
+    id: "brandStrip",
+    cssVar: "--adm-brand-strip",
+    labelKey: "shell.tokBrand",
+    light: "#0f172a",
+    dark: "#0f172a",
+  },
+  {
+    id: "brandFg",
+    cssVar: "--adm-brand-fg",
+    labelKey: "shell.tokBrandFg",
+    light: "#ffffff",
+    dark: "#ffffff",
+  },
+  {
+    id: "topBg",
+    cssVar: "--adm-top-bg",
+    labelKey: "shell.tokTopBg",
+    light: "#0f172a",
+    dark: "#0f172a",
+  },
+  {
+    id: "topFg",
+    cssVar: "--adm-top-fg",
+    labelKey: "shell.tokTopFg",
+    light: "#ffffff",
+    dark: "#ffffff",
+  },
+  {
+    id: "tagBg",
+    cssVar: "--adm-tag-bg",
+    labelKey: "shell.tokTagBg",
+    light: "#f8fafc",
+    dark: "#0f172a",
+  },
+  {
+    id: "tagBorder",
+    cssVar: "--adm-tag-border",
+    labelKey: "shell.tokTagBorder",
+    light: "#e2e8f0",
+    dark: "#1e293b",
+  },
+  {
+    id: "tagItemBorder",
+    cssVar: "--adm-tag-item-border",
+    labelKey: "shell.tokTagItemBorder",
+    light: "#cbd5e1",
+    dark: "#334155",
+  },
+  {
+    id: "tagFg",
+    cssVar: "--adm-tag-fg",
+    labelKey: "shell.tokTagFg",
+    light: "#334155",
+    dark: "#e2e8f0",
+  },
+  {
+    id: "content",
+    cssVar: "--adm-content",
+    labelKey: "shell.tokContent",
+    light: "#f8fafc",
+    dark: "#0f172a",
+  },
+  {
+    id: "fg",
+    cssVar: "--adm-fg",
+    labelKey: "shell.tokFg",
+    light: "#334155",
+    dark: "#e2e8f0",
+  },
+  {
+    id: "cardTitleBg",
+    cssVar: "--adm-card-title-bg",
+    labelKey: "shell.tokCardTitleBg",
+    light: "#d9edf7",
+    dark: "#0f172a",
+  },
+  {
+    id: "cardTitleFg",
+    cssVar: "--adm-card-title-fg",
+    labelKey: "shell.tokCardTitleFg",
+    light: "#31708f",
+    dark: "#e2e8f0",
+  },
+  {
+    id: "cardBorder",
+    cssVar: "--adm-card-border",
+    labelKey: "shell.tokCardBorder",
+    light: "#bce8f1",
+    dark: "#1e293b",
+  },
+  {
+    id: "descKey",
+    cssVar: "--adm-desc-key",
+    labelKey: "shell.tokDescKey",
+    light: "#334155",
+    dark: "#cbd5e1",
+  },
+  {
+    id: "descBg",
+    cssVar: "--adm-desc-bg",
+    labelKey: "shell.tokDescBg",
+    light: "#ffffff",
+    dark: "#0f172a",
+  },
+  {
+    id: "descZebra",
+    cssVar: "--adm-desc-zebra",
+    labelKey: "shell.tokDescZebra",
+    light: "#f8fafc",
+    dark: "#020617",
+  },
+  {
+    id: "descValue",
+    cssVar: "--adm-desc-value",
+    labelKey: "shell.tokDescValue",
+    light: "#0f172a",
+    dark: "#e2e8f0",
+  },
+  {
+    id: "descLine",
+    cssVar: "--adm-desc-line",
+    labelKey: "shell.tokDescLine",
+    light: "#e2e8f0",
+    dark: "#1e293b",
+  },
+  {
+    id: "dialogTitle",
+    cssVar: "--adm-dialog-title",
+    labelKey: "shell.tokDialogTitle",
+    light: "#0f172a",
+    dark: "#e2e8f0",
+  },
+  {
+    id: "dialogLine",
+    cssVar: "--adm-dialog-line",
+    labelKey: "shell.tokDialogLine",
+    light: "#e2e8f0",
+    dark: "#1e293b",
+  },
 ];
+const LEGACY_SIDE = new Set(["#222e32", "#222d32"]);
+/** Previous panel-header defaults; ignore so the AdminLTE info bar can show. */
+const SUPERSEDED_OTHER: Record<string, string> = {
+  cardTitleBg: "#f0fdfa",
+  cardTitleFg: "#0f766e",
+  cardBorder: "#99f6e4",
+  content: "#020617",
+};
 
 /** Vue length tokens (menu item height / radius) — not colors. */
 type SizeTok = { id: string; cssVar: string; labelKey: string; def: string };
 const SIZES: SizeTok[] = [
-  { id: "menuItemH", cssVar: "--adm-menu-item-h", labelKey: "shell.tokMenuItemH", def: "45px" },
-  { id: "menuSubH", cssVar: "--adm-menu-sub-h", labelKey: "shell.tokMenuSubH", def: "30px" },
-  { id: "radius", cssVar: "--adm-radius", labelKey: "shell.tokRadius", def: "5px" },
+  {
+    id: "menuItemH",
+    cssVar: "--adm-menu-item-h",
+    labelKey: "shell.tokMenuItemH",
+    def: "45px",
+  },
+  {
+    id: "menuSubH",
+    cssVar: "--adm-menu-sub-h",
+    labelKey: "shell.tokMenuSubH",
+    def: "30px",
+  },
+  {
+    id: "radius",
+    cssVar: "--adm-radius",
+    labelKey: "shell.tokRadius",
+    def: "5px",
+  },
 ];
 const SIZE_KEY = "dweb-admin-theme-sizes";
 
@@ -86,7 +305,17 @@ const semanticValues = createSignal<Record<string, string>>({});
 const sizeValues = createSignal<Record<string, string>>({});
 
 function rootEl() {
-  return (globalThis as { document?: { documentElement?: { style: { setProperty: (k: string, v: string) => void }; classList: { contains: (c: string) => boolean } } } }).document?.documentElement;
+  return (globalThis as {
+    document?: {
+      documentElement?: {
+        style: {
+          setProperty: (k: string, v: string) => void;
+          removeProperty: (k: string) => void;
+        };
+        classList: { contains: (c: string) => boolean };
+      };
+    };
+  }).document?.documentElement;
 }
 
 function isDark(): boolean {
@@ -99,7 +328,8 @@ function isDark(): boolean {
 
 function readJson(key: string): Record<string, string> {
   try {
-    const raw = (globalThis as { localStorage?: Storage }).localStorage?.getItem(key);
+    const raw = (globalThis as { localStorage?: Storage }).localStorage
+      ?.getItem(key);
     if (!raw) return {};
     const o = JSON.parse(raw) as Record<string, string>;
     return o && typeof o === "object" ? o : {};
@@ -110,33 +340,30 @@ function readJson(key: string): Record<string, string> {
 
 function writeJson(key: string, o: Record<string, string>): void {
   try {
-    (globalThis as { localStorage?: Storage }).localStorage?.setItem(key, JSON.stringify(o));
+    (globalThis as { localStorage?: Storage }).localStorage?.setItem(
+      key,
+      JSON.stringify(o),
+    );
   } catch { /* ignore */ }
 }
 
-export function readBreadcrumbPref(): boolean {
+function storedPrimary(): string | null {
   try {
     const ls = (globalThis as { localStorage?: Storage }).localStorage;
-    if (!ls) return true;
-    const v = ls.getItem(BREADCRUMB_KEY);
-    if (v === "0") return false;
-    if (v === "1") return true;
-  } catch { /* ignore */ }
-  return true;
-}
-
-function persistBreadcrumb(on: boolean): void {
-  try {
-    (globalThis as { localStorage?: Storage }).localStorage?.setItem(BREADCRUMB_KEY, on ? "1" : "0");
-  } catch { /* ignore */ }
+    const v = ls?.getItem(PRIMARY_KEY);
+    if (!v || !/^#[0-9a-fA-F]{6}$/.test(v)) return null;
+    if (v.toLowerCase() === LEGACY_PRIMARY) {
+      ls?.removeItem(PRIMARY_KEY);
+      return null;
+    }
+    return v;
+  } catch {
+    return null;
+  }
 }
 
 export function readPrimaryPref(): string {
-  try {
-    const v = (globalThis as { localStorage?: Storage }).localStorage?.getItem(PRIMARY_KEY);
-    if (v && /^#[0-9a-fA-F]{6}$/.test(v)) return v;
-  } catch { /* ignore */ }
-  return "#3c8dbc";
+  return storedPrimary() ?? DEFAULT_PRIMARY;
 }
 
 export function applyPrimaryColor(hex: string): void {
@@ -151,7 +378,10 @@ export function applyPrimaryColor(hex: string): void {
       root.style.setProperty("--adm-accent", hex);
       root.style.setProperty("--adm-tag-on-fg", hex);
     }
-    (globalThis as { localStorage?: Storage }).localStorage?.setItem(PRIMARY_KEY, hex);
+    (globalThis as { localStorage?: Storage }).localStorage?.setItem(
+      PRIMARY_KEY,
+      hex,
+    );
   } catch { /* ignore */ }
 }
 
@@ -186,36 +416,66 @@ function applySemantic(id: string, hex: string): void {
   writeJson(SEMANTIC_KEY, next);
   try {
     const root = rootEl();
-    if (root) for (const v of tok.cssVars) root.style.setProperty(v, hex);
+    if (root) { for (const v of tok.cssVars) root.style.setProperty(v, hex); }
   } catch { /* ignore */ }
 }
 
 function initOtherAndSemantic(): void {
-  const savedOther = readJson(OTHER_KEY);
+  let savedOther = readJson(OTHER_KEY);
+  if (LEGACY_SIDE.has(String(savedOther.side ?? "").toLowerCase())) {
+    savedOther = {};
+    try {
+      (globalThis as { localStorage?: Storage }).localStorage?.removeItem(
+        OTHER_KEY,
+      );
+    } catch { /* ignore */ }
+  }
   const savedSem = readJson(SEMANTIC_KEY);
   const dark = isDark();
   const o: Record<string, string> = {};
   for (const t of OTHER) {
-    const hex = savedOther[t.id] && /^#[0-9a-fA-F]{6}$/.test(savedOther[t.id])
-      ? savedOther[t.id]
-      : (dark ? t.dark : t.light);
-    o[t.id] = hex;
+    const rawSaved = savedOther[t.id];
+    const stale = SUPERSEDED_OTHER[t.id];
+    const saved = stale && String(rawSaved ?? "").toLowerCase() === stale
+      ? undefined
+      : rawSaved;
+    const custom = !!saved && /^#[0-9a-fA-F]{6}$/.test(saved);
+    o[t.id] = custom ? saved : (dark ? t.dark : t.light);
     try {
-      rootEl()?.style.setProperty(t.cssVar, hex);
+      const root = rootEl();
+      if (!root) continue;
+      if (custom) root.style.setProperty(t.cssVar, saved);
+      else root.style.removeProperty(t.cssVar);
     } catch { /* ignore */ }
   }
   otherValues.value = o;
   const s: Record<string, string> = {};
+  let semDirty = false;
+  const nextSem = { ...savedSem };
   for (const t of SEMANTIC) {
-    const hex = savedSem[t.id] && /^#[0-9a-fA-F]{6}$/.test(savedSem[t.id])
-      ? savedSem[t.id]
-      : t.def;
+    const raw = savedSem[t.id];
+    const legacy = LEGACY_SEMANTIC[t.id];
+    const custom = raw && /^#[0-9a-fA-F]{6}$/.test(raw) &&
+      raw.toLowerCase() !== legacy;
+    const hex = custom ? raw : t.def;
     s[t.id] = hex;
-    try {
-      const root = rootEl();
-      if (root) for (const v of t.cssVars) root.style.setProperty(v, hex);
-    } catch { /* ignore */ }
+    if (custom) {
+      try {
+        const root = rootEl();
+        if (root) { for (const v of t.cssVars) root.style.setProperty(v, hex); }
+      } catch { /* ignore */ }
+    } else {
+      try {
+        const root = rootEl();
+        if (root) { for (const v of t.cssVars) root.style.removeProperty(v); }
+      } catch { /* ignore */ }
+      if (raw) {
+        delete nextSem[t.id];
+        semDirty = true;
+      }
+    }
   }
+  if (semDirty) writeJson(SEMANTIC_KEY, nextSem);
   semanticValues.value = s;
   const savedSize = readJson(SIZE_KEY);
   const sz: Record<string, string> = {};
@@ -233,11 +493,15 @@ function initOtherAndSemantic(): void {
 
 /** Call once from layout onMount so color applies even if drawer never opens. */
 export function initPrimaryColor(): void {
-  applyPrimaryColor(readPrimaryPref());
+  const stored = storedPrimary();
+  primaryColor.value = stored ?? DEFAULT_PRIMARY;
+  if (stored) applyPrimaryColor(stored);
   initOtherAndSemantic();
 }
 
-function ColorRow(props: { label: string; hex: string; onPick: (hex: string) => void }) {
+function ColorRow(
+  props: { label: string; hex: string; onPick: (hex: string) => void },
+) {
   return (
     <label class="flex items-center justify-between gap-3 text-sm">
       <span class="min-w-0 flex-1 truncate">{props.label}</span>
@@ -250,15 +514,21 @@ function ColorRow(props: { label: string; hex: string; onPick: (hex: string) => 
           if (v) props.onPick(v);
         }}
       />
-      <span class="w-16 shrink-0 font-mono text-xs text-slate-500">{props.hex}</span>
+      <span class="w-16 shrink-0 font-mono text-xs text-slate-500">
+        {props.hex}
+      </span>
     </label>
   );
 }
 
-function SizeRow(props: { label: string; value: string; onCommit: (v: string) => void }) {
+function SizeRow(
+  props: { label: string; value: string; onCommit: (v: string) => void },
+) {
   return (
     <label class="flex items-center justify-between gap-3 text-sm">
-      <span class="min-w-0 flex-1 truncate text-slate-600 dark:text-slate-300">{props.label}</span>
+      <span class="min-w-0 flex-1 truncate text-slate-600 dark:text-slate-300">
+        {props.label}
+      </span>
       <input
         type="text"
         value={props.value}
@@ -275,7 +545,6 @@ function SizeRow(props: { label: string; value: string; onCommit: (v: string) =>
 export function SettingsDrawer(props: { locale: Locale }) {
   const tr = createT(props.locale);
   onMount(() => {
-    breadcrumbOn.value = readBreadcrumbPref();
     initPrimaryColor();
   });
 
@@ -290,21 +559,11 @@ export function SettingsDrawer(props: { locale: Locale }) {
       }}
     >
       <div class="flex flex-col gap-5 p-1" data-testid="settings-drawer">
-        <label class="flex items-center justify-between gap-3 text-sm">
-          <span>{tr("shell.breadcrumb")}</span>
-          <Switch
-            checked={breadcrumbOn}
-            onChange={(e: Event) => {
-              const v = (e.target as unknown as { checked: boolean }).checked;
-              breadcrumbOn.value = v;
-              persistBreadcrumb(v);
-            }}
-          />
-        </label>
-
         <div class="flex flex-col gap-2">
           <div class="text-sm font-medium">{tr("shell.primaryColor")}</div>
-          <div class="text-xs text-slate-500 dark:text-slate-400">{tr("shell.primaryPresets")}</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400">
+            {tr("shell.primaryPresets")}
+          </div>
           <div class="flex flex-wrap gap-2">
             {PRESETS.map((hex) => (
               <button
@@ -313,7 +572,9 @@ export function SettingsDrawer(props: { locale: Locale }) {
                 class="h-7 w-7 rounded-full border-2 border-white shadow ring-1 ring-slate-200 dark:border-slate-800 dark:ring-slate-600"
                 style={{
                   backgroundColor: hex,
-                  outline: primaryColor.value === hex ? `2px solid ${hex}` : undefined,
+                  outline: primaryColor.value === hex
+                    ? `2px solid ${hex}`
+                    : undefined,
                   outlineOffset: "2px",
                 }}
                 onClick={() => applyPrimaryColor(hex)}
@@ -335,7 +596,9 @@ export function SettingsDrawer(props: { locale: Locale }) {
 
         <div class="flex flex-col gap-2">
           <div class="text-sm font-medium">{tr("shell.semanticTitle")}</div>
-          <div class="text-xs text-slate-500 dark:text-slate-400">{tr("shell.semanticHint")}</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400">
+            {tr("shell.semanticHint")}
+          </div>
           {() =>
             SEMANTIC.map((t) => (
               <ColorRow
@@ -348,7 +611,9 @@ export function SettingsDrawer(props: { locale: Locale }) {
 
         <div class="flex flex-col gap-2">
           <div class="text-sm font-medium">{tr("shell.otherTitle")}</div>
-          <div class="text-xs text-slate-500 dark:text-slate-400">{tr("shell.otherHint")}</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400">
+            {tr("shell.otherHint")}
+          </div>
           {() =>
             OTHER.map((t) => (
               <ColorRow
@@ -361,7 +626,9 @@ export function SettingsDrawer(props: { locale: Locale }) {
 
         <div class="flex flex-col gap-2">
           <div class="text-sm font-medium">{tr("shell.sizeTitle")}</div>
-          <div class="text-xs text-slate-500 dark:text-slate-400">{tr("shell.sizeHint")}</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400">
+            {tr("shell.sizeHint")}
+          </div>
           {() =>
             SIZES.map((t) => (
               <SizeRow
@@ -372,8 +639,12 @@ export function SettingsDrawer(props: { locale: Locale }) {
             ))}
         </div>
 
-        <p class="m-0 text-xs text-slate-500 dark:text-slate-400">{tr("shell.settingsHint")}</p>
-        <p class="m-0 text-xs text-slate-400 dark:text-slate-500">{tr("shell.otherGap")}</p>
+        <p class="m-0 text-xs text-slate-500 dark:text-slate-400">
+          {tr("shell.settingsHint")}
+        </p>
+        <p class="m-0 text-xs text-slate-400 dark:text-slate-500">
+          {tr("shell.otherGap")}
+        </p>
       </div>
     </Drawer>
   );

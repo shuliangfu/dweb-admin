@@ -13,6 +13,7 @@ import {
   Menu,
   type MenuDocument,
   routeKey,
+  SiteSetting,
 } from "@common/model/mod.ts";
 import { getEnv } from "@common/utils/env.ts";
 import { hashPassword } from "@common/service/password.ts";
@@ -293,7 +294,12 @@ export async function seedAll(): Promise<void> {
     AuthRoute.createIndexes(),
     Menu.createIndexes(),
     AdminSession.createIndexes(),
+    SiteSetting.createIndexes(),
   ]);
+
+  if (!await SiteSetting.findOne({ key: "base" })) {
+    await SiteSetting.create({ key: "base", website: "Dweb 管理后台", shortName: "DWEB" });
+  }
 
   for (const i of ITEMS) {
     if (!await AuthItem.findOne({ name: i.name })) await AuthItem.create({ ...i, isSuper: !!i.isSuper });

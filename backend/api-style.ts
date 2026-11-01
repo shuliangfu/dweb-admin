@@ -10,9 +10,9 @@
  * `GET` / `POST` / `PUT` / `DELETE` / `PATCH` aliases.
  *
  * ```ts
- * export async function login(ctx: ApiContext) { /* … */ }
- * export function index(ctx: ApiContext) { /* … */ }
- * export async function create(ctx: ApiContext) { /* … */ }
+ * export async function login(ctx: ApiContext) { ... }
+ * export function index(ctx: ApiContext) { ... }
+ * export async function create(ctx: ApiContext) { ... }
  * ```
  *
  * ## URL matching (@dreamer/server@1.2.2 + router@1.2.1 via dweb@3.7.6)

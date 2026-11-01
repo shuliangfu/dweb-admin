@@ -1,7 +1,8 @@
 /**
  * Left sidebar. Tree from DB (common/service/menu.ts), RBAC-filtered + localized.
  * Aligns with Vue Side/Item: icon + title, collapse centers icon, unique-opened groups,
- * mobile click closes drawer. Leaf icons resolve via icon field or ICON_BY_KEY (not fake m-icon set).
+ * mobile click closes drawer. Top-level icons resolve via icon field or ICON_BY_KEY.
+ * Second-level items always use the star icon.
  */
 import {
   IconBookOpen,
@@ -70,7 +71,7 @@ const ICONS: Record<string, IconComp> = {
   filetext: IconFileText,
 };
 
-/** Prefer DB icon; when icon is blank/"star", fall back by menu key (Vue m-icon subset). */
+/** Top-level groups only. Second-level items always render IconStar. */
 const ICON_BY_KEY: Record<string, string> = {
   dashboard: "home",
   workspace: "grid",
@@ -79,26 +80,6 @@ const ICON_BY_KEY: Record<string, string> = {
   user: "users",
   cms: "book",
   developer: "database",
-  "system.region": "compass",
-  "system.base": "sliders",
-  "system.datetime": "clock",
-  "user.index": "users",
-  "user.active": "user",
-  "user.zombie": "user",
-  "developer.menus": "menu",
-  "developer.database": "database",
-  "developer.language": "globe",
-  "developer.feedback": "message",
-  "developer.system": "server",
-  "cms.article": "file",
-  "cms.news": "newspaper",
-  "cms.notice": "file",
-  "cms.photo": "image",
-  "rbac.admins": "usercog",
-  "rbac.assign": "key",
-  "rbac.roles": "shieldcheck",
-  "rbac.permissions": "lock",
-  "rbac.routes": "list",
 };
 
 function resolveIconName(node: MenuNode): string {
@@ -127,11 +108,20 @@ function onNavClick(): void {
 
 /** Vue el-menu unique-opened: opening one group closes siblings. */
 function onGroupToggle(e: Event): void {
-  const el = e.currentTarget as unknown as { open?: boolean; closest?: (s: string) => { querySelectorAll: (s: string) => { open: boolean }[] } | null };
+  const el = e.currentTarget as unknown as {
+    open?: boolean;
+    closest?: (
+      s: string,
+    ) => { querySelectorAll: (s: string) => { open: boolean }[] } | null;
+  };
   if (!el?.open || !el.closest) return;
   const nav = el.closest("nav.adm-menu");
   if (!nav) return;
-  for (const d of nav.querySelectorAll("details.adm-menu-group") as unknown as { open: boolean }[]) {
+  for (
+    const d of nav.querySelectorAll("details.adm-menu-group") as unknown as {
+      open: boolean;
+    }[]
+  ) {
     if (d !== el) d.open = false;
   }
 }
@@ -153,7 +143,9 @@ export function SideMenu(props: { tree: MenuNode[]; pathname: string }) {
                 <Link
                   href={node.path}
                   title={node.title}
-                  class={`${topBase} ${isActive(props.pathname, node.path) ? "adm-on" : ""}`}
+                  class={`${topBase} ${
+                    isActive(props.pathname, node.path) ? "adm-on" : ""
+                  }`}
                   onClick={onNavClick}
                 >
                   <Icon name={iconName} />
@@ -162,16 +154,24 @@ export function SideMenu(props: { tree: MenuNode[]; pathname: string }) {
               </li>
             );
           }
-          const open = node.children.some((c) => isActive(props.pathname, c.path));
+          const open = node.children.some((c) =>
+            isActive(props.pathname, c.path)
+          );
           return (
             <li key={node.key}>
-              <details class="adm-menu-group group/nav" open={open} onToggle={onGroupToggle}>
+              <details
+                class="adm-menu-group group/nav"
+                open={open}
+                onToggle={onGroupToggle}
+              >
                 <summary
                   class={`${topBase} cursor-pointer list-none select-none`}
                   title={node.title}
                 >
                   <Icon name={iconName} />
-                  <span class="adm-label min-w-0 flex-1 truncate">{node.title}</span>
+                  <span class="adm-label min-w-0 flex-1 truncate">
+                    {node.title}
+                  </span>
                   <IconChevronRight
                     size="xs"
                     class="adm-label adm-chevron shrink-0 opacity-70 transition-transform group-open/nav:rotate-90"
@@ -183,10 +183,12 @@ export function SideMenu(props: { tree: MenuNode[]; pathname: string }) {
                       <Link
                         href={child.path}
                         title={child.title}
-                        class={`${subBase} ${isActive(props.pathname, child.path) ? "adm-on" : ""}`}
+                        class={`${subBase} ${
+                          isActive(props.pathname, child.path) ? "adm-on" : ""
+                        }`}
                         onClick={onNavClick}
                       >
-                        <Icon name={resolveIconName(child)} />
+                        <Icon name="star" />
                         <span class="truncate">{child.title}</span>
                       </Link>
                     </li>

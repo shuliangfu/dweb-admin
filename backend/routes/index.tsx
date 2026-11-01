@@ -52,8 +52,8 @@ const lineData = {
     {
       label: "visits",
       data: [12, 19, 8, 15, 22, 18, 25],
-      borderColor: "#3c8dbc",
-      backgroundColor: "rgba(60,141,188,0.2)",
+      borderColor: "#14b8a6",
+      backgroundColor: "rgba(20,184,166,0.2)",
       tension: 0.3,
       fill: true,
     },
@@ -66,7 +66,7 @@ const barData = {
     {
       label: "income",
       data: [40, 55, 48, 70, 62, 80],
-      backgroundColor: "#00a65a",
+      backgroundColor: "#22c55e",
     },
   ],
 };
@@ -76,7 +76,7 @@ const doughnutData = {
   datasets: [
     {
       data: [62, 24, 14],
-      backgroundColor: ["#3c8dbc", "#00c0ef", "#dd4b39"],
+      backgroundColor: ["#14b8a6", "#06b6d4", "#ef4444"],
     },
   ],
 };

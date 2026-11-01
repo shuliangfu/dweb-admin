@@ -3,7 +3,7 @@ import { createSignal } from "@dreamer/view";
 import { Button, FormItem, Input, Modal, Select, Switch, Table, Tag } from "@dreamer/ui-view";
 import { createT, type Locale, pickLocalized } from "@common/i18n/mod.ts";
 import { api, ConfirmDelete, reload, toastResult } from "@backend/components/crud-kit.tsx";
-import { DataPanel, type DataPanelChildrenCtx } from "@common/components/DataPanel.tsx";
+import { DataPanel, RowActions, type DataPanelChildrenCtx } from "@common/components/DataPanel.tsx";
 
 export interface MenuRow {
   key: string;
@@ -97,6 +97,9 @@ export function MenusAdmin(props: { locale: Locale; rows: MenuRow[]; keyword?: s
           search: tr("panel.search"),
           soon: tr("panel.soon"),
           resetColumns: tr("panel.resetColumns"),
+          create: tr("panel.create"),
+          refresh: tr("panel.refresh"),
+          range: tr("panel.range"),
           csv: "CSV",
         }}
         searchSchemas={[
@@ -151,19 +154,15 @@ export function MenusAdmin(props: { locale: Locale; rows: MenuRow[]; keyword?: s
             key: "actions",
             title: tr("common.actions"),
             render: (_v: unknown, r: MenuRow) => (
-              <div class="flex items-center gap-2">
-                <Button type="button" size="sm" onClick={() => openForm(r)}>{tr("crud.edit")}</Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="danger"
-                  onClick={() => {
-                    deleting.value = r.key;
-                  }}
-                >
-                  {tr("crud.delete")}
-                </Button>
-              </div>
+              <RowActions
+                updateLabel={tr("crud.edit")}
+                deleteLabel={tr("crud.delete")}
+                confirmDelete={false}
+                onUpdate={() => openForm(r)}
+                onDelete={() => {
+                  deleting.value = r.key;
+                }}
+              />
             ),
           },
                   ] as never))}

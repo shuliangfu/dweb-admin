@@ -1,19 +1,19 @@
 /**
- * Sidebar logo strip — Vue Side.vue title row (icon + app name).
+ * Sidebar title row — site name, or the short label when the rail is collapsed.
  */
 import { Link } from "@dreamer/ui-view";
 
 export function SideBrand(props: { name: string; short: string }) {
+  const mark = [...props.name.trim()][0]?.toUpperCase() || "D";
   return (
     <Link
       href="/"
       data-testid="side-brand"
-      class="adm-side-brand flex h-adm-top shrink-0 items-center justify-center gap-2 px-3 no-underline"
+      class="adm-side-brand flex h-adm-top w-full shrink-0 items-center justify-center px-3 no-underline"
       title={props.name}
     >
-      <img src="/assets/favicon.svg" alt="" class="h-10 w-10 shrink-0" width="40" height="40" />
-      <span class="adm-label truncate text-base font-bold tracking-tight">{props.name}</span>
-      <span class="adm-short hidden text-base font-bold">{props.short.slice(0, 1).toUpperCase()}</span>
+      <span class="adm-label w-full truncate text-center text-base font-bold tracking-tight">{props.name}</span>
+      <span class="adm-short hidden w-full text-center text-[1.75rem] font-bold leading-none">{mark}</span>
     </Link>
   );
 }

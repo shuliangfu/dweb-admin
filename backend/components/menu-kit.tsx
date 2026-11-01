@@ -2,7 +2,7 @@
 export const itemCls =
   "flex w-full min-w-37.5 cursor-pointer items-center gap-2 rounded-md border-0 bg-transparent px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700";
 
-/** Trigger on light TopHeader (Vue header-t), not the old AdminLTE blue bar. */
+/** Trigger on the slate header. Header CSS forces --adm-top-fg over these utilities. */
 export const triggerCls =
   "inline-flex items-center gap-1.5 rounded px-2 py-1.5 text-sm text-slate-600 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700";
 

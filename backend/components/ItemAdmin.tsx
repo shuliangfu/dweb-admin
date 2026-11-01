@@ -8,7 +8,7 @@ import { createSignal } from "@dreamer/view";
 import { Button, Descriptions, FormItem, Input, Modal, Table, Tag, Transfer } from "@dreamer/ui-view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { api, ConfirmDelete, reload, toastResult } from "@backend/components/crud-kit.tsx";
-import { DataPanel, type DataPanelChildrenCtx } from "@common/components/DataPanel.tsx";
+import { DataPanel, RowActions, type DataPanelChildrenCtx } from "@common/components/DataPanel.tsx";
 
 export interface ItemRow {
   name: string;
@@ -236,6 +236,9 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
           search: tr("panel.search"),
           soon: tr("panel.soon"),
           resetColumns: tr("panel.resetColumns"),
+          create: tr("panel.create"),
+          refresh: tr("panel.refresh"),
+          range: tr("panel.range"),
           csv: "CSV",
           excel: "Excel",
           xml: "XML",
@@ -301,21 +304,18 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
             key: "actions",
             title: tr("common.actions"),
             render: (_v: unknown, r: ItemRow) => (
-              <div class="flex items-center gap-2">
-                <Button type="button" size="sm" onClick={() => openDetail(r.name, "view")}>{tr("rbac.view")}</Button>
-                <Button type="button" size="sm" onClick={() => openDetail(r.name, "edit")}>{tr("crud.edit")}</Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="danger"
-                  disabled={r.isSuper}
-                  onClick={() => {
-                    deleting.value = r.name;
-                  }}
-                >
-                  {tr("crud.delete")}
-                </Button>
-              </div>
+              <RowActions
+                viewLabel={tr("rbac.view")}
+                updateLabel={tr("crud.edit")}
+                deleteLabel={tr("crud.delete")}
+                confirmDelete={false}
+                deleteDisabled={r.isSuper}
+                onView={() => openDetail(r.name, "view")}
+                onUpdate={() => openDetail(r.name, "edit")}
+                onDelete={() => {
+                  deleting.value = r.name;
+                }}
+              />
             ),
           },
                   ] as never))}

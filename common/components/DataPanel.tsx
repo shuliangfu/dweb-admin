@@ -9,17 +9,27 @@
 import { createSignal, type JSXRenderable } from "@dreamer/view";
 import {
   Button,
+  ButtonGroup,
   Card,
   Checkbox,
   Dropdown,
+  IconCode,
   IconColumns,
   IconDownload,
+  IconEdit,
+  IconEye,
+  IconFile,
+  IconFileText,
+  IconList,
   IconPlus,
   IconPrinter,
   IconRefresh,
   IconSearch,
+  IconTrash,
   IconUpload,
   Input,
+  Modal,
+  Popconfirm,
   Table,
   Tooltip,
   message,
@@ -46,12 +56,20 @@ export type DataPanelColumn<T = unknown> = {
   render?: (value: unknown, record: T, index: number) => unknown;
 };
 
-/** Vue FormSearch-style field (GET query). */
+/** Fields for the create modal (Vue ModalForm). */
+export type DataPanelFormField = {
+  name: string;
+  label: string;
+  placeholder?: string;
+  type?: "text" | "select" | "date";
+  options?: { value: string; label: string }[];
+  required?: boolean;
+};
 export type DataPanelSearchField = {
   name: string;
   label?: string;
   placeholder?: string;
-  type?: "text" | "select";
+  type?: "text" | "select" | "date";
   options?: { value: string; label: string }[];
   defaultValue?: string;
 };
@@ -71,7 +89,10 @@ export type DataPanelProps<T extends Record<string, unknown> = Record<string, un
   title: string;
   info?: string;
   tools?: DataPanelTools;
-  actions?: { view?: boolean; update?: boolean; delete?: boolean };
+  actions?: { view?: boolean; update?: boolean; delete?: boolean; download?: boolean };
+  /** Vue `table.tabs` — segmented control on the left of the tool group. */
+  tabs?: { label: string; value: string }[];
+  onTabChange?: (value: string) => void;
   columns?: DataPanelColumn<T>[];
   rows?: T[];
   rowKey?: string;
@@ -79,6 +100,12 @@ export type DataPanelProps<T extends Record<string, unknown> = Record<string, un
   exportFilename?: string;
   searchSlot?: unknown;
   searchSchemas?: DataPanelSearchField[];
+  /** Create-modal fields. When omitted and `onCreate` is absent, columns are used. */
+  formSchemas?: DataPanelFormField[];
+  formTitle?: string;
+  /** Header-right count, e.g. 第1-20条，共208条数据. */
+  summary?: string;
+  total?: number;
   searchLabels?: { open?: string; submit?: string; reset?: string };
   toolbarExtra?: unknown;
   /**
@@ -87,12 +114,24 @@ export type DataPanelProps<T extends Record<string, unknown> = Record<string, un
    */
   children?: unknown | ((ctx: DataPanelChildrenCtx) => unknown);
   onCreate?: () => void;
+  /** Called when the built-in create modal is submitted. No save when omitted. */
+  onFormSubmit?: (data: Record<string, string>) => void;
   /** Row action handlers (Vue CardPanel table.onView / onUpdate / onDelete). */
   onView?: (row: T) => void;
   onUpdate?: (row: T) => void;
   onDelete?: (row: T) => void;
+  onDownload?: (row: T) => void;
   /** Labels for built-in action column buttons. */
-  actionLabels?: { view?: string; update?: string; delete?: string; column?: string };
+  actionLabels?: {
+    view?: string;
+    update?: string;
+    delete?: string;
+    download?: string;
+    column?: string;
+    confirmDelete?: string;
+    ok?: string;
+    cancel?: string;
+  };
   onRefresh?: () => void;
   onExport?: (format?: DataPanelExportFormat) => void;
   onImport?: () => void;
@@ -109,6 +148,9 @@ export type DataPanelProps<T extends Record<string, unknown> = Record<string, un
       | "column"
       | "soon"
       | "search"
+      | "create"
+      | "refresh"
+      | "range"
       | "resetColumns"
       | "csv"
       | "json"
@@ -384,10 +426,109 @@ function toolBtn(
 ): JSXRenderable {
   return (
     <Tooltip content={label} placement="top">
-      <Button type="button" size="sm" aria-label={label} onClick={onClick}>
+      <Button type="button" size="sm" class="px-2.5" aria-label={label} onClick={onClick}>
         {icon}
       </Button>
     </Tooltip>
+  );
+}
+
+export type RowActionsProps = {
+  viewLabel?: string;
+  updateLabel?: string;
+  deleteLabel?: string;
+  downloadLabel?: string;
+  /** When true (default), delete asks with Popconfirm before `onDelete`. */
+  confirmDelete?: boolean;
+  confirmTitle?: string;
+  okText?: string;
+  cancelText?: string;
+  onView?: () => void;
+  onUpdate?: () => void;
+  onDelete?: () => void;
+  onDownload?: () => void;
+  viewDisabled?: boolean;
+  updateDisabled?: boolean;
+  deleteDisabled?: boolean;
+};
+
+const iconLinkCls =
+  "!bg-transparent !border-0 !shadow-none hover:!bg-transparent px-1 py-1 text-slate-300 hover:text-white";
+const iconDangerCls =
+  "!bg-transparent !border-0 !shadow-none hover:!bg-transparent px-1 py-1 !text-red-400 hover:!text-red-300";
+
+function iconAct(
+  label: string,
+  icon: unknown,
+  onClick: () => void,
+  tone: "link" | "danger" = "link",
+  disabled = false,
+): JSXRenderable {
+  return (
+    <Tooltip content={label} placement="top">
+      <Button
+        type="button"
+        size="sm"
+        variant="ghost"
+        class={tone === "danger" ? iconDangerCls : iconLinkCls}
+        disabled={disabled}
+        aria-label={label}
+        onClick={onClick}
+      >
+        {icon}
+      </Button>
+    </Tooltip>
+  );
+}
+
+/** Vue row actions: icon-only link buttons (no filled background). */
+export function RowActions(props: RowActionsProps): JSXRenderable {
+  const open = createSignal(false);
+  const ask = props.confirmDelete !== false && !!props.onDelete;
+  return (
+    <span class="inline-flex items-center gap-1">
+      {props.onView &&
+        iconAct(props.viewLabel ?? "View", <IconEye size="xs" />, props.onView, "link", props.viewDisabled)}
+      {props.onUpdate &&
+        iconAct(props.updateLabel ?? "Edit", <IconEdit size="xs" />, props.onUpdate, "link", props.updateDisabled)}
+      {props.onDownload &&
+        iconAct(props.downloadLabel ?? "Download", <IconDownload size="xs" />, props.onDownload)}
+      {props.onDelete && (ask
+        ? (
+          <Popconfirm
+            open={open}
+            title={props.confirmTitle ?? "你确定要删除吗？"}
+            danger
+            okText={props.okText}
+            cancelText={props.cancelText}
+            onOpenChange={(v) => {
+              open.value = v;
+            }}
+            onConfirm={() => props.onDelete?.()}
+          >
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              class={iconDangerCls}
+              disabled={props.deleteDisabled}
+              aria-label={props.deleteLabel ?? "Delete"}
+              onClick={() => {
+                open.value = true;
+              }}
+            >
+              <IconTrash size="xs" />
+            </Button>
+          </Popconfirm>
+        )
+        : iconAct(
+          props.deleteLabel ?? "Delete",
+          <IconTrash size="xs" />,
+          props.onDelete,
+          "danger",
+          props.deleteDisabled,
+        ))}
+    </span>
   );
 }
 
@@ -406,9 +547,11 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
   const baseName = props.exportFilename ?? "export";
 
   const showSearch = createSignal(false);
+  const formOpen = createSignal(false);
   const hiddenCols = createSignal<Record<string, boolean>>(
     Object.fromEntries(columns.filter((c) => c.hidden).map((c) => [c.prop, true])),
   );
+  const tab = createSignal(props.tabs?.[0]?.value ?? "");
 
   const soon = () => message.info(labels.soon ?? "Coming soon");
 
@@ -515,18 +658,19 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
     <div class="flex min-w-32 flex-col gap-0.5 p-1" data-testid="data-panel-export-menu">
       {(
         [
-          ["csv", labels.csv ?? "CSV"],
-          ["excel", labels.excel ?? "Excel"],
-          ["json", labels.json ?? "JSON"],
-          ["xml", labels.xml ?? "XML"],
-          ["html", labels.html ?? "HTML"],
+          ["csv", labels.csv ?? "CSV", <IconFileText size="xs" />],
+          ["excel", labels.excel ?? "Excel", <IconFile size="xs" />],
+          ["json", labels.json ?? "JSON", <IconCode size="xs" />],
+          ["xml", labels.xml ?? "XML", <IconCode size="xs" />],
+          ["html", labels.html ?? "HTML", <IconFileText size="xs" />],
         ] as const
-      ).map(([fmt, label]) => (
+      ).map(([fmt, label, icon]) => (
         <button
           type="button"
-          class="rounded px-2 py-1.5 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800"
+          class="flex items-center gap-2 rounded px-2 py-1.5 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800"
           onClick={() => doExport(fmt)}
         >
+          {icon}
           {label}
         </button>
       ))}
@@ -546,9 +690,18 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
             checked={!(h[c.prop] ?? false)}
             onChange={() => toggleColumn(c.prop)}
           >
-            {c.label}
+            {c.prop === "actions" ? (props.actionLabels?.column ?? c.label) : c.label}
           </Checkbox>
         ))}
+        {!defs.some((c) => c.prop === "actions") &&
+          !!(props.actions?.view || props.actions?.update || props.actions?.delete || props.actions?.download) && (
+          <Checkbox
+            checked={!(h.actions ?? false)}
+            onChange={() => toggleColumn("actions")}
+          >
+            {props.actionLabels?.column ?? "Actions"}
+          </Checkbox>
+        )}
         <button
           type="button"
           class="mt-1 rounded border-t border-slate-200 px-1 pt-2 text-left text-xs text-slate-500 hover:text-slate-800 dark:border-slate-700 dark:hover:text-slate-200"
@@ -560,90 +713,156 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
     );
   };
 
-  const toolbar = (
-    <div class="dp-toolbar flex flex-wrap items-center justify-end gap-1" data-testid="data-panel-toolbar">
+  const toolGroup = (
+    <ButtonGroup attached class="dp-tool-group">
+      {tools.create && (props.onCreate || columns.length > 0 || (props.formSchemas?.length ?? 0) > 0) &&
+        toolBtn(labels.create ?? "Add", () => {
+          if (props.onCreate) props.onCreate();
+          else formOpen.value = true;
+        }, <IconPlus size="sm" />)}
       {hasSearchUi &&
         toolBtn(labels.search ?? searchLabels.open ?? "Search", () => {
           showSearch.value = !showSearch.value;
         }, <IconSearch size="sm" />)}
-      {tools.create && props.onCreate &&
-        toolBtn("+", props.onCreate, <IconPlus size="sm" />)}
       {tools.refresh && props.onRefresh &&
-        toolBtn("↻", props.onRefresh, <IconRefresh size="sm" />)}
+        toolBtn(labels.refresh ?? "Refresh", props.onRefresh, <IconRefresh size="sm" />)}
       {tools.print &&
         toolBtn(labels.print ?? "Print", doPrint, <IconPrinter size="sm" />)}
       {tools.import &&
         toolBtn(labels.import ?? "Import", doImport, <IconUpload size="sm" />)}
       {tools.export && (
         <Dropdown overlay={exportOverlay} placement="bottomRight" trigger="click">
-          <Button type="button" size="sm" aria-label={labels.export ?? "Export"}>
+          <Button type="button" size="sm" class="px-2.5" aria-label={labels.export ?? "Export"}>
             <IconDownload size="sm" />
           </Button>
         </Dropdown>
       )}
-      {tools.column && columns.length > 0 && (
+      {tools.column && (columns.length > 0 || props.actions) && (
         <Dropdown overlay={columnOverlay()} placement="bottomRight" trigger="click">
-          <Button type="button" size="sm" aria-label={labels.column ?? "Columns"}>
+          <Button type="button" size="sm" class="px-2.5" aria-label={labels.column ?? "Columns"}>
             <IconColumns size="sm" />
           </Button>
         </Dropdown>
       )}
-      {tools.column && columns.length === 0 &&
+      {tools.column && columns.length === 0 && !props.actions &&
         toolBtn(labels.column ?? "Columns", soon, <IconColumns size="sm" />)}
+    </ButtonGroup>
+  );
+
+  const toolbar = (
+    <div
+      class={`dp-toolbar flex w-full flex-wrap items-center gap-2 ${
+        props.tabs?.length ? "justify-between" : "justify-end"
+      }`}
+      data-testid="data-panel-toolbar"
+    >
+      {props.tabs && props.tabs.length > 0 && (
+        <ButtonGroup attached class="dp-tab-group">
+          {props.tabs.map((t) => (
+            <Button
+              type="button"
+              size="sm"
+              variant={tab.value === t.value ? "primary" : "default"}
+              onClick={() => {
+                tab.value = t.value;
+                props.onTabChange?.(t.value);
+              }}
+            >
+              {t.label}
+            </Button>
+          ))}
+        </ButtonGroup>
+      )}
+      {toolGroup}
       {props.toolbarExtra}
     </div>
   );
 
+  const total = props.total ?? rows.length;
+  const pageSize = (() => {
+    const p = props.tableProps?.pagination;
+    if (p && typeof p === "object" && "pageSize" in p && typeof p.pageSize === "number") {
+      return p.pageSize;
+    }
+    return 20;
+  })();
+  const from = total === 0 ? 0 : 1;
+  const to = Math.min(pageSize, total);
+  const summary = props.summary ??
+    (labels.range ?? "第{from}-{to}条，共{total}条数据.")
+      .replaceAll("{from}", String(from))
+      .replaceAll("{to}", String(to))
+      .replaceAll("{total}", String(total));
+
   const titleNode = (
-    <div class="flex min-w-0 flex-col gap-0.5">
-      <span class="truncate text-base font-semibold">{props.title}</span>
-      {props.info != null && props.info !== "" && (
-        <span class="truncate text-xs text-slate-500 dark:text-slate-400">{props.info}</span>
-      )}
-    </div>
+    <span class="inline-flex min-w-0 items-center gap-2">
+      <IconList size="sm" />
+      <span class="truncate">{props.title}</span>
+    </span>
+  );
+
+  const searchField = (f: DataPanelSearchField) => (
+    <label class="flex w-full flex-col gap-1.5 text-sm text-slate-700 dark:text-slate-200">
+      {f.label ? <span>{f.label}</span> : null}
+      {f.type === "select"
+        ? (
+          <select
+            name={f.name}
+            class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900"
+          >
+            <option value="">{f.placeholder ?? "—"}</option>
+            {(f.options ?? []).map((o) => (
+              <option value={o.value} selected={o.value === (f.defaultValue ?? "")}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        )
+        : (
+          <Input
+            name={f.name}
+            type={f.type === "date" ? "date" : "text"}
+            value={f.defaultValue ?? ""}
+            placeholder={f.placeholder}
+            class="w-full"
+          />
+        )}
+    </label>
   );
 
   const searchBar = () => {
     if (!hasSearchUi || !showSearch.value) return null;
     if (props.searchSlot) {
-      return <div class="mb-3 border-b border-slate-100 px-2.5 pb-3 dark:border-slate-800">{props.searchSlot}</div>;
+      return (
+        <div class="border-b border-slate-200 px-4 py-3 dark:border-slate-700">
+          {props.searchSlot}
+        </div>
+      );
     }
     const schemas = props.searchSchemas ?? [];
     return (
-      <form method="get" class="mb-3 flex flex-wrap items-end gap-3 border-b border-slate-100 px-2.5 pb-3 dark:border-slate-800">
-        {schemas.map((f) => (
-          <label class="flex flex-col gap-1 text-xs text-slate-600 dark:text-slate-300">
-            {f.label ? <span>{f.label}</span> : null}
-            {f.type === "select" ? (
-              <select
-                name={f.name}
-                class="min-w-40 rounded-md border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-600 dark:bg-slate-900"
-              >
-                <option value="">{f.placeholder ?? "—"}</option>
-                {(f.options ?? []).map((o) => (
-                  <option value={o.value} selected={o.value === (f.defaultValue ?? "")}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <Input
-                name={f.name}
-                value={f.defaultValue ?? ""}
-                placeholder={f.placeholder}
-                class="w-48"
-              />
-            )}
-          </label>
-        ))}
-        <Button type="submit" variant="primary" size="sm">
-          {searchLabels.submit ?? "Search"}
-        </Button>
-        <Button type="reset" size="sm">
-          {searchLabels.reset ?? "Reset"}
-        </Button>
+      <form
+        method="get"
+        class="flex flex-col items-start gap-4 border-b border-slate-200 px-4 py-4 dark:border-slate-700"
+      >
+        {schemas.map((f) => searchField(f))}
+        <div class="flex items-center gap-2">
+          <Button type="submit" variant="primary" size="sm">
+            {searchLabels.submit ?? "Search"}
+          </Button>
+          <Button type="reset" size="sm">
+            {searchLabels.reset ?? "Reset"}
+          </Button>
+        </div>
       </form>
     );
+  };
+
+  const createFields = (): DataPanelFormField[] => {
+    if (props.formSchemas?.length) return props.formSchemas;
+    return columns
+      .filter((c) => c.prop !== "idx" && c.prop !== "actions" && c.prop !== "selection")
+      .map((c) => ({ name: c.prop, label: c.label }));
   };
 
   const ctx = makeChildrenCtx(hiddenCols.value);
@@ -656,7 +875,8 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
 
     const acts = props.actions ?? {};
     const al = props.actionLabels ?? {};
-    const showActs = !!(acts.view || acts.update || acts.delete);
+    const h = hiddenCols.value;
+    const showActs = !!(acts.view || acts.update || acts.delete || acts.download) && !h.actions;
     let cols = columns.filter((c) => c.prop !== "actions");
     if (showActs) {
       cols = [
@@ -664,25 +884,21 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
         {
           prop: "actions",
           label: al.column ?? "Actions",
-          width: 200,
+          width: 120,
           render: (_v: unknown, row: T) => (
-            <div class="flex flex-wrap items-center gap-1">
-              {acts.view && props.onView && (
-                <Button type="button" size="sm" onClick={() => props.onView!(row)}>
-                  {al.view ?? "View"}
-                </Button>
-              )}
-              {acts.update && props.onUpdate && (
-                <Button type="button" size="sm" onClick={() => props.onUpdate!(row)}>
-                  {al.update ?? "Edit"}
-                </Button>
-              )}
-              {acts.delete && props.onDelete && (
-                <Button type="button" size="sm" variant="danger" onClick={() => props.onDelete!(row)}>
-                  {al.delete ?? "Delete"}
-                </Button>
-              )}
-            </div>
+            <RowActions
+              viewLabel={al.view}
+              updateLabel={al.update}
+              deleteLabel={al.delete}
+              downloadLabel={al.download}
+              confirmTitle={al.confirmDelete}
+              okText={al.ok}
+              cancelText={al.cancel}
+              onView={acts.view && props.onView ? () => props.onView!(row) : undefined}
+              onUpdate={acts.update && props.onUpdate ? () => props.onUpdate!(row) : undefined}
+              onDelete={acts.delete && props.onDelete ? () => props.onDelete!(row) : undefined}
+              onDownload={acts.download && props.onDownload ? () => props.onDownload!(row) : undefined}
+            />
           ),
         },
       ];
@@ -690,6 +906,7 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
     return (
       <Table
         bordered
+        striped
         hoverable
         size="sm"
         rowKey={props.rowKey ?? "id"}
@@ -703,19 +920,115 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
   })();
 
   return (
-    <Card
-      bordered
-      size="sm"
-      class={`adm-panel-card ${props.class ?? ""}`.trim()}
-      headerClass="adm-card-header"
-      title={titleNode}
-      extra={toolbar}
-      bodyClass="px-0 pt-2"
-      data-testid="data-panel"
-    >
-      {searchBar()}
-      <div class="dp-body px-2.5 pb-2.5">{body}</div>
-    </Card>
+    <div class="contents">
+      <Card
+        bordered
+        size="sm"
+        class={`adm-panel-card ${props.class ?? ""}`.trim()}
+        headerClass="adm-card-header"
+        title={titleNode}
+        extra={<span class="text-sm font-normal">{summary}</span>}
+        bodyClass="p-0"
+        data-testid="data-panel"
+      >
+        <div class="flex justify-end border-b border-slate-200 px-3 py-2 dark:border-slate-700">
+          {toolbar}
+        </div>
+        <div>{searchBar}</div>
+        <div class="dp-body px-2.5 py-2.5">{body}</div>
+        {props.info != null && props.info !== "" && (
+          <p class="m-0 border-t border-slate-100 px-4 py-2 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
+            {props.info}
+          </p>
+        )}
+      </Card>
+      <Modal
+        open={formOpen}
+        title={props.formTitle ?? `${labels.create ?? "Add"} ${props.title}`}
+        width="md"
+        keyboard
+        destroyOnClose
+        onClose={() => {
+          formOpen.value = false;
+        }}
+        footer={
+          <div class="flex justify-end gap-2">
+            <Button
+              type="button"
+              onClick={() => {
+                formOpen.value = false;
+              }}
+            >
+              {props.actionLabels?.cancel ?? "取消"}
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={() => {
+                const el = (globalThis as {
+                  document?: { getElementById: (id: string) => { requestSubmit?: () => void } | null };
+                }).document?.getElementById("dp-create-form");
+                el?.requestSubmit?.();
+              }}
+            >
+              {props.actionLabels?.ok ?? "确定"}
+            </Button>
+          </div>
+        }
+        children={() => (
+          <form
+            id="dp-create-form"
+            class="flex flex-col gap-3"
+            onSubmit={(ev: Event) => {
+              ev.preventDefault();
+              const form = ev.currentTarget as unknown as {
+                querySelectorAll: (sel: string) => {
+                  length: number;
+                  [index: number]: { name?: string; value?: string };
+                };
+              };
+              const data: Record<string, string> = {};
+              const nodes = form.querySelectorAll("input, select, textarea");
+              for (let i = 0; i < nodes.length; i++) {
+                const el = nodes[i];
+                if (el?.name) data[el.name] = String(el.value ?? "");
+              }
+              if (props.onFormSubmit) props.onFormSubmit(data);
+              else message.info(labels.soon ?? "Coming soon");
+              formOpen.value = false;
+            }}
+          >
+            {createFields().map((f) => (
+              <label class="flex w-full flex-col gap-1.5 text-sm text-slate-700 dark:text-slate-200">
+                <span>{f.label}</span>
+                {f.type === "select"
+                  ? (
+                    <select
+                      name={f.name}
+                      required={f.required}
+                      class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900"
+                    >
+                      <option value="">{f.placeholder ?? "—"}</option>
+                      {(f.options ?? []).map((o) => (
+                        <option value={o.value}>{o.label}</option>
+                      ))}
+                    </select>
+                  )
+                  : (
+                    <Input
+                      name={f.name}
+                      type={f.type === "date" ? "date" : "text"}
+                      placeholder={f.placeholder ?? f.label}
+                      required={f.required}
+                      class="w-full"
+                    />
+                  )}
+              </label>
+            ))}
+          </form>
+        )}
+      />
+    </div>
   );
 }
 

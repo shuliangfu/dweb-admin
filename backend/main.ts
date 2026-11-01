@@ -30,19 +30,25 @@ const use = (mw: unknown) => app.use(mw as AppMiddleware);
 type Ctx = any;
 
 const isDev = Deno.args.includes("--dev");
-const pathOf = (ctx: Ctx) => String(ctx.path ?? ctx.url?.pathname).replace(/\/$/, "");
+const pathOf = (ctx: Ctx) =>
+  String(ctx.path ?? ctx.url?.pathname).replace(/\/$/, "");
 /** Plain HTML form posts of the login page (no JS, so no CSRF header). */
 const isLogin = (ctx: Ctx) =>
-  ctx.method === "POST" && ["/api/auth/login", "/api/auth/twofactor"].includes(pathOf(ctx));
-/** Everything that can be used to guess credentials: rate limited together. */
+  ctx.method === "POST" &&
+  ["/api/auth/login", "/api/auth/twofactor"].includes(pathOf(ctx));
+/** Everything that can be used to guess credentials or captcha answers. */
 const isAuthAttempt = (ctx: Ctx) =>
-  isLogin(ctx) || (ctx.method === "POST" && pathOf(ctx) === "/api/auth/passkey/verify");
+  isLogin(ctx) ||
+  (ctx.method === "POST" &&
+    (pathOf(ctx) === "/api/auth/passkey/verify" ||
+      pathOf(ctx) === "/api/auth/captcha/check"));
 
 use(requestId());
 use(requestLogger({
   skip: (ctx: Ctx) => {
     const p = String(ctx.path ?? "");
-    return p.startsWith("/assets/") || p.startsWith("/_client") || p === "/api/health" || /\.(js|css|map|svg|ico)$/.test(p);
+    return p.startsWith("/assets/") || p.startsWith("/_client") ||
+      p === "/api/health" || /\.(js|css|map|svg|ico)$/.test(p);
   },
 }));
 use(healthCheck({
@@ -73,7 +79,9 @@ use(rateLimit({
     skip: (ctx: Ctx) => pathOf(ctx) !== "/api/auth/login-options",
     message: "Too many requests",
   });
-  Object.defineProperty(optionsLimit, "name", { value: "loginOptionsRateLimit" });
+  Object.defineProperty(optionsLimit, "name", {
+    value: "loginOptionsRateLimit",
+  });
   use(optionsLimit);
 }
 // dweb exposes no error-middleware hook, so adapt @dreamer/middlewares' errorHandler.
@@ -115,13 +123,17 @@ app.registerPlugin(tailwindPlugin({
 }));
 
 /** Theme: injects an anti-flash script + sets <html class="dark"> from cookie/localStorage. */
+// Same option set as senvis backend themePlugin (cookie name stays dweb-admin-theme).
 app.registerPlugin(themePlugin({
   defaultMode: "system",
   strategy: "class",
   darkClass: "dark",
-  // cookieName doubles as the localStorage key; ThemeMenu uses the same value as storageKey.
+  attribute: "data-theme",
   cookieName: "dweb-admin-theme",
+  cookieExpireDays: 365,
   injectScript: true,
+  transitionDuration: 200,
+  debug: false,
 }));
 
 app.registerPlugin(staticPlugin({
@@ -136,6 +148,9 @@ app.start().then(async () => {
     await seedAll();
     console.log("[dweb-admin-backend] ready");
   } catch (error) {
-    console.error("[dweb-admin-backend] seed failed (is MongoDB running? see .env)", error);
+    console.error(
+      "[dweb-admin-backend] seed failed (is MongoDB running? see .env)",
+      error,
+    );
   }
 });

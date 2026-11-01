@@ -70,7 +70,8 @@ export function StubList(props: { locale: Locale; page: StubPage }) {
       title={props.page.title[loc] ?? props.page.title["en-US"]}
       info={`${tr("stub.skeletonHint", { key: props.page.key })} · ${tr("stub.demoInfo", { n: rows.length })} · ${tr("stub.authNote")}`}
       tools={{ create: true, refresh: true, export: true, import: true, print: true, column: true, search: true }}
-      onCreate={() => message.info(tr("stub.soon"))}
+      formTitle={`${tr("panel.create")} ${props.page.title[loc] ?? props.page.title["en-US"]}`}
+      onFormSubmit={() => message.info(tr("stub.soon"))}
       onRefresh={reload}
       columns={columns as never}
       rows={rows as never}
@@ -84,6 +85,9 @@ export function StubList(props: { locale: Locale; page: StubPage }) {
         print: tr("panel.print"),
         column: tr("panel.column"),
         search: tr("panel.search"),
+        create: tr("panel.create"),
+        refresh: tr("panel.refresh"),
+        range: tr("panel.range"),
         soon: tr("stub.soon"),
         resetColumns: tr("panel.resetColumns"),
         csv: "CSV",
@@ -104,6 +108,9 @@ export function StubList(props: { locale: Locale; page: StubPage }) {
         view: tr("rbac.view"),
         update: tr("crud.edit"),
         delete: tr("crud.delete"),
+        confirmDelete: tr("panel.confirmDelete"),
+        ok: tr("panel.ok"),
+        cancel: tr("panel.cancel"),
       }}
       onView={() => message.info(tr("stub.soon"))}
       onUpdate={() => message.info(tr("stub.soon"))}

@@ -1,5 +1,6 @@
 /**
- * Reset password — Vue fullpage/password/reset.vue (UI stub).
+ * Reset password — Vue fullpage/password/reset.vue.
+ * Token/mail link not wired — UI demo only; password is NOT persisted. See docs/handoff.md.
  */
 import { createSignal } from "@dreamer/view";
 import type { LoadContext } from "@dreamer/dweb";
@@ -7,7 +8,7 @@ import { Alert, Button, FormItem, Input, message } from "@dreamer/ui-view";
 import { createT, type Locale, resolveLocale } from "@common/i18n/mod.ts";
 import { AuthShell } from "@backend/components/AuthShell.tsx";
 
-export async function load(ctx: LoadContext) {
+export function load(ctx: LoadContext) {
   return { locale: resolveLocale(ctx.req) };
 }
 
@@ -38,13 +39,25 @@ export default function ResetPasswordPage(props: { data?: Data }) {
   }
 
   return (
-    <AuthShell showLeftArt={false} locale={locale} title={tr("passwordFlow.resetTitle")} subtitle={tr("passwordFlow.resetHint")}>
+    <AuthShell
+      locale={locale}
+      title={tr("passwordFlow.resetTitle")}
+      subtitle={tr("passwordFlow.resetHint")}
+    >
       {() =>
         done.value
           ? (
             <div class="grid gap-3" data-testid="reset-done">
               <Alert type="success" message={tr("passwordFlow.resetOk")} />
-              <a href="/login" class="block text-center text-sm text-primary-600">{tr("passwordFlow.backLogin")}</a>
+              <p class="m-0 text-xs text-slate-500 dark:text-slate-400">
+                {tr("passwordFlow.resetGap")}
+              </p>
+              <a
+                href="/login"
+                class="block text-center text-sm text-primary-600"
+              >
+                {tr("passwordFlow.backLogin")}
+              </a>
             </div>
           )
           : (
@@ -56,7 +69,8 @@ export default function ResetPasswordPage(props: { data?: Data }) {
                   placeholder={tr("passwordFlow.newPasswordPlaceholder")}
                   autoComplete="new-password"
                   onInput={(e: Event) => {
-                    password.value = (e.target as unknown as { value: string }).value;
+                    password.value =
+                      (e.target as unknown as { value: string }).value;
                   }}
                 />
               </FormItem>
@@ -67,14 +81,22 @@ export default function ResetPasswordPage(props: { data?: Data }) {
                   placeholder={tr("passwordFlow.confirmPasswordPlaceholder")}
                   autoComplete="new-password"
                   onInput={(e: Event) => {
-                    confirm.value = (e.target as unknown as { value: string }).value;
+                    confirm.value =
+                      (e.target as unknown as { value: string }).value;
                   }}
                 />
               </FormItem>
-              <Button type="button" variant="primary" class="mt-2 h-11 w-full" onClick={submit}>
+              <Button
+                type="button"
+                variant="primary"
+                class="mt-2 h-11 w-full"
+                onClick={submit}
+              >
                 {tr("passwordFlow.confirm")}
               </Button>
-              <a href="/login" class="mt-1 block text-center text-sm">{tr("passwordFlow.backLogin")}</a>
+              <a href="/login" class="mt-1 block text-center text-sm">
+                {tr("passwordFlow.backLogin")}
+              </a>
             </div>
           )}
     </AuthShell>

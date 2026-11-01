@@ -1,5 +1,11 @@
 import { assert, assertEquals } from "@std/assert";
-import { isAuthOnlyPath, isPublicPath, matchRoute, normalizePath, ruleAllows } from "@common/service/rbac.ts";
+import {
+  isAuthOnlyPath,
+  isPublicPath,
+  matchRoute,
+  normalizePath,
+  ruleAllows,
+} from "@common/service/rbac.ts";
 import { hashPassword, verifyPassword } from "@common/service/password.ts";
 import { normalizeLocale, pickLocalized, t } from "@common/i18n/mod.ts";
 
@@ -22,12 +28,16 @@ Deno.test("ruleAllows: method + path binding", () => {
   const rules = [{ method: "GET" as const, path: "/api/users" }];
   assert(ruleAllows(rules, "GET", "/api/users"));
   assert(!ruleAllows(rules, "POST", "/api/users"));
-  assert(ruleAllows([{ method: "*", path: "/api/**" }], "DELETE", "/api/roles/x"));
+  assert(
+    ruleAllows([{ method: "*", path: "/api/**" }], "DELETE", "/api/roles/x"),
+  );
 });
 
 Deno.test("path classes", () => {
   assertEquals(normalizePath("//api//users/"), "/api/users");
   assert(isPublicPath("/login"));
+  assert(isPublicPath("/api/auth/captcha"));
+  assert(isPublicPath("/api/auth/captcha/check", "POST"));
   assert(isPublicPath("/assets/tailwind.css"));
   assert(!isPublicPath("/api/users"));
   assert(isPublicPath("/chunk-ABC123.js"));
@@ -49,13 +59,19 @@ Deno.test("password hash round trip", async () => {
 Deno.test("i18n zh-CN / en-US", () => {
   assertEquals(t("zh-CN", "login.submit"), "登录");
   assertEquals(t("en-US", "login.submit"), "Sign in");
-  assertEquals(t("en-US", "dashboard.welcome", { name: "A" }), "Welcome back, A");
+  assertEquals(
+    t("en-US", "dashboard.welcome", { name: "A" }),
+    "Welcome back, A",
+  );
   assertEquals(normalizeLocale("en-GB"), "en-US");
-  assertEquals(pickLocalized({ "zh-CN": "你", "en-US": "you" }, "en-US"), "you");
+  assertEquals(
+    pickLocalized({ "zh-CN": "你", "en-US": "you" }, "en-US"),
+    "you",
+  );
 });
 
 // ---- Yii2-style hierarchy -------------------------------------------------
-import { resolveGrants, wouldCycle, type Graph } from "@common/service/rbac.ts";
+import { type Graph, resolveGrants, wouldCycle } from "@common/service/rbac.ts";
 import { parseRouteInput } from "@common/service/rbac-admin.ts";
 
 const graph: Graph = {
@@ -67,10 +83,16 @@ const graph: Graph = {
     "user.all": { type: "permission", isSuper: false },
   },
   children: {
-    boss: [{ type: "role", child: "staff" }, { type: "permission", child: "user.all" }],
+    boss: [{ type: "role", child: "staff" }, {
+      type: "permission",
+      child: "user.all",
+    }],
     staff: [{ type: "permission", child: "user.view" }],
     "user.view": [{ type: "route", child: "GET /api/users" }],
-    "user.all": [{ type: "permission", child: "user.view" }, { type: "route", child: "POST /api/users" }],
+    "user.all": [{ type: "permission", child: "user.view" }, {
+      type: "route",
+      child: "POST /api/users",
+    }],
   },
 };
 
@@ -86,8 +108,14 @@ Deno.test("resolveGrants expands role → role → permission → route", () => 
 
 Deno.test("resolveGrants is cycle safe; wouldCycle detects cycles", () => {
   const cyc: Graph = {
-    items: { a: { type: "role", isSuper: false }, b: { type: "role", isSuper: false } },
-    children: { a: [{ type: "role", child: "b" }], b: [{ type: "role", child: "a" }, { type: "route", child: "GET /x" }] },
+    items: {
+      a: { type: "role", isSuper: false },
+      b: { type: "role", isSuper: false },
+    },
+    children: {
+      a: [{ type: "role", child: "b" }],
+      b: [{ type: "role", child: "a" }, { type: "route", child: "GET /x" }],
+    },
   };
   assertEquals(resolveGrants(cyc, ["a"]).rules.length, 1);
   assertEquals(wouldCycle(graph, "staff", "boss"), true);
@@ -98,6 +126,10 @@ Deno.test("resolveGrants is cycle safe; wouldCycle detects cycles", () => {
 });
 
 Deno.test("parseRouteInput", () => {
-  assertEquals(parseRouteInput("GET /a, /b/*\nPOST /c"), ["GET /a", "* /b/*", "POST /c"]);
+  assertEquals(parseRouteInput("GET /a, /b/*\nPOST /c"), [
+    "GET /a",
+    "* /b/*",
+    "POST /c",
+  ]);
   assertEquals(parseRouteInput("nonsense"), null);
 });

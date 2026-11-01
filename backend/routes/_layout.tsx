@@ -31,6 +31,8 @@ interface LayoutData {
   menu?: MenuNode[];
   /** Sidebar collapsed (cookie dweb-admin-sidebar=1), applied during SSR. */
   collapsed?: boolean;
+  website?: string;
+  shortName?: string;
 }
 
 export async function load(ctx: LoadContext): Promise<LayoutData | Response> {
@@ -47,6 +49,7 @@ export async function load(ctx: LoadContext): Promise<LayoutData | Response> {
 
   const { getCurrentUser } = await import("@common/service/auth.ts");
   const { buildMenuTree } = await import("@common/service/menu.ts");
+  const { getSiteBrand } = await import("@common/service/site.ts");
   const user = await getCurrentUser(ctx.req);
   if (!user) {
     return ctx.res
@@ -67,12 +70,15 @@ export async function load(ctx: LoadContext): Promise<LayoutData | Response> {
     return new Response(null, { status: 302, headers: { Location: "/lock" } });
   }
 
+  const brand = await getSiteBrand();
   return {
     pathname,
     locale,
     user: { username: user.username, nickname: user.nickname, roleCodes: user.roleCodes },
     menu: await buildMenuTree(user.roleCodes, locale),
     collapsed: /(?:^|;\s*)dweb-admin-sidebar=1/.test(ctx.req.headers.get("cookie") ?? ""),
+    website: brand.website,
+    shortName: brand.shortName,
   };
 }
 
@@ -89,7 +95,7 @@ export default function Layout(props: { children?: VNode | VNode[]; data?: Layou
     <div class={`adm-shell flex h-screen overflow-hidden${data.collapsed ? " adm-collapsed" : ""}`}>
       <div class="adm-backdrop" onClick={closeDrawer} />
       <aside class="adm-side flex shrink-0 flex-col overflow-hidden">
-        <SideBrand name={tr("app.name")} short={tr("app.short")} />
+        <SideBrand name={data.website || tr("app.name")} short={data.shortName || "DWEB"} />
         <div class="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
           <SideMenu tree={menu} pathname={pathname} />
         </div>
@@ -97,8 +103,6 @@ export default function Layout(props: { children?: VNode | VNode[]; data?: Layou
       <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
         <TopHeader
           locale={locale}
-          pathname={pathname}
-          menu={menu}
           nickname={data.user?.nickname ?? ""}
           roles={data.user?.roleCodes ?? []}
         />

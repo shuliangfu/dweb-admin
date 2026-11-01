@@ -1,11 +1,24 @@
 /**
- * Stub: /system/base — Vue system/… (基本设置 / Base settings).
- * Demo data only; replace when domain models exist.
+ * /system/base — site name and collapsed label are saved; other rows are a preview.
  */
-import { stubLoad, StubPageView } from "@backend/components/stub-page.tsx";
+import type { LoadContext } from "@dreamer/dweb";
+import { resolveLocale, type Locale } from "@common/i18n/mod.ts";
+import { BaseSettings } from "@backend/components/BaseSettings.tsx";
 
-export const load = stubLoad("system.base");
+export async function load(ctx: LoadContext) {
+  const { getSiteBrand } = await import("@common/service/site.ts");
+  const brand = await getSiteBrand();
+  return { locale: resolveLocale(ctx.req), website: brand.website, shortName: brand.shortName };
+}
 
-export default function Page(props: { data?: { locale?: "zh-CN" | "en-US"; pageKey?: string } }) {
-  return <StubPageView data={props.data} pageKey="system.base" />;
+export default function Page(props: {
+  data?: { locale?: Locale; website?: string; shortName?: string };
+}) {
+  return (
+    <BaseSettings
+      locale={props.data?.locale ?? "zh-CN"}
+      website={props.data?.website ?? ""}
+      shortName={props.data?.shortName ?? ""}
+    />
+  );
 }

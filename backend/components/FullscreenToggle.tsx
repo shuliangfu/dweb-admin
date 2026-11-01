@@ -54,8 +54,8 @@ export function FullscreenToggle(props: { enterLabel: string; exitLabel: string 
     >
       {() =>
         isFull.value
-          ? <IconExitFullscreen size="sm" />
-          : <IconMaximize2 size="sm" />
+          ? <IconExitFullscreen size="xs" />
+          : <IconMaximize2 size="xs" />
       }
     </button>
   );

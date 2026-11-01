@@ -30,7 +30,7 @@ export function LangMenu(props: { locale: Locale }) {
       }
     >
       <span class={triggerCls} data-testid="lang-menu" aria-label="Language" title="Language">
-        <IconGlobe size="sm" />
+        <IconGlobe size="xs" />
       </span>
     </Dropdown>
   );

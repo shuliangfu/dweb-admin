@@ -33,6 +33,7 @@ export function OnlineAdmin(props: { locale: Locale; rows: OnlineRow[]; keyword?
           print: tr("panel.print"),
           column: tr("panel.column"),
           search: tr("panel.search"),
+          range: tr("panel.range"),
           soon: tr("panel.soon"),
           resetColumns: tr("panel.resetColumns"),
           csv: "CSV",

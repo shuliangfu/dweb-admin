@@ -31,7 +31,8 @@ export default {
     submit: "Sign in",
     remember: "Remember me (30 days)",
     passkey: "Sign in with fingerprint",
-    passkeyFailed: "Fingerprint verification failed, retry or use your password",
+    passkeyFailed:
+      "Fingerprint verification failed, retry or use your password",
     passkeyUnsupported: "This browser does not support fingerprint login",
     or: "or",
     twofaTitle: "Two-step verification",
@@ -41,6 +42,10 @@ export default {
     twofaFailed: "The code is wrong or expired",
     back: "Back to sign in",
     failed: "Incorrect username or password",
+    captcha: "Captcha",
+    captchaPlaceholder: "Enter the code",
+    captchaRefresh: "Click to refresh",
+    captchaBad: "Incorrect captcha",
     forgetLink: "Forgot password?",
   },
   nav: {
@@ -64,7 +69,8 @@ export default {
   },
   dashboard: {
     welcome: "Welcome back, {name}",
-    intro: "Ops overview: admin/menu stats are live; member and finance cards/charts are demos until domain services land.",
+    intro:
+      "Ops overview: admin/menu stats are live; member and finance cards/charts are demos until domain services land.",
     yourRoles: "Your roles",
     menuCount: "Visible menus",
     kpiAdmins: "Admins",
@@ -107,34 +113,51 @@ export default {
   assign: {
     info: "{n} administrator(s)",
     modalTitle: "{name} — assign roles",
-    hint: "Roles below map to allow-style grants via AdminUser.roleCodes. Permission/route trees stay on the role or permission pages.",
+    hint:
+      "Roles below map to allow-style grants via AdminUser.roleCodes. Permission/route trees stay on the role or permission pages.",
     /** Vue assign column `权限`. */
     access: "Access",
     allowAction: "allow",
     denyAction: "deny",
     rolesSection: "Roles (allow)",
     gapTitle: "Allow / deny & direct routes",
-    gapBody: "Vue assign supports per-item allow/deny and binding routes directly on a user. This stack has AuthItem/Child/Route + roleCodes only — no AuthAssignment, no user-level deny, no user-direct routes. UI reserved for a future model; nothing is posted from this panel.",
+    gapBody:
+      "Vue assign supports per-item allow/deny and binding routes directly on a user. This stack has AuthItem/Child/Route + roleCodes only — no AuthAssignment, no user-level deny, no user-direct routes. UI reserved for a future model; nothing is posted from this panel.",
     gapBadge: "Not modeled",
   },
   panel: {
     search: "Search",
+    create: "Add",
+    refresh: "Refresh",
+    range: "{from}–{to} of {total}",
     export: "Export",
     import: "Import",
     print: "Print",
     column: "Columns",
     resetColumns: "Reset columns",
+    confirmDelete: "Are you sure you want to delete?",
+    ok: "OK",
+    cancel: "Cancel",
     soon: "Coming soon",
     unsupportedFormat: "Native .xlsx needs a library — not bundled",
-    xlsxGap: "Excel downloads as HTML .xls (Vue-compatible). Native .xlsx not bundled.",
+    xlsxGap:
+      "Excel downloads as HTML .xls (Vue-compatible). Native .xlsx not bundled.",
     json: "JSON",
     xml: "XML",
     html: "HTML",
     excel: "Excel",
   },
+  base: {
+    title: "Base settings",
+    website: "Site name",
+    shortName: "Collapsed label",
+    hint: "Site name and collapsed label are saved and used in the sidebar. The other rows are still a preview — no general config model.",
+  },
   stub: {
-    skeletonHint: "Skeleton only — no domain model for {key}; see docs/handoff.md",
-    demoInfo: "{n} demo row(s) — domain model pending; needs super role or an explicit route grant",
+    skeletonHint:
+      "Skeleton only — no domain model for {key}; see docs/handoff.md",
+    demoInfo:
+      "{n} demo row(s) — domain model pending; needs super role or an explicit route grant",
     settingsHint: "Read-only settings preview; save API not wired yet.",
     datetimeDemo: "Demo clock (browser local); setTime / sync API not wired.",
     serverTime: "Server time",
@@ -144,11 +167,13 @@ export default {
     export: "Export",
     soon: "Coming soon",
     importParsed: "Parsed {n} row(s) — no domain import API yet",
-    authNote: "This page is not on the AUTH_ONLY allowlist; non-super roles need a bound route.",
+    authNote:
+      "This page is not on the AUTH_ONLY allowlist; non-super roles need a bound route.",
   },
   passwordFlow: {
     forgetTitle: "Forgot password",
-    forgetHint: "Enter the registered email and captcha. Mail delivery is a UI stub for now.",
+    forgetHint:
+      "Enter the registered email and captcha. Mail delivery is a UI stub for now.",
     resetTitle: "Reset password",
     resetHint: "Choose a new login password.",
     email: "Email",
@@ -159,6 +184,9 @@ export default {
     captchaBad: "Incorrect captcha",
     sendMail: "Send email",
     forgetSent: "If the email exists, reset instructions were sent (demo).",
+    mailGap: "Mail delivery is not wired; nothing is actually sent.",
+    resetGap:
+      "Reset links and persistence are not wired; the password is not saved.",
     newPassword: "New password",
     newPasswordPlaceholder: "Enter a new password",
     confirmPassword: "Confirm password",
@@ -204,13 +232,15 @@ export default {
     available: "Available",
     assigned: "Assigned",
     transferSearch: "Search",
-    transferHint: "Use >> / << to change assignments; changes apply immediately.",
+    transferHint:
+      "Use >> / << to change assignments; changes apply immediately.",
     transferViewOnly: "View mode: switch to Edit to change assignments.",
     routeTitle: "Route management",
     routeAdd: "Add route",
     routeAddTitle: "Add routes manually",
     routeInput: "Routes",
-    routeInputHint: "One per line: [METHOD] /path. Method defaults to * (any). Paths support /* and /xxx/* wildcards.",
+    routeInputHint:
+      "One per line: [METHOD] /path. Method defaults to * (any). Paths support /* and /xxx/* wildcards.",
     routeUnmanaged: "Unmanaged (scanned)",
     routeManaged: "Managed",
     routePath: "Path",
@@ -220,7 +250,8 @@ export default {
     sourceManual: "Manual",
     sourceScan: "Scan",
     sourceSeed: "Seed",
-    routeNote: "Only managed routes can be assigned to roles/permissions; moving one back removes it from every role/permission.",
+    routeNote:
+      "Only managed routes can be assigned to roles/permissions; moving one back removes it from every role/permission.",
     routeSave: "Save changes",
     routeScanned: "Refreshed: {n} unmanaged route(s) found",
     routeNone: "No pending changes",
@@ -260,7 +291,7 @@ export default {
     search: "Search",
     reset: "Reset",
     deleteTitle: "Confirm delete",
-    deleteAsk: "Delete \"{name}\"? This cannot be undone.",
+    deleteAsk: 'Delete "{name}"? This cannot be undone.',
     saved: "Saved",
     deleted: "Deleted",
     total: "{total} records",
@@ -325,9 +356,11 @@ export default {
     chatListEmpty: "No conversations",
     chatFilterHint: "Filter: {q}",
     chatEmpty: "Select a conversation — none available yet.",
-    chatBackendNote: "IM backend is not wired in this admin template; UI layout only.",
+    chatBackendNote:
+      "IM backend is not wired in this admin template; UI layout only.",
     chatComposePlaceholder: "Message (IM not connected)",
-    chatToolsHint: "Attachment / emoji controls are placeholders until IM is wired.",
+    chatToolsHint:
+      "Attachment / emoji controls are placeholders until IM is wired.",
     chatSend: "Send",
     settingsTitle: "Page settings",
     breadcrumb: "Breadcrumb",
@@ -343,7 +376,8 @@ export default {
     colorDanger: "Danger",
     otherTitle: "Shell chrome",
     otherHint: "Vue theme.other tokens mapped to --adm-* variables",
-    otherGap: "Prior gaps (zebra / menu height / radius / sub-hover / text-regular) now mapped; see handoff for residual.",
+    otherGap:
+      "Prior gaps (zebra / menu height / radius / sub-hover / text-regular) now mapped; see handoff for residual.",
     tokSide: "Menu background",
     tokSub: "Submenu background",
     tokActiveBg: "Menu hover / active background",
@@ -400,7 +434,8 @@ export default {
     confirmPassword: "Confirm new password",
     mismatch: "The new passwords do not match",
     passwordChanged: "Password changed; other devices were signed out",
-    passkeyIntro: "Sign in with your device fingerprint / face / PIN (WebAuthn passkey) instead of a password.",
+    passkeyIntro:
+      "Sign in with your device fingerprint / face / PIN (WebAuthn passkey) instead of a password.",
     passkeyEnroll: "Add fingerprint / passkey",
     passkeyName: "Name (optional)",
     passkeyEnabled: "Enable fingerprint login",
@@ -410,18 +445,20 @@ export default {
     passkeyNever: "never",
     passkeyUnsupported: "This browser does not support fingerprint / passkeys",
     passkeySaved: "Fingerprint login added",
-    totpIntro: "When on, signing in needs the 6-digit code from your authenticator app in addition to the password.",
+    totpIntro:
+      "When on, signing in needs the 6-digit code from your authenticator app in addition to the password.",
     totpOn: "On",
     totpOff: "Off",
     totpStart: "Enable two-step verification",
-    totpScan: "Scan the QR code with Google Authenticator (or similar), or enter the key manually:",
+    totpScan:
+      "Scan the QR code with Google Authenticator (or similar), or enter the key manually:",
     totpCode: "6-digit code",
     totpVerify: "Verify and enable",
     totpDisableAsk: "Enter a current code to turn two-step verification off:",
     totpDisable: "Disable two-step verification",
     totpEnabledOk: "Two-step verification enabled",
     totpDisabledOk: "Two-step verification disabled",
-    removeAsk: "Delete credential \"{name}\"?",
+    removeAsk: 'Delete credential "{name}"?',
   },
   apiError: {
     wrongPassword: "Current password is incorrect",
@@ -446,7 +483,8 @@ export default {
     hasChildren: "Menu still has children; delete them first",
     itemExists: "Name already exists",
     routeInvalid: "Invalid route, expected: [METHOD] /path",
-    routeNotManaged: "Route is not managed yet; add it on the Routes page first",
+    routeNotManaged:
+      "Route is not managed yet; add it on the Routes page first",
     cycle: "This would create a circular hierarchy",
     onlyTwoLevels: "Menus support two levels only",
   },
