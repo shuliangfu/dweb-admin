@@ -1,16 +1,15 @@
 # dreamer-admin ↔ dweb-admin page migration matrix
 
-Generated: 2026-11-01 (Asia/Shanghai)
+Generated: 2026-11-01 (Asia/Shanghai) · updated same day (assign + DataPanel quality)
 
-## Path note (important)
+## Path note (confirmed)
 
-Dispatch named UI reference as `/home/vue/dreamer-admin`, but **that directory does not exist** on this machine. The live Vue admin reference used for this matrix is:
+| Role | Path |
+|---|---|
+| **Vue admin reference (confirmed)** | `/home/vue/dreamer-vue` |
+| **dweb-admin target** | `/home/deno/dreamer-jsr/dweb-admin` (admin UI in **`backend/`**; `frontend/` / `mobile/` are separate consumer apps) |
 
-| Alias in dispatch | Actual path | Evidence |
-|---|---|---|
-| `dreamer-admin` | `/home/vue/dreamer-vue` | package name `dreamer`, git remote `git@git.shuliangfu.com:dreamer-vue.git`, views under `src/views/*`, shell under `src/components/Layout/*` |
-
-Target: `/home/deno/dreamer-jsr/dweb-admin` (admin UI lives in **`backend/`** app; `frontend/` / `mobile/` are separate consumer apps).
+Historical dispatch alias `dreamer-admin` resolves to `/home/vue/dreamer-vue` (package `dreamer`, remote `git@git.shuliangfu.com:dreamer-vue.git`). There is no separate `/home/vue/dreamer-admin` tree on this machine.
 
 Status legend: **已有** = present and usable · **部分** = exists but not aligned to Vue look/IA · **缺** = missing
 
@@ -33,7 +32,7 @@ dweb-admin today:
 |---|---|---|
 | Page-level CRUD admins | `backend/components/*Admin.tsx`, `crud-kit.tsx` | **部分** — per-page UI, not a reusable CardPanel |
 | ui-view Table/Card/List/Pagination/Modal | via `@dreamer/ui-view` | **已有** (library) |
-| Callable `DataPanel` / `CardPanel` in `common/components/` | `common/components/DataPanel.tsx` | **部分** — skeleton tools; wired on admins/roles/permissions/routes/menus |
+| Callable `DataPanel` / `CardPanel` in `common/components/` | `common/components/DataPanel.tsx` | **部分** — search schemas + column/export/import/print interactive; CSV export default; wired on model lists + stubs |
 
 **Target:** `common/components/DataPanel.tsx` (name TBD) composed from `@dreamer/ui-view` only; all list pages consume it.
 
@@ -53,9 +52,9 @@ el-main → router-view
 | Shell piece | Vue path / components | Vue behavior | dweb-admin path | Status | Gap |
 |---|---|---|---|---|---|
 | App HTML shell | `index.html` + Vue app | title, root mount | `backend/routes/_app.tsx` | **部分** | OK structurally; branding/title still “Dweb Admin” |
-| Layout frame | `src/components/Layout/Layout.vue` | side + dual headers + main; mobile drawer | `backend/routes/_layout.tsx` | **部分** | Vue grid + mobile drawer; lock/chat/settings wired into chrome (minimal). Theme color pickers still deferred |
+| Layout frame | `src/components/Layout/Layout.vue` | side + dual headers + main; mobile drawer | `backend/routes/_layout.tsx` | **部分** | Vue grid + mobile drawer; lock/chat/settings wired into chrome (minimal). Theme primary presets + ColorPicker in SettingsDrawer |
 | Sidebar / 左侧菜单 | `Layout/Side/Side.vue` + `Side/Item.vue` | logo「浮生若梦」, collapse, `el-menu` from `routeStore.routes` | `SideBrand.tsx` + `SideMenu.tsx` + menu DB | **部分** | Logo strip + key→icon map + collapse icon centering; DB menu retained; not full Vue m-icon set |
-| Top bar / 顶部栏 | `Layout/TopHeader/TopHeader.vue` (+ `modules/Profile.vue`, `UpdatePassword.vue`, `UpdateProfile.vue`) | collapse control, breadcrumb, avatar menu (profile/password/lock/logout), chat, language, theme, fullscreen, settings drawer | `TopHeader.tsx` + Lang/Theme/User + FullscreenToggle + ChatModal + SettingsDrawer | **部分** | Breadcrumb toggle, lock entry, chat stub, settings drawer (breadcrumb switch); theme color pickers still deferred |
+| Top bar / 顶部栏 | `Layout/TopHeader/TopHeader.vue` (+ `modules/Profile.vue`, `UpdatePassword.vue`, `UpdateProfile.vue`) | collapse control, breadcrumb, avatar menu (profile/password/lock/logout), chat, language, theme, fullscreen, settings drawer | `TopHeader.tsx` + Lang/Theme/User + FullscreenToggle + ChatModal + SettingsDrawer | **部分** | Breadcrumb toggle, lock entry, chat stub, settings drawer (breadcrumb switch); primary color presets + ColorPicker in settings |
 | Second header / Tag tabs | `Layout/SecondHeader/SecondHeader.vue` → `TagView/*` | multi-tab visited pages | `backend/components/TagView.tsx` | **部分** | Tabs + localStorage + close/context actions; keep-alive page cache not applicable (SSR/view) |
 | Mobile side drawer | `Layout.vue` `el-drawer` | drawer when mobile | `_layout.tsx` backdrop + `SidebarToggle` | **部分** | Full-height drawer + backdrop aligned with Vue aside drawer |
 | Login / no-chrome | `views/fullpage/*` rendered outside Layout | fullpage | `_layout.tsx` skips `/login`, `/password/*`, `/error/*` | **已有** | forget/reset + error pages use AuthShell/ErrorPage |
@@ -99,11 +98,11 @@ Blocking relation: **TagView + TopHeader breadcrumb** are pure shell; list `Data
 
 | Vue file | Title | Suggested dweb route | dweb file | Status |
 |---|---|---|---|---|
-| `admin/index.vue` | 管理员列表 | `/rbac/admins` | `backend/routes/rbac/admins/index.tsx` + `AdminsAdmin.tsx` | **部分** — DataPanel chrome |
-| `admin/role/index.vue` | 角色列表 | `/rbac/roles` | `.../rbac/roles/index.tsx` + `ItemAdmin.tsx` | **部分** — DataPanel chrome |
-| `admin/access/index.vue` | 权限列表 | `/rbac/permissions` | `.../rbac/permissions/index.tsx` + `ItemAdmin.tsx` | **部分** — DataPanel chrome |
-| `admin/route/index.vue` | 路由列表 | `/rbac/routes` | `.../rbac/routes/index.tsx` + `RoutesAdmin.tsx` | **部分** — DataPanel chrome |
-| `admin/assign/index.vue` | 权限分配 | (role/perm assign UI) | partial inside role/admin modals? | **缺**/弱 |
+| `admin/index.vue` | 管理员列表 | `/rbac/admins` | `AdminsAdmin.tsx` + real `/api/users` | **部分** — DataPanel + export/print/column; live list |
+| `admin/role/index.vue` | 角色列表 | `/rbac/roles` | `ItemAdmin.tsx` + real RBAC APIs | **部分** — DataPanel tools + Transfer children |
+| `admin/access/index.vue` | 权限列表 | `/rbac/permissions` | `ItemAdmin.tsx` + real RBAC APIs | **部分** — DataPanel tools + Transfer children |
+| `admin/route/index.vue` | 路由列表 | `/rbac/routes` | `RoutesAdmin.tsx` + real route registry APIs | **部分** — Transfer + print |
+| `admin/assign/index.vue` | 权限分配 | `/rbac/assign` | `AssignAdmin.tsx` + Transfer → `PUT /api/users/:id` roleCodes | **部分** — roles assign runnable; Vue allow/deny + direct route-on-user not modeled |
 
 ---
 
@@ -111,7 +110,7 @@ Blocking relation: **TagView + TopHeader breadcrumb** are pure shell; list `Data
 
 | Vue file | Title | dweb-admin | Status |
 |---|---|---|---|
-| `developer/menu/index.vue` | 菜单列表 | `/system/menus` → `MenusAdmin.tsx` | **部分** — DataPanel chrome (path stays `/system/menus`) |
+| `developer/menu/index.vue` | 菜单列表 | `/system/menus` → `MenusAdmin.tsx` + real menu APIs | **部分** — DataPanel search/export/print/column |
 | `system/admin-log/index.vue` | 管理员日志列表 | `/system/admin-log` stub DataPanel | **部分** — demo rows |
 | `system/base/index.vue` | 基本设置 | `/system/base` stub Descriptions | **部分** — settings preview |
 | `system/bonus/index.vue` | 奖金设置 | `/system/bonus` stub Descriptions | **部分** — settings preview |
@@ -120,7 +119,7 @@ Blocking relation: **TagView + TopHeader breadcrumb** are pure shell; list `Data
 | `system/finance/index.vue` | 财务设置 | `/system/finance` stub Descriptions | **部分** — settings preview |
 | `system/level/index.vue` | 会员级别列表 | `/system/level` stub DataPanel | **部分** — demo rows |
 | `system/locale/index.vue` | 本地化管理 | `/system/locale` stub DataPanel | **部分** — demo rows |
-| `system/online/index.vue` | 在线管理员 | `/system/online` → `OnlineAdmin.tsx` (DataPanel) | **部分** — AdminSession list; IP/UA N/A |
+| `system/online/index.vue` | 在线管理员 | `/system/online` → `OnlineAdmin.tsx` (DataPanel + real AdminSession) | **部分** — live sessions; IP/UA N/A; search/export/print/column |
 | `system/region/index.vue` | 地区列表 | `/system/region` stub DataPanel | **部分** — demo rows |
 | `system/transfer/index.vue` | 转账设置 | `/system/transfer` stub Descriptions | **部分** — settings preview |
 | `system/wallet/index.vue` | 钱包设置 | `/system/wallet` stub Descriptions | **部分** — settings preview |
@@ -183,17 +182,17 @@ All **部分** stubs (DataPanel demo): `/count/bonus|invest|point|recharge|withd
 
 | Area | Vue pages (excl. modules) | dweb 已有/部分 | 缺 |
 |---|---:|---:|---:|
-| Shell pieces (layout/side/top/second/tag) | 5+ | 5 部分 | Theme color settings; TagView keep-alive N/A; lock/chat/settings minimal |
+| Shell pieces (layout/side/top/second/tag) | 5+ | 5 部分 | TagView keep-alive N/A; chat still stub |
 | Fullpage + error | 7 | 7 部分 (login/lock/forget/reset/403/404/500) | 0 (parity pending) |
 | Home | 2 | 2 部分 (dashboard charts + workspace stub) | 0 |
-| Admin/RBAC | 5 | 4 部分 | 1 |
+| Admin/RBAC | 5 | 5 部分 (incl. `/rbac/assign`) | 0 (allow/deny UX pending) |
 | System + developer menu | 13 | 13 部分 (menus/online + 11 stubs) | 0 (model/API pending) |
 | User | 13 | 13 部分 (stubs) | 0 (model/API pending) |
 | CMS | 6 | 6 部分 (stubs) | 0 (model/API pending) |
 | Finance | 9 | 9 部分 (stubs incl. bonus/log + wallet add-sub/log) | 0 (model/API pending) |
 | Count | 5 | 5 部分 (stubs) | 0 (model/API pending) |
 | Developer (rest) | 4 | 4 部分 (stubs) | 0 (model/API pending) |
-| **DataPanel wrapper** | 1 (CardPanel) | 1 部分 | 0 (parity pending) |
+| **DataPanel wrapper** | 1 (CardPanel) | 1 部分 (search/column/export/import/print) | Excel/XML backends + import parsers pending |
 
 Vue list entry pages: **64** view files (modules excluded). Dynamic sidebar routes beyond static `/dashboard`/`/workspace`/auth come from backend-fed `routeStore` in Vue; dweb uses Mongo `menus` seed covering dashboard/workspace/rbac/system/user/cms/finance/count/developer (stub leaves included).
 
@@ -202,10 +201,9 @@ Vue list entry pages: **64** view files (modules excluded). Dynamic sidebar rout
 ## 12. Suggested implementation order (next knives)
 
 1. Replace stubs with real models/APIs (system settings store, member, CMS, finance).
-2. DataPanel parity (search schemas, real export/import/print/column, row actions/forms).
-3. Shell polish remaining (theme color pickers).
-4. RBAC assign UX + fine-grained route grants (stubs currently AUTH_ONLY for reachability).
-5. Done this knife: 48 catalog stub pages across system/user/cms/finance/count/developer.
+2. DataPanel further parity (Excel/XML/HTML export backends, import parsers, row-level forms).
+3. Vue-style allow/deny + direct route assignment on a user (beyond roleCodes Transfer).
+4. Done this knife: `/rbac/assign` runnable; DataPanel search/column/export/import/print skeleton; theme primary picker; stub AUTH_ONLY removed (super / explicit grants only).
 
 ### Hard constraints reminder
 

@@ -1,6 +1,6 @@
 # dreamer-jsr extension / workspace packages (scan 2026-11-01)
 
-Source root: `/home/deno/dreamer-jsr`. Skipped product apps: `douwanjia`, `senvis`, `quant`, `care-guard` (out of admin-template scope).
+Source root: `/home/deno/dreamer-jsr`. Confirmed Vue admin reference: `/home/vue/dreamer-vue`. Skipped product apps: `douwanjia`, `senvis`, `quant`, `care-guard` (out of admin-template scope).
 
 ## Useful for dweb-admin UI / lists / panels (priority)
 
