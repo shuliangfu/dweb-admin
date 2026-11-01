@@ -228,24 +228,6 @@ const MENUS: Omit<MenuDocument, "_id" | "createdAt" | "updatedAt">[] = [
     status: "active",
   },
   {
-    key: "cms.qa",
-    parentKey: "cms",
-    title: { "zh-CN": "问答列表", "en-US": "Q&A" },
-    path: "/cms/qa",
-    icon: "star",
-    sort: 50,
-    status: "active",
-  },
-  {
-    key: "cms.survey",
-    parentKey: "cms",
-    title: { "zh-CN": "问卷调查列表", "en-US": "Surveys" },
-    path: "/cms/survey",
-    icon: "star",
-    sort: 60,
-    status: "active",
-  },
-  {
     key: "developer",
     parentKey: "",
     title: { "zh-CN": "开发管理", "en-US": "Development" },
@@ -342,8 +324,10 @@ export async function seedAll(): Promise<void> {
     }
   }
 
-  // Drop obsolete menus removed from MENUS (member/finance/count + system cull; menus → developer).
+  // Drop obsolete menus removed from MENUS (member/finance/count + system cull; menus → developer; cms qa/survey).
   const OBSOLETE_MENU_KEYS = [
+    "cms.qa",
+    "cms.survey",
     "count",
     "count.bonus",
     "count.invest",

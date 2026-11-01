@@ -274,56 +274,6 @@ export const STUB_PAGES: StubPage[] = [
     parent: "cms",
   },
   {
-    key: "cms.qa",
-    module: "cms",
-    path: "/cms/qa",
-    title: { "zh-CN": "问答列表", "en-US": "Q&A" },
-    kind: "list",
-    columns: [
-      { prop: "question", label: { "zh-CN": "问题", "en-US": "Question" } },
-      { prop: "answers", label: { "zh-CN": "答案", "en-US": "Answers" } },
-      { prop: "right", label: { "zh-CN": "正确答案", "en-US": "Correct" } },
-      { prop: "status", label: { "zh-CN": "是否启用", "en-US": "Enabled" } },
-      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
-    ],
-    searchFields: [
-      { name: "question", label: { "zh-CN": "问题", "en-US": "Question" }, placeholder: { "zh-CN": "请输入问题查询", "en-US": "Search Question" } },
-      { name: "answers", label: { "zh-CN": "答案", "en-US": "Answers" }, placeholder: { "zh-CN": "请输入答案查询", "en-US": "Search Answers" } },
-      { name: "right", label: { "zh-CN": "正确答案", "en-US": "Correct" }, placeholder: { "zh-CN": "请输入正确答案查询", "en-US": "Search Correct" } },
-      { name: "status", label: { "zh-CN": "是否启用", "en-US": "Enabled" }, placeholder: { "zh-CN": "请输入是否启用查询", "en-US": "Search Enabled" } },
-      { name: "created_at", label: { "zh-CN": "创建时间", "en-US": "Created" }, placeholder: { "zh-CN": "请输入创建时间查询", "en-US": "Search Created" } }
-    ],
-    settings: [
-
-    ],
-    icon: "star",
-    sort: 50,
-    parent: "cms",
-  },
-  {
-    key: "cms.survey",
-    module: "cms",
-    path: "/cms/survey",
-    title: { "zh-CN": "问卷调查列表", "en-US": "Surveys" },
-    kind: "list",
-    columns: [
-      { prop: "question", label: { "zh-CN": "问题", "en-US": "Question" } },
-      { prop: "status", label: { "zh-CN": "是否启用", "en-US": "Enabled" } },
-      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
-    ],
-    searchFields: [
-      { name: "question", label: { "zh-CN": "问题", "en-US": "Question" }, placeholder: { "zh-CN": "请输入问题查询", "en-US": "Search Question" } },
-      { name: "status", label: { "zh-CN": "是否启用", "en-US": "Enabled" }, placeholder: { "zh-CN": "请输入是否启用查询", "en-US": "Search Enabled" } },
-      { name: "created_at", label: { "zh-CN": "创建时间", "en-US": "Created" }, placeholder: { "zh-CN": "请输入创建时间查询", "en-US": "Search Created" } }
-    ],
-    settings: [
-
-    ],
-    icon: "star",
-    sort: 60,
-    parent: "cms",
-  },
-  {
     key: "developer.database",
     module: "developer",
     path: "/developer/database",

@@ -140,7 +140,7 @@ Removed from dweb-admin (no route/menu/stub): new / black / locked / online / lo
 
 ## 7. CMS
 
-All **部分** stubs (DataPanel demo): `/cms/article|news|notice|photo|qa|survey`.
+All **部分** stubs (DataPanel demo): `/cms/article|news|notice|photo`. Removed: qa / survey (no menu/route/stub).
 
 ---
 
@@ -169,7 +169,7 @@ Top-level title 开发管理. Menus live page moved here; other leaves stay stub
 | System | 3 kept | 3 部分 (stubs) | extras dropped from 系统管理 |
 | Developer（开发管理） | 5 | 5 部分 (menus live + 4 stubs) | online removed from nav |
 | User | 3 kept | 3 部分 (stubs) | Vue extras intentionally dropped |
-| CMS | 6 | 6 部分 (stubs) | 0 (model/API pending) |
+| CMS | 4 kept | 4 部分 (stubs) | qa/survey dropped |
 | Developer (rest) | 4 | 4 部分 (stubs) | 0 (model/API pending) |
 | **DataPanel wrapper** | 1 (CardPanel) | 1 部分 (search/column/CSV export+import/print; children col filter) | Excel/XML/HTML backends pending (no pkgs) |
 
