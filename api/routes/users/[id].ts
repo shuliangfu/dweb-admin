@@ -1,8 +1,6 @@
 /**
- * 示例 API：用户详情
- * GET /users/:id
+ * Sample user detail — dual: `view` (action) + `GET` (restful).
  */
-
 import type { ApiContext } from "@dreamer/dweb";
 import { json } from "@dreamer/router";
 
@@ -11,10 +9,7 @@ const users: Record<string, { id: string; name: string }> = {
   "2": { id: "2", name: "Bob" },
 };
 
-/**
- * GET /users/:id
- */
-export function GET(ctx: ApiContext) {
+export function view(ctx: ApiContext) {
   const id = ctx.params?.id ?? "";
   const user = users[id];
   if (!user) {
@@ -22,3 +17,5 @@ export function GET(ctx: ApiContext) {
   }
   return json({ user });
 }
+
+export const GET = view;

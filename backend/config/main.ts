@@ -16,6 +16,13 @@ export default {
   router: {
     /** 路由文件所在目录（基于文件的路由）。 */
     routesDir: "./backend/routes",
+    /**
+     * API template (global; cannot mix per file — @dreamer/router):
+     * - "restful" (default): load GET|POST|PUT|DELETE|PATCH exports; URL = file path.
+     * - "action": load named exports (`login`, `index`, …); also matches `…/:method`.
+     * Handlers dual-export both styles so switching mode keeps one-file actions working.
+     * See docs/handoff.md § API 两种模板 + backend/api-style.ts.
+     */
     apiMode: "restful",
   },
   /** HTTP port from APP_PORT_BACKEND (default 3100). */

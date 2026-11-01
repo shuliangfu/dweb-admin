@@ -1,10 +1,10 @@
-/** POST /api/auth/twofactor — login step 2: { code } + challenge cookie → session. Public path. */
+/** Login 2FA step — dual: `twofactor` (action) + `POST` (restful). Public path. */
 import type { ApiContext } from "@dreamer/dweb";
 import { completeTwoFactor } from "@common/service/security.ts";
 import { clearChallengeCookie, readChallengeToken } from "@common/service/challenge.ts";
 import { isFormRequest, jsonResponse, readBody } from "@common/utils/http.ts";
 
-export async function POST(ctx: ApiContext) {
+export async function twofactor(ctx: ApiContext) {
   const form = isFormRequest(ctx.req);
   const body = await readBody(ctx);
   const result = await completeTwoFactor(readChallengeToken(ctx.req), String(body.code ?? ""), ctx.req);
@@ -27,3 +27,5 @@ export async function POST(ctx: ApiContext) {
       })(),
     });
 }
+
+export const POST = twofactor;

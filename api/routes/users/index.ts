@@ -1,8 +1,6 @@
 /**
- * 示例 API：用户列表
- * GET /users
+ * Sample users list — dual: `index` (action) + `GET` (restful).
  */
-
 import type { ApiContext } from "@dreamer/dweb";
 import { json } from "@dreamer/router";
 
@@ -11,9 +9,8 @@ const users = [
   { id: "2", name: "Bob" },
 ];
 
-/**
- * GET /users
- */
-export function GET(_ctx: ApiContext) {
+export function index(_ctx: ApiContext) {
   return json({ users });
 }
+
+export const GET = index;

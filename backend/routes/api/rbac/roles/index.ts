@@ -1,11 +1,8 @@
-/** GET /api/rbac/roles (paginated; ?name=x → detail) · POST /api/rbac/roles (create). RBAC-protected. */
-import type { ApiContext } from "@dreamer/dweb";
+/** Roles collection — dual: `index`/`create` + GET/POST. */
 import { itemHandlers } from "@backend/api-util.ts";
 
 const h = itemHandlers("role");
-export function GET(ctx: ApiContext) {
-  return h.list(ctx);
-}
-export function POST(ctx: ApiContext) {
-  return h.create(ctx);
-}
+export const index = h.list;
+export const create = h.create;
+export const GET = index;
+export const POST = create;

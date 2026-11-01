@@ -1,10 +1,12 @@
-/** POST /api/auth/passkey/options — fingerprint login step 1 (public): WebAuthn request options. */
+/** Passkey login options — dual: `options` (action) + `POST` (restful). Public. */
 import type { ApiContext } from "@dreamer/dweb";
 import { passkeyLoginOptions } from "@common/service/security.ts";
 import { challengeCookie } from "@common/service/challenge.ts";
 import { jsonResponse } from "@common/utils/http.ts";
 
-export async function POST(ctx: ApiContext) {
-  const { options, token } = await passkeyLoginOptions(ctx.req);
-  return jsonResponse({ options }, 200, { "set-cookie": challengeCookie(token) });
+export async function options(ctx: ApiContext) {
+  const { options: webauthn, token } = await passkeyLoginOptions(ctx.req);
+  return jsonResponse({ options: webauthn }, 200, { "set-cookie": challengeCookie(token) });
 }
+
+export const POST = options;

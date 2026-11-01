@@ -14,8 +14,10 @@ export default {
   version: "1.0.0",
   /** 路由：routesDir、apiMode、redirects、skipAppValidation。详见 APP_CONFIG.md。 */
   router: {
-    /** 路由文件所在目录（基于文件的路由）。 */
+    /** 路由文件所在目录（基于文件的路由）。kind:"api" → handlers live directly under routes/. */
     routesDir: "./api/routes",
+    /** Same dual-template rule as backend; samples in api/routes/hello.ts export both. See handoff. */
+    apiMode: "restful",
   },
   /** 日志：level、format、output（console、file）、color、showTime、showLevel、tags、filter、maxMessageLength。 */
   logger: {

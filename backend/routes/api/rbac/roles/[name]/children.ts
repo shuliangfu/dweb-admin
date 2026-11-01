@@ -1,8 +1,6 @@
-/** PUT /api/rbac/roles/:name/children — Transfer: { add: string[], remove: string[] } (keys like "route:GET /x"). */
-import type { ApiContext } from "@dreamer/dweb";
+/** Role children Transfer — dual: `children` + PUT. */
 import { itemHandlers } from "@backend/api-util.ts";
 
 const h = itemHandlers("role");
-export function PUT(ctx: ApiContext) {
-  return h.children(ctx);
-}
+export const children = h.children;
+export const PUT = children;

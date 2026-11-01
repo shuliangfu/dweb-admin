@@ -1,20 +1,21 @@
 /**
- * POST /api/auth/login — JSON ({username,password,remember?}) → JSON; HTML form → 302.
- * With 2FA on the response is `{status:"2fa"}` / redirect to /login?step=2fa and a
- * short-lived challenge cookie; the code is then posted to /api/auth/twofactor.
+ * Auth login — dual API template (restful + action).
+ * - restful: `POST`  → POST /api/auth/login
+ * - action:  `login` → POST /api/auth/login (path segment / :method)
  * Public path (see common/service/rbac.ts).
  */
 import type { ApiContext } from "@dreamer/dweb";
-import { clientMeta, login } from "@common/service/auth.ts";
+import { clientMeta, login as doLogin } from "@common/service/auth.ts";
 import { challengeCookie } from "@common/service/challenge.ts";
 import { isFormRequest, jsonResponse, readBody } from "@common/utils/http.ts";
 
 const truthy = (v: unknown) => v === true || v === "1" || v === "on" || v === "true";
 
-export async function POST(ctx: ApiContext) {
+/** Action-style handler (apiMode: "action"). */
+export async function login(ctx: ApiContext) {
   const form = isFormRequest(ctx.req);
   const body = await readBody(ctx);
-  const result = await login(
+  const result = await doLogin(
     String(body.username ?? ""),
     String(body.password ?? ""),
     truthy(body.remember),
@@ -42,3 +43,6 @@ export async function POST(ctx: ApiContext) {
     "set-cookie": result.cookie,
   });
 }
+
+/** RESTful alias (apiMode: "restful", default). */
+export const POST = login;

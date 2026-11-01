@@ -118,7 +118,31 @@ dweb-admin 对应物：
 - `_app.tsx` / `_layout.tsx` / `_404.tsx` / `_error.tsx` 为壳与错误页。
 - JSON API 同树下 `backend/routes/api/**`（如 `/api/users`、`/api/rbac/*`）。
 
+### API 两种模板（restful / action）
+
+dweb 经 `@dreamer/router` + `@dreamer/server` RouterAdapter 支持 **两种** API 写法；由应用配置 **`router.apiMode`** 全局选择（**不可按文件混用**）：
+
+| 模板 | `apiMode` | 模块导出 | URL 约定 |
+|------|-----------|----------|----------|
+| **1. RESTful**（本仓默认） | `"restful"` | `GET` / `POST` / `PUT` / `DELETE` / `PATCH` | 文件路径＝资源路径，如 `routes/api/users/index.ts` → `GET|POST /api/users` |
+| **2. Action（直接写方法）** | `"action"` | 方法名本身，如 `login(ctx)`、`index(ctx)`、`create(ctx)` | 静态 API 文件额外注册 `…/:method`；也可按**路径末段**匹配（含 kebab→camel）。例：`export function login` ↔ `POST /api/auth/login` |
+
+配置位置：`backend/config/main.ts`（管理端）、`api/config/main.ts`（纯 API 应用）。约定与类型说明见 **`backend/api-style.ts`**。
+
+**本仓写法（复用框架，勿自建分发器）**：每个 handler **双导出**——以 action 名为源，再别名 HTTP 动词。这样默认 `restful` 与切换到 `action` 时，**单文件单动作**路径（登录、登出、踢下线等）URL 不变：
+
+```ts
+// backend/routes/api/auth/login.ts
+export async function login(ctx: ApiContext) { /* … */ }
+export const POST = login; // restful 别名
+```
+
+集合 CRUD（同一路径用动词区分，如 `GET`+`POST /api/users`）以 **restful 为主**；若整站改 `apiMode: "action"`，请改用 `/api/users/create` 等 `:method` URL，或继续保持 restful。动态段 `[id].ts` / `[name].ts` 更适合 restful。
+
+示例对照：`api/routes/hello.ts`（`hello`+`GET`，`create`+`POST`）；管理端 auth／account／users／rbac／menus 均已双导出。
+
 ### RBAC（Yii2 风格，非 Vue 直绑）
+
 
 模型在 `common/model/rbac.ts` + `admin.ts`：
 
@@ -157,7 +181,7 @@ dweb-admin 对应物：
 
 ### 数据面板与列表页
 
-- 封装：`common/components/DataPanel.tsx`（`downloadCsv`／`parseCsv`／`DataPanelChildrenCtx`）。
+- 封装：`common/components/DataPanel.tsx`（多格式 export／import、打印、列显隐、`DataPanelChildrenCtx`）。
 - 真列表：`AdminsAdmin`、`ItemAdmin`、`MenusAdmin`、`RoutesAdmin`、`AssignAdmin`、`OnlineAdmin` + 对应 `backend/routes/...` load 真 API。
 - Stub：`common/stubs/catalog.ts` + `StubList`／`StubSettings`／`StubChart`／`stub-page.tsx`；无领域模型前用演示行，且 **AUTH_ONLY 已收紧**（非超管需显式路由授权）。
 
@@ -221,7 +245,7 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 - Home：dashboard + workspace——**部分**。
 - RBAC：admins／roles／permissions／routes／**assign（roleCodes＝允许型可跑；modal 含禁用 gap UI）**——**部分**；真 list／CRUD API。
 - System：menus（CRUD）、online（真 AdminSession＋IP／UA＋踢下线）——**部分**；其余多为 stub。
-- DataPanel：search／列显隐／CSV 导出＋`parseCsv`→`onImportRows`／打印；children `filterTableColumns` 已接 admins／roles／menus。
+- DataPanel：search／列显隐／多格式导出（CSV／HTML-as-xls／XML／TXT／JSON）＋导入解析／打印／图标工具条；children `filterTableColumns` 已接 admins／roles／menus；壳层顶栏高度对齐 Vue（`h-adm-top`）。
 - Tailwind 4：禁止 3.x 任意值 bracket 烂用（见上文「Tailwind 4 约定」）。
 - AUTH_ONLY 收紧：stub 页不再白名单放行，需超管或显式路由授权。
 
@@ -229,7 +253,7 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 
 1. **扫仓结论（2026-11-01）**：有领域模型却仍 stub 的页＝**无**。AdminUser／Auth*／Menu／AdminSession／AdminPasskey 相关 list／CRUD（含 online 踢下线、账号安全）已接真 API。
 2. **无模型 stub 保持 stub**（勿假接）：会员／CMS／财务／统计／developer 备份反馈语言系统日志／system 设置与 admin-log 等——需先新增领域模型再接线。
-3. **DataPanel**：Excel／XML／HTML 等有真实依赖再接；行级表单／与 Vue CardPanel store 驱动进一步对齐。
+3. **DataPanel**：浏览器侧 HTML-table-as-xls／XML／TXT／JSON 已接（对齐 Vue excel.js 思路，非 OOXML）；真 Excel 库／行级表单／与 Vue CardPanel store 驱动仍弱。
 4. **RBAC 模型缺口**：Vue allow／deny＋用户直绑路由需 AuthAssignment 类模型后才能真接 Assign gap 面板。
 
 ### 工作区提示
@@ -263,10 +287,7 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 
 ## 9. 修订记录
 
-- 2026-11-01（Asia/Shanghai）：模型背书扫仓——无剩余「有模型仍 stub」页；online 踢下线；matrix／本 handoff 进度同步（Chat／session IP·UA／TW4）。
-
-- 2026-11-01（Asia/Shanghai）：补「Tailwind 4 约定／禁 3.x 任意值」；全仓将 rem／px／%／vh 方括号尺寸迁到刻度工具类或 `@theme` 命名 token。
-
-| 日期（Asia/Shanghai） | 说明 |
+| 日期 (Asia/Shanghai) | 说明 |
 |---|---|
-| 2026-11-01 | 首版接手文档：路径确认、栈、扩展包、跑法、git、进度与硬规则 |
+| 2026-11-01 | 初版 handoff + matrix + extension-packages；模型扫仓／online kick；TW4 约定 |
+| 2026-11-01 | API 双模板：handlers 双导出 restful+action；`backend/api-style.ts`；handoff § API；DataPanel 多格式导出／壳层视觉对齐 |

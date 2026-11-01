@@ -1,10 +1,10 @@
-/** POST /api/auth/passkey/verify — fingerprint login step 2 (public): { response, remember? } → session. */
+/** Passkey login verify — dual: `verify` (action) + `POST` (restful). Public. */
 import type { ApiContext } from "@dreamer/dweb";
 import { passkeyLoginVerify } from "@common/service/security.ts";
 import { clearChallengeCookie, readChallengeToken } from "@common/service/challenge.ts";
 import { jsonResponse, readBody } from "@common/utils/http.ts";
 
-export async function POST(ctx: ApiContext) {
+export async function verify(ctx: ApiContext) {
   const body = await readBody(ctx);
   const result = await passkeyLoginVerify(
     ctx.req,
@@ -18,3 +18,5 @@ export async function POST(ctx: ApiContext) {
   headers.append("Set-Cookie", clearChallengeCookie());
   return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
 }
+
+export const POST = verify;
