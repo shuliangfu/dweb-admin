@@ -87,6 +87,12 @@ export type DataPanelProps<T extends Record<string, unknown> = Record<string, un
    */
   children?: unknown | ((ctx: DataPanelChildrenCtx) => unknown);
   onCreate?: () => void;
+  /** Row action handlers (Vue CardPanel table.onView / onUpdate / onDelete). */
+  onView?: (row: T) => void;
+  onUpdate?: (row: T) => void;
+  onDelete?: (row: T) => void;
+  /** Labels for built-in action column buttons. */
+  actionLabels?: { view?: string; update?: string; delete?: string; column?: string };
   onRefresh?: () => void;
   onExport?: (format?: DataPanelExportFormat) => void;
   onImport?: () => void;
@@ -647,6 +653,40 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
       return (ch as (c: DataPanelChildrenCtx) => unknown)(ctx);
     }
     if (ch != null) return ch;
+
+    const acts = props.actions ?? {};
+    const al = props.actionLabels ?? {};
+    const showActs = !!(acts.view || acts.update || acts.delete);
+    let cols = columns.filter((c) => c.prop !== "actions");
+    if (showActs) {
+      cols = [
+        ...cols,
+        {
+          prop: "actions",
+          label: al.column ?? "Actions",
+          width: 200,
+          render: (_v: unknown, row: T) => (
+            <div class="flex flex-wrap items-center gap-1">
+              {acts.view && props.onView && (
+                <Button type="button" size="sm" onClick={() => props.onView!(row)}>
+                  {al.view ?? "View"}
+                </Button>
+              )}
+              {acts.update && props.onUpdate && (
+                <Button type="button" size="sm" onClick={() => props.onUpdate!(row)}>
+                  {al.update ?? "Edit"}
+                </Button>
+              )}
+              {acts.delete && props.onDelete && (
+                <Button type="button" size="sm" variant="danger" onClick={() => props.onDelete!(row)}>
+                  {al.delete ?? "Delete"}
+                </Button>
+              )}
+            </div>
+          ),
+        },
+      ];
+    }
     return (
       <Table
         bordered
@@ -654,7 +694,7 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
         size="sm"
         rowKey={props.rowKey ?? "id"}
         dataSource={rows}
-        columns={toTableColumns(columns, hiddenCols.value)}
+        columns={toTableColumns(cols, hiddenCols.value)}
         pagination={{ pageSize: 20, total: rows.length }}
         locale={{ emptyText: props.emptyText ?? "—" }}
         {...(props.tableProps as object)}

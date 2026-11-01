@@ -107,6 +107,7 @@ export default function Layout(props: { children?: VNode | VNode[]; data?: Layou
           title={pageTitle}
           dashboardTitle={tr("nav.dashboard")}
           labels={{
+            refresh: tr("shell.refresh"),
             closeLeft: tr("shell.closeLeft"),
             closeRight: tr("shell.closeRight"),
             closeOther: tr("shell.closeOther"),

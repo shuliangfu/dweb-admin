@@ -12,6 +12,9 @@ export interface UserRow {
   email: string;
   roleCodes: string[];
   status: "active" | "disabled";
+  /** ISO string from listUsers (Vue login_count absent — show last login instead). */
+  lastLoginAt?: string;
+  createdAt?: string;
 }
 
 const open = createSignal(false);
@@ -26,6 +29,11 @@ const errors = createSignal<string[]>([]);
 const deleting = createSignal("");
 const names = new Map<string, string>(); // id → username for the confirm text
 const busy = createSignal(false);
+
+function fmtTs(iso?: string): string {
+  if (!iso) return "—";
+  return iso.slice(0, 19).replace("T", " ");
+}
 
 export function AdminsAdmin(props: {
   locale: Locale;
@@ -104,6 +112,8 @@ export function AdminsAdmin(props: {
           { prop: "email", label: tr("usersForm.email") },
           { prop: "roles", label: tr("users.roles") },
           { prop: "status", label: tr("common.status") },
+          { prop: "lastLoginAt", label: tr("users.lastLogin") },
+          { prop: "createdAt", label: tr("common.createdAt") },
           { prop: "actions", label: tr("common.actions") },
         ]}
         rows={props.rows.map((r, i) => ({
@@ -149,6 +159,16 @@ export function AdminsAdmin(props: {
                 {tr(r.status === "active" ? "common.active" : "common.disabled")}
               </Tag>
             ),
+          },
+          {
+            key: "lastLoginAt",
+            title: tr("users.lastLogin"),
+            render: (_v: unknown, r: UserRow) => fmtTs(r.lastLoginAt),
+          },
+          {
+            key: "createdAt",
+            title: tr("common.createdAt"),
+            render: (_v: unknown, r: UserRow) => fmtTs(r.createdAt),
           },
           {
             key: "actions",

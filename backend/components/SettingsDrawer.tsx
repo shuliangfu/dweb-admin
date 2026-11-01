@@ -8,21 +8,21 @@ import { createT, type Locale } from "@common/i18n/mod.ts";
 
 export const settingsOpen = createSignal(false);
 export const breadcrumbOn = createSignal(true);
-export const primaryColor = createSignal("#2563eb");
+export const primaryColor = createSignal("#3c8dbc");
 
 const BREADCRUMB_KEY = "dweb-admin-breadcrumb";
 const PRIMARY_KEY = "dweb-admin-primary";
 
 const PRESETS = [
+  "#3c8dbc", // Vue / AdminLTE primary (default)
   "#2563eb", // blue
+  "#409eff", // Element Plus blue
   "#7c3aed", // violet
   "#db2777", // pink
   "#dc2626", // red
   "#ea580c", // orange
-  "#ca8a04", // yellow
   "#16a34a", // green
   "#0d9488", // teal
-  "#0891b2", // cyan
   "#475569", // slate
 ];
 
@@ -48,7 +48,7 @@ export function readPrimaryPref(): string {
     const v = (globalThis as { localStorage?: Storage }).localStorage?.getItem(PRIMARY_KEY);
     if (v && /^#[0-9a-fA-F]{6}$/.test(v)) return v;
   } catch { /* ignore */ }
-  return "#2563eb";
+  return "#3c8dbc";
 }
 
 export function applyPrimaryColor(hex: string): void {

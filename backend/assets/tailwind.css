@@ -163,8 +163,8 @@
   --adm-tag-bg: #f5f7fa;
   --adm-tag-border: #e4e7ed;
   --adm-tag-item-border: #dcdfe6;
-  --adm-tag-on-fg: #3c8dbc;
-  --adm-tag-on-bg: #ecf5ff;
+  --adm-tag-on-fg: var(--adm-accent, #3c8dbc);
+  --adm-tag-on-bg: color-mix(in srgb, var(--adm-accent, #3c8dbc) 12%, white);
 }
 .dark {
   --adm-side: #11181b;

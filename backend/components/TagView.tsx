@@ -153,7 +153,19 @@ function closeAll(activePath: string): void {
   ctx.value = null;
 }
 
+function reloadCurrent(path: string, activePath: string): void {
+  ctx.value = null;
+  const loc = (globalThis as { location?: Location }).location;
+  if (!loc) return;
+  if (path !== activePath) {
+    go(path);
+    return;
+  }
+  loc.reload();
+}
+
 export function TagView(props: {
+
   pathname: string;
   title: string;
   dashboardTitle: string;
@@ -162,6 +174,8 @@ export function TagView(props: {
     closeRight: string;
     closeOther: string;
     closeAll: string;
+    /** Optional: reload current page (Vue TagView refresh). */
+    refresh?: string;
   };
 }) {
   upsert(props.pathname, props.title, props.dashboardTitle);
@@ -231,6 +245,17 @@ export function TagView(props: {
             data-testid="tag-context-menu"
             onClick={(e: Event) => e.stopPropagation()}
           >
+            {props.labels.refresh
+              ? (
+                <button
+                  type="button"
+                  class="adm-tag-ctx-item"
+                  onClick={() => reloadCurrent(m.path, active)}
+                >
+                  {props.labels.refresh}
+                </button>
+              )
+              : null}
             <button type="button" class="adm-tag-ctx-item" onClick={() => closeLeft(m.path)}>
               {props.labels.closeLeft}
             </button>

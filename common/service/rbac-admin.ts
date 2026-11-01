@@ -65,6 +65,7 @@ export async function listItems(type: ItemType, q: Page) {
       ruleName: i.ruleName ?? "",
       data: i.data ?? "",
       isSuper: !!i.isSuper,
+      createdAt: i.createdAt ? new Date(i.createdAt).toISOString() : "",
     })),
     total: r.total,
     page: r.page,

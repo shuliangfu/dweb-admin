@@ -16,6 +16,7 @@ export interface ItemRow {
   ruleName: string;
   data: string;
   isSuper: boolean;
+  createdAt?: string;
 }
 interface ChildEntry {
   key: string;
@@ -30,6 +31,11 @@ interface Detail {
 type Mode = "view" | "edit" | "create";
 
 const ORDER = { role: 0, permission: 1, route: 2 } as const;
+
+function fmtTs(iso?: string): string {
+  if (!iso) return "—";
+  return iso.slice(0, 19).replace("T", " ");
+}
 
 // Module-level state (one page per route, state resets on navigation).
 const open = createSignal(false);
@@ -236,6 +242,7 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
           { prop: "name", label: tr("rbac.name") },
           { prop: "ruleName", label: tr("rbac.ruleName") },
           { prop: "description", label: tr("rbac.description") },
+          { prop: "createdAt", label: tr("common.createdAt") },
           { prop: "actions", label: tr("common.actions") },
         ]}
         rows={props.rows.map((r, i) => ({ ...r, idx: i + 1 })) as never}
@@ -268,6 +275,11 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
           },
           { key: "ruleName", title: tr("rbac.ruleName"), dataIndex: "ruleName" },
           { key: "description", title: tr("rbac.description"), dataIndex: "description" },
+          {
+            key: "createdAt",
+            title: tr("common.createdAt"),
+            render: (_v: unknown, r: ItemRow) => fmtTs(r.createdAt),
+          },
           {
             key: "actions",
             title: tr("common.actions"),

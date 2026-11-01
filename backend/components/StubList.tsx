@@ -94,6 +94,16 @@ export function StubList(props: { locale: Locale; page: StubPage }) {
         message.info(tr("stub.importParsed", { n: rows.length }));
       }}
       exportFilename={props.page.key.replace(/\./g, "-")}
+      actions={{ view: true, update: true, delete: true }}
+      actionLabels={{
+        column: tr("common.actions"),
+        view: tr("rbac.view"),
+        update: tr("crud.edit"),
+        delete: tr("crud.delete"),
+      }}
+      onView={() => message.info(tr("stub.soon"))}
+      onUpdate={() => message.info(tr("stub.soon"))}
+      onDelete={() => message.info(tr("stub.soon"))}
     />
   );
 }

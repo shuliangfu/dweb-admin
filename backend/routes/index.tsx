@@ -1,6 +1,6 @@
 /**
- * Dashboard (/) — Vue home/dashboard.vue shape: KPI cards + charts via @dreamer/ui-view Chart*.
- * Numbers are demo placeholders until user/finance services land.
+ * Dashboard (/) — Vue home/dashboard.vue shape: member KPI cards, finance strip,
+ * charts via @dreamer/ui-view Chart*. Admin/menu counts are live; member/finance = demo.
  */
 import { Card, ChartBar, ChartDoughnut, ChartLine, IconUsers } from "@dreamer/ui-view";
 import type { LoadContext } from "@dreamer/dweb";
@@ -33,6 +33,16 @@ type Data = {
   roles?: string[];
   menuCount?: number;
   adminTotal?: number;
+};
+
+/** Demo series — mirrors Vue publicStore.dashboard placeholders until domain APIs land. */
+const demoMembers = { total: 1286, neu: 24, active: 862, zombie: 140 };
+const demoFinance = {
+  total: "128,560.00",
+  today: "3,420.00",
+  yesterday: "2,980.00",
+  week: "18,240.00",
+  month: "64,110.00",
 };
 
 const lineData = {
@@ -79,11 +89,25 @@ const chartOpts = {
 export default function Home(props: { data?: Data } & Data) {
   const d: Data = props.data ?? props;
   const tr = createT(d.locale ?? "zh-CN");
-  const kpis = [
-    { key: "admins", label: tr("dashboard.kpiAdmins"), value: d.adminTotal ?? 0, tone: "bg-sky-500/10 text-sky-600" },
-    { key: "menus", label: tr("dashboard.kpiMenus"), value: d.menuCount ?? 0, tone: "bg-emerald-500/10 text-emerald-600" },
-    { key: "roles", label: tr("dashboard.kpiRoles"), value: (d.roles ?? []).length, tone: "bg-amber-500/10 text-amber-600" },
-    { key: "demo", label: tr("dashboard.kpiDemo"), value: 128, tone: "bg-rose-500/10 text-rose-600" },
+
+  const memberKpis = [
+    { key: "total", label: tr("dashboard.kpiMembersTotal"), value: demoMembers.total, tone: "bg-sky-500/10 text-sky-600" },
+    { key: "new", label: tr("dashboard.kpiMembersNew"), value: demoMembers.neu, tone: "bg-cyan-500/10 text-cyan-600" },
+    { key: "active", label: tr("dashboard.kpiMembersActive"), value: demoMembers.active, tone: "bg-emerald-500/10 text-emerald-600" },
+    { key: "zombie", label: tr("dashboard.kpiMembersZombie"), value: demoMembers.zombie, tone: "bg-rose-500/10 text-rose-600" },
+  ];
+
+  const liveKpis = [
+    { key: "admins", label: tr("dashboard.kpiAdmins"), value: d.adminTotal ?? 0 },
+    { key: "menus", label: tr("dashboard.kpiMenus"), value: d.menuCount ?? 0 },
+    { key: "roles", label: tr("dashboard.kpiRoles"), value: (d.roles ?? []).length },
+  ];
+
+  const incomeBits = [
+    { label: tr("dashboard.financeIncomeToday"), value: demoFinance.today },
+    { label: tr("dashboard.financeIncomeYesterday"), value: demoFinance.yesterday },
+    { label: tr("dashboard.financeIncomeWeek"), value: demoFinance.week },
+    { label: tr("dashboard.financeIncomeMonth"), value: demoFinance.month },
   ];
 
   return (
@@ -93,18 +117,64 @@ export default function Home(props: { data?: Data } & Data) {
         <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">{tr("dashboard.intro")}</p>
       </section>
 
-      <section class="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {kpis.map((k) => (
-          <Card bordered size="sm" data-testid={`kpi-${k.key}`}>
+      {/* Vue home/dashboard.vue — member row */}
+      <section class="grid grid-cols-2 gap-3 lg:grid-cols-4" data-testid="dashboard-member-kpis">
+        {memberKpis.map((k) => (
+          <Card bordered size="sm" data-testid={`kpi-member-${k.key}`}>
             <div class="flex items-center justify-between gap-3">
               <div>
-                <p class="m-0 text-xs text-slate-500 dark:text-slate-400">{k.label}</p>
+                <p class="m-0 text-xs text-slate-500 dark:text-slate-400">
+                  {k.label}
+                  <span class="ml-1 rounded bg-slate-100 px-1 text-xs text-slate-400 dark:bg-slate-800">
+                    {tr("dashboard.demoBadge")}
+                  </span>
+                </p>
                 <p class="m-0 mt-1 text-2xl font-semibold">{k.value}</p>
               </div>
               <span class={`inline-flex h-10 w-10 items-center justify-center rounded-full ${k.tone}`}>
                 <IconUsers size="sm" />
               </span>
             </div>
+          </Card>
+        ))}
+      </section>
+
+      {/* Vue finance income strip (demo) */}
+      <Card bordered data-testid="dashboard-finance-strip">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p class="m-0 text-xs text-slate-500 dark:text-slate-400">
+              {tr("dashboard.financeIncomeTotal")}
+              <span class="ml-1 rounded bg-slate-100 px-1 text-xs text-slate-400 dark:bg-slate-800">
+                {tr("dashboard.demoBadge")}
+              </span>
+            </p>
+            <p class="m-0 mt-1 text-3xl font-semibold text-emerald-600 dark:text-emerald-400">
+              {demoFinance.total}
+            </p>
+          </div>
+          <div class="grid flex-1 grid-cols-2 gap-3 sm:grid-cols-4">
+            {incomeBits.map((b) => (
+              <div>
+                <p class="m-0 text-xs text-slate-500 dark:text-slate-400">{b.label}</p>
+                <p class="m-0 mt-1 text-lg font-medium">{b.value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Card>
+
+      {/* Live admin / menu / role strip */}
+      <section class="grid grid-cols-3 gap-3" data-testid="dashboard-live-kpis">
+        {liveKpis.map((k) => (
+          <Card bordered size="sm" data-testid={`kpi-${k.key}`}>
+            <p class="m-0 text-xs text-slate-500 dark:text-slate-400">
+              {k.label}
+              <span class="ml-1 rounded bg-emerald-50 px-1 text-xs text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
+                {tr("dashboard.liveBadge")}
+              </span>
+            </p>
+            <p class="m-0 mt-1 text-xl font-semibold">{k.value}</p>
           </Card>
         ))}
       </section>
