@@ -15,7 +15,7 @@ export function Button({
 }: ButtonProps) {
   const base = "rounded-lg px-4 py-2";
   const styles = {
-    primary: "border-0 bg-[#667eea] text-white hover:opacity-90",
+    primary: "border-0 bg-indigo-500 text-white hover:opacity-90",
     secondary: "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50",
     ghost: "border border-gray-300 bg-gray-100 text-gray-600 hover:bg-gray-200",
   };

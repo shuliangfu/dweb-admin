@@ -75,7 +75,7 @@ export default function LoginPage(props: { data?: Data } & Data) {
         <ThemeMenu locale={locale} />
       </div>
       <div class="flex flex-1 items-center justify-center px-4 pb-16">
-        <div class="w-full max-w-[400px]">
+        <div class="w-full max-w-100">
           <Stack gap={2} align="center" class="mb-8 text-center">
             <span class="inline-block h-12 w-12 rounded-xl bg-primary-600" />
             <h1 class="mt-2 text-xl font-bold">{tr(step === "2fa" ? "login.twofaTitle" : "login.title")}</h1>

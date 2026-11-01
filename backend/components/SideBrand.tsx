@@ -8,7 +8,7 @@ export function SideBrand(props: { name: string; short: string }) {
     <Link
       href="/"
       data-testid="side-brand"
-      class="adm-side-brand flex h-[56px] shrink-0 items-center justify-center gap-2 px-3 no-underline"
+      class="adm-side-brand flex h-14 shrink-0 items-center justify-center gap-2 px-3 no-underline"
       title={props.name}
     >
       <img src="/assets/favicon.svg" alt="" class="h-8 w-8 shrink-0" width="32" height="32" />

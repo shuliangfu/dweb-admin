@@ -82,8 +82,8 @@ export default function LockPage(props: { data?: Data }) {
   }
 
   return (
-    <div class="adm-lock flex min-h-screen flex-col items-center overflow-hidden bg-slate-900 px-4 pt-[18vh] text-white">
-      <div class="mb-[12vh] text-center" data-testid="lock-clock">
+    <div class="adm-lock flex min-h-screen flex-col items-center overflow-hidden bg-slate-900 px-4 pt-lock-top text-white">
+      <div class="mb-lock-gap text-center" data-testid="lock-clock">
         <div class="text-lg tracking-wide opacity-90">
           {() => `${clock.value.date} ${clock.value.week}`}
         </div>

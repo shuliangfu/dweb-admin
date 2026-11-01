@@ -125,6 +125,18 @@
   --color-info-900: #164e63;
   --color-info-950: #083344;
   --color-info-1000: #05202a;
+
+  /*
+   * Named tokens for sizes that are not integer multiples of --spacing (0.25rem),
+   * or that use % / vh. Prefer these (or scale utilities like min-w-40) over
+   * v3-style arbitrary brackets: min-w-[10rem], w-[36%], pt-[18vh], text-[13px].
+   */
+  --spacing-chat-pane: 36%;
+  --spacing-lock-top: 18vh;
+  --spacing-lock-gap: 12vh;
+
+  --text-menu: 0.8125rem; /* 13px — side submenu */
+  --text-menu--line-height: 1.25rem;
 }
 
 /* ------------------------------------------------------------------ admin chrome (Vue Layout IA + side palette) */
@@ -182,6 +194,10 @@
 .adm-menu [role="img"], .adm-menu svg { color: inherit !important; }
 
 /* TopHeader — light bar like Vue header-t */
+
+.adm-content-card {
+  border-top-color: var(--dweb-primary, var(--adm-accent, #3c8dbc));
+}
 .adm-top-header {
   background: var(--adm-top-bg);
   color: var(--adm-top-fg);

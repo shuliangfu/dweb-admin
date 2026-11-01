@@ -27,7 +27,7 @@ export function TopHeader(props: {
 
   return (
     <header
-      class="adm-top-header flex h-[56px] shrink-0 items-center justify-between gap-3 px-4"
+      class="adm-top-header flex h-14 shrink-0 items-center justify-between gap-3 px-4"
       data-testid="top-header"
     >
       <div class="flex min-w-0 items-center gap-2">

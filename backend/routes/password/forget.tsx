@@ -75,7 +75,7 @@ export default function ForgetPasswordPage(props: { data?: Data }) {
                   />
                   <button
                     type="button"
-                    class="flex h-9 w-[88px] shrink-0 items-center justify-center rounded border border-slate-200 bg-slate-100 font-mono text-lg tracking-widest dark:border-slate-600 dark:bg-slate-700"
+                    class="flex h-9 w-22 shrink-0 items-center justify-center rounded border border-slate-200 bg-slate-100 font-mono text-lg tracking-widest dark:border-slate-600 dark:bg-slate-700"
                     title={tr("passwordFlow.captchaRefresh")}
                     data-testid="forget-captcha"
                     onClick={refreshCaptcha}

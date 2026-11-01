@@ -114,7 +114,7 @@ export default function Layout(props: { children?: VNode | VNode[]; data?: Layou
           }}
         />
         <main class="adm-content min-h-0 min-w-0 flex-1 overflow-y-auto p-3 md:p-4">
-          <div class="rounded-sm border-t-[3px] border-[#3c8dbc] bg-white p-5 shadow-sm dark:bg-slate-800">
+          <div class="adm-content-card rounded-xs border-t-3 bg-white p-5 shadow-xs dark:bg-slate-800">
             {props.children}
           </div>
         </main>

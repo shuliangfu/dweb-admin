@@ -131,6 +131,30 @@ dweb-admin 对应物：
 
 - `@dreamer/theme` + 壳层 `ThemeMenu`／`SettingsDrawer`；主色 CSS 变量 `--dweb-primary`（设置抽屉可调）。
 
+### Tailwind 4 约定／禁 3.x 任意值
+
+本仓 **`tailwindcss` ^4.1**（`deno.json`），入口 `backend/assets/tailwind.css`：`@import "tailwindcss"`、`@theme`、`@source`、`@custom-variant dark`。
+
+**禁止**把本可用主题／间距刻度表达的尺寸写成 v3 风格方括号任意值（尤其 rem／整除 `--spacing` 的值）：
+
+| 错误（3.x 习惯） | 正确（4.x） |
+| --- | --- |
+| `min-w-[8rem]` / `min-w-[10rem]` | `min-w-32` / `min-w-40`（默认 `--spacing: 0.25rem`，`N` → `N×0.25rem`） |
+| `h-[56px]` / `max-w-[400px]` / `w-[88px]` | `h-14` / `max-w-100` / `w-22` |
+| `max-w-[18rem]` / `min-h-[280px]` / `min-h-[360px]` | `max-w-72` / `min-h-70` / `min-h-90` |
+| `min-w-[150px]` / `min-w-[170px]` | `min-w-37.5` / `min-w-42.5`（小数刻度合法） |
+| `w-[36%]` / `pt-[18vh]` / `mb-[12vh]` | `@theme` 命名：`w-chat-pane` / `pt-lock-top` / `mb-lock-gap`（见 `tailwind.css`） |
+| `text-[13px]` | `@theme --text-menu` → `text-menu` |
+| `bg-[#667eea]` | 主题色或默认调色板：`bg-indigo-500`／`bg-primary-*` |
+| `bg-[--token]`（v3 变量简写） | `bg-(--token)`（v4 圆括号简写） |
+| `rounded-sm` / `shadow-sm`（视觉刻度已重命名） | `rounded-xs` / `shadow-xs`（若要对齐 v3 观感） |
+| `border-t-[3px]` | `border-t-3` |
+
+**允许保留方括号的情况**：真正无法进 `@theme`／刻度的一次性怪值（少用）；选择器变体如 `[&>img]:…`、属性选择器。新代码优先 `@theme` 命名 token 或刻度工具类。
+
+改 class 后应用 `rg` 扫 `min-w-[`／`w-[`／`h-[`／`p*-[`／`m*-[`／`text-[`／`bg-[#` 等，避免回潮。
+
+
 ### 数据面板与列表页
 
 - 封装：`common/components/DataPanel.tsx`（`downloadCsv`／`parseCsv`／`DataPanelChildrenCtx`）。
@@ -238,6 +262,8 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 ---
 
 ## 9. 修订记录
+
+- 2026-11-01（Asia/Shanghai）：补「Tailwind 4 约定／禁 3.x 任意值」；全仓将 rem／px／%／vh 方括号尺寸迁到刻度工具类或 `@theme` 命名 token。
 
 | 日期（Asia/Shanghai） | 说明 |
 |---|---|

@@ -325,7 +325,7 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
 
   // CSV only by default — no xlsx/exceljs in deps; other formats stay unavailable.
   const exportOverlay = (
-    <div class="flex min-w-[8rem] flex-col gap-0.5 p-1">
+    <div class="flex min-w-32 flex-col gap-0.5 p-1">
       <button
         type="button"
         class="rounded px-2 py-1.5 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -349,7 +349,7 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
     const h = hiddenCols.value;
     const defs = columns.filter((c) => c.prop !== "selection");
     return (
-      <div class="flex max-h-72 min-w-[10rem] flex-col gap-1 overflow-auto p-2">
+      <div class="flex max-h-72 min-w-40 flex-col gap-1 overflow-auto p-2">
         {defs.map((c) => (
           <Checkbox
             checked={!(h[c.prop] ?? false)}
@@ -448,7 +448,7 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
             {f.type === "select" ? (
               <select
                 name={f.name}
-                class="min-w-[10rem] rounded-md border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-600 dark:bg-slate-900"
+                class="min-w-40 rounded-md border border-slate-300 bg-white px-2 py-1.5 text-sm dark:border-slate-600 dark:bg-slate-900"
               >
                 <option value="">{f.placeholder ?? "—"}</option>
                 {(f.options ?? []).map((o) => (

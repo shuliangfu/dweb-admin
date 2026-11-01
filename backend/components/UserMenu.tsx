@@ -17,7 +17,7 @@ export function UserMenu(props: { locale: Locale; nickname: string; roles: strin
       placement="bottomAuto"
       overlay={
         <div data-testid="user-options">
-          <div class="min-w-[170px] border-b border-slate-200 px-3 py-2 text-center dark:border-slate-600" data-testid="user-header">
+          <div class="min-w-42.5 border-b border-slate-200 px-3 py-2 text-center dark:border-slate-600" data-testid="user-header">
             <div class="truncate text-sm font-medium text-slate-800 dark:text-slate-100" data-testid="user-header-name">
               {props.nickname}
             </div>
