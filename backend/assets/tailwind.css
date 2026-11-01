@@ -925,3 +925,18 @@ button[data-variant="primary"]:hover:not(:disabled) {
 .adm-lock-time {
   font-family: var(--font-digital);
 }
+
+
+/* ------------------------------------------------------------------ dashboard card spacing
+   ONE token drives every horizontal and vertical gap between dashboard cards (matches the top stat row). */
+:root {
+  --adm-dash-gap: 12px;
+}
+.adm-dash {
+  display: flex;
+  flex-direction: column;
+  gap: var(--adm-dash-gap);
+}
+.adm-dash-grid {
+  gap: var(--adm-dash-gap);
+}

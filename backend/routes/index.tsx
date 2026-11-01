@@ -100,8 +100,6 @@ export default function Home(props: { data?: Data } & Data) {
 
   const liveKpis = [
     { key: "admins", label: tr("dashboard.kpiAdmins"), value: d.adminTotal ?? 0 },
-    { key: "menus", label: tr("dashboard.kpiMenus"), value: d.menuCount ?? 0 },
-    { key: "roles", label: tr("dashboard.kpiRoles"), value: (d.roles ?? []).length },
   ];
 
   const incomeBits = [
@@ -112,14 +110,14 @@ export default function Home(props: { data?: Data } & Data) {
   ];
 
   return (
-    <div class="space-y-5" data-testid="dashboard">
+    <div class="adm-dash" data-testid="dashboard">
       <section>
         <h1 class="text-2xl font-bold">{tr("dashboard.welcome", { name: d.name ?? "" })}</h1>
         <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">{tr("dashboard.intro")}</p>
       </section>
 
       {/* Vue home/dashboard.vue — member row */}
-      <section class="grid grid-cols-2 gap-3 lg:grid-cols-4" data-testid="dashboard-member-kpis">
+      <section class="adm-dash-grid grid grid-cols-2 lg:grid-cols-4" data-testid="dashboard-member-kpis">
         {memberKpis.map((k) => (
           <Card bordered size="sm" class="adm-panel-card" data-testid={`kpi-member-${k.key}`}>
             <div class="flex items-center justify-between gap-3">
@@ -165,8 +163,8 @@ export default function Home(props: { data?: Data } & Data) {
         </div>
       </Card>
 
-      {/* Live admin / menu / role strip */}
-      <section class="grid grid-cols-3 gap-3" data-testid="dashboard-live-kpis">
+      {/* Live admin count — same 4-column grid as the member row so the card width lines up */}
+      <section class="adm-dash-grid grid grid-cols-2 lg:grid-cols-4" data-testid="dashboard-live-kpis">
         {liveKpis.map((k) => (
           <Card bordered size="sm" class="adm-panel-card" data-testid={`kpi-${k.key}`}>
             <p class="m-0 text-xs text-slate-500 dark:text-slate-400">
@@ -180,7 +178,7 @@ export default function Home(props: { data?: Data } & Data) {
         ))}
       </section>
 
-      <section class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <section class="adm-dash-grid grid grid-cols-1 lg:grid-cols-3" data-testid="dashboard-charts">
         <Card bordered class="adm-panel-card lg:col-span-2" title={tr("dashboard.chartVisits")} bodyClass="pt-2">
           <div class="h-64">
             <ChartLine data={lineData} options={chartOpts} class="h-full w-full" height={256} />
@@ -200,17 +198,6 @@ export default function Home(props: { data?: Data } & Data) {
           <div class="h-56">
             <ChartBar data={barData} options={chartOpts} class="h-full w-full" height={224} />
           </div>
-        </Card>
-      </section>
-
-      <section class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Card bordered class="adm-panel-card">
-          <p class="text-sm text-slate-500">{tr("dashboard.yourRoles")}</p>
-          <p class="mt-1 text-lg font-semibold" data-testid="roles">{(d.roles ?? []).join(", ") || "—"}</p>
-        </Card>
-        <Card bordered class="adm-panel-card">
-          <p class="text-sm text-slate-500">{tr("dashboard.menuCount")}</p>
-          <p class="mt-1 text-lg font-semibold" data-testid="menu-count">{d.menuCount ?? 0}</p>
         </Card>
       </section>
     </div>
