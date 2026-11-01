@@ -1,7 +1,7 @@
 /**
  * Top-bar fullscreen control (documentElement). Matches Vue TopHeader switchScreen.
  */
-import { createSignal, onMount } from "@dreamer/view";
+import { createSignal, onCleanup, onMount } from "@dreamer/view";
 import { IconExitFullscreen, IconMaximize2 } from "@dreamer/ui-view";
 import { triggerCls } from "@backend/components/menu-kit.tsx";
 
@@ -40,6 +40,7 @@ export function FullscreenToggle(props: { enterLabel: string; exitLabel: string 
     if (!d) return;
     sync();
     d.addEventListener("fullscreenchange", sync);
+    onCleanup(() => d.removeEventListener("fullscreenchange", sync));
   });
 
   return (

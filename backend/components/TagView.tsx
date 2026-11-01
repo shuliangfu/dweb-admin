@@ -3,7 +3,7 @@
  * Tags live in a module signal + localStorage so they survive layout re-renders.
  * Context menu uses native contextmenu (Vue uses el-dropdown trigger=contextmenu).
  */
-import { createSignal, onMount } from "@dreamer/view";
+import { createSignal, onCleanup, onMount } from "@dreamer/view";
 import { IconClose, Link } from "@dreamer/ui-view";
 
 export interface TagEntry {
@@ -109,6 +109,7 @@ function closeOne(path: string, activePath: string): void {
   const next = list.filter((t) => t.path !== path);
   tags.value = next;
   persist(next);
+  ctx.value = null;
   if (path === activePath) {
     const fallback = next[Math.max(0, i - 1)] ?? next[0];
     if (fallback) go(fallback.path);
@@ -167,12 +168,18 @@ export function TagView(props: {
   const active = props.pathname;
 
   onMount(() => {
-    const doc = (globalThis as { document?: { addEventListener: (t: string, fn: () => void) => void } }).document;
+    const doc = (globalThis as {
+      document?: {
+        addEventListener: (t: string, fn: () => void) => void;
+        removeEventListener: (t: string, fn: () => void) => void;
+      };
+    }).document;
     if (!doc) return;
     const hide = () => {
       ctx.value = null;
     };
     doc.addEventListener("click", hide);
+    onCleanup(() => doc.removeEventListener("click", hide));
   });
 
   return (

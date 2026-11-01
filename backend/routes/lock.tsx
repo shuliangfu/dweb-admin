@@ -2,9 +2,9 @@
  * Fullpage screen lock — Vue fullpage/lock.vue (clock + avatar + password unlock).
  * Renders without admin chrome; session remains; cookie dweb-admin-locked gates other pages.
  */
-import { createSignal, onMount } from "@dreamer/view";
+import { createSignal, onCleanup, onMount } from "@dreamer/view";
 import type { LoadContext } from "@dreamer/dweb";
-import { Button, Input } from "@dreamer/ui-view";
+import { Button, IconArrowRight, Input } from "@dreamer/ui-view";
 import { createT, type Locale, resolveLocale } from "@common/i18n/mod.ts";
 import { api } from "@common/utils/client-api.ts";
 import { clearLockCookieClient, isLockedRequest } from "@backend/components/lock-kit.ts";
@@ -48,6 +48,8 @@ export default function LockPage(props: { data?: Data }) {
   const error = createSignal("");
   const busy = createSignal(false);
   const clock = createSignal({ date: "", week: "", time: "" });
+  /** Vue lock.vue: unlock circle appears once password length >= 6. */
+  const canUnlock = createSignal(false);
 
   onMount(() => {
     const tick = () => {
@@ -60,7 +62,8 @@ export default function LockPage(props: { data?: Data }) {
       };
     };
     tick();
-    setInterval(tick, 1000);
+    const id = setInterval(tick, 1000);
+    onCleanup(() => clearInterval(id));
   });
 
   async function unlock() {
@@ -93,34 +96,43 @@ export default function LockPage(props: { data?: Data }) {
       </div>
       <div class="flex w-full max-w-sm flex-col items-center gap-3">
         <div
-          class="flex h-24 w-24 items-center justify-center rounded-full border-2 border-white/40 bg-white/10 text-3xl font-semibold"
+          class="flex h-36 w-36 items-center justify-center rounded-full border-2 border-white/40 bg-white/10 text-4xl font-semibold"
           data-testid="lock-avatar"
         >
           {(d.nickname || d.username || "?").slice(0, 1).toUpperCase()}
         </div>
-        <div class="text-base font-medium" data-testid="lock-username">{d.username}</div>
-        <div class="flex w-full items-stretch gap-2">
+        <div class="mb-3 text-xl font-medium" data-testid="lock-username">{d.username}</div>
+        <div class="adm-lock-input relative flex w-lock-input items-center">
           <Input
             type="password"
-            class="flex-1"
+            class="w-full"
             value={password}
             placeholder={tr("lock.passwordPlaceholder")}
             onInput={(e: Event) => {
-              password.value = (e.target as unknown as { value: string }).value;
+              const v = (e.target as unknown as { value: string }).value;
+              password.value = v;
+              canUnlock.value = v.length >= 6;
               error.value = "";
             }}
             onKeyDown={(e: Event) => {
-              if ((e as unknown as { key: string }).key === "Enter") void unlock();
+              if ((e as unknown as { key: string }).key === "Enter" && canUnlock.value) void unlock();
             }}
           />
-          <Button
-            type="button"
-            variant="primary"
-            data-testid="lock-unlock"
-            onClick={() => void unlock()}
-          >
-            →
-          </Button>
+          {() =>
+            canUnlock.value
+              ? (
+                <Button
+                  type="button"
+                  variant="primary"
+                  class="adm-lock-unlock"
+                  data-testid="lock-unlock"
+                  disabled={busy.value}
+                  onClick={() => void unlock()}
+                >
+                  <IconArrowRight size="xs" />
+                </Button>
+              )
+              : null}
         </div>
         {() => error.value ? <p class="m-0 text-sm text-red-300">{error.value}</p> : null}
       </div>

@@ -5,17 +5,17 @@
  *    fingerprint login enabled (GET /api/auth/login-options, global switch)
  *  - step=2fa: Google Authenticator code (POST /api/auth/twofactor). Only reachable with a
  *    valid 2FA challenge cookie, i.e. after the password was accepted for an account with 2FA on.
+ * Shell: AuthShell (lang/theme + Toast/Message) — Vue left-illustration panel skipped (no asset).
  */
 import { createSignal } from "@dreamer/view";
-import { Alert, Button, Card, Checkbox, FormItem, IconFingerprint, Input, Stack } from "@dreamer/ui-view";
+import { Alert, Button, Checkbox, FormItem, IconFingerprint, Input } from "@dreamer/ui-view";
 import type { LoadContext } from "@dreamer/dweb";
 import { createT, type Locale, resolveLocale } from "@common/i18n/mod.ts";
 import { api } from "@common/utils/client-api.ts";
 import { getAssertionJSON, passkeySupported } from "@common/utils/webauthn-client.ts";
 import { loginFeatures } from "@common/service/security.ts";
 import { peekChallenge, readChallengeToken } from "@common/service/challenge.ts";
-import { ThemeMenu } from "@backend/components/ThemeMenu.tsx";
-import { LangMenu } from "@backend/components/LangMenu.tsx";
+import { AuthShell } from "@backend/components/AuthShell.tsx";
 
 export async function load(ctx: LoadContext) {
   const q = new URL(ctx.req.url).searchParams;
@@ -68,97 +68,84 @@ export default function LoginPage(props: { data?: Data } & Data) {
     }
   }
 
+  const title = tr(step === "2fa" ? "login.twofaTitle" : "login.title");
+  const subtitle = tr(step === "2fa" ? "login.twofaHint" : "login.subtitle");
+
   return (
-    <div class="flex min-h-screen flex-col">
-      <div class="flex items-center justify-end gap-1 p-4">
-        <LangMenu locale={locale} />
-        <ThemeMenu locale={locale} />
-      </div>
-      <div class="flex flex-1 items-center justify-center px-4 pb-16">
-        <div class="w-full max-w-100">
-          <Stack gap={2} align="center" class="mb-8 text-center">
-            <span class="inline-block h-12 w-12 rounded-xl bg-primary-600" />
-            <h1 class="mt-2 text-xl font-bold">{tr(step === "2fa" ? "login.twofaTitle" : "login.title")}</h1>
-            <p class="text-sm text-slate-500 dark:text-slate-400">
-              {tr(step === "2fa" ? "login.twofaHint" : "login.subtitle")}
-            </p>
-          </Stack>
-          <Card bordered class="shadow-lg">
-            {step === "2fa"
-              ? (
-                <form method="post" action="/api/auth/twofactor">
-                  {failed ? <Alert type="error" message={tr("login.twofaFailed")} class="mb-4" /> : null}
-                  <FormItem label={tr("login.twofaCode")}>
-                    <Input
-                      name="code"
-                      type="text"
-                      {...({ inputMode: "numeric", maxLength: 6 } as Record<string, unknown>)}
-                      autoComplete="one-time-code"
-                      placeholder="000000"
-                    />
-                  </FormItem>
-                  <Button type="submit" variant="primary" class="mt-6 h-11 w-full">
-                    {tr("login.twofaSubmit")}
-                  </Button>
-                  <a href="/login" class="mt-4 block text-center text-sm">{tr("login.back")}</a>
-                </form>
-              )
-              : (
-                <div>
-                  <form method="post" action="/api/auth/login">
-                    {failed ? <Alert type="error" message={tr("login.failed")} class="mb-4" /> : null}
-                    <FormItem label={tr("login.username")}>
-                      <Input
-                        name="username"
-                        type="text"
-                        autoComplete="username"
-                        placeholder={tr("login.usernamePlaceholder")}
-                      />
-                    </FormItem>
-                    <FormItem label={tr("login.password")} class="mt-4">
-                      <Input
-                        name="password"
-                        type="password"
-                        autoComplete="current-password"
-                        placeholder={tr("login.passwordPlaceholder")}
-                      />
-                    </FormItem>
-                    <div class="mt-4">
-                      <Checkbox name="remember" value="1" checked={remember}>
-                        {tr("login.remember")}
-                      </Checkbox>
+    <AuthShell locale={locale} title={title} subtitle={subtitle}>
+      {step === "2fa"
+        ? (
+          <form method="post" action="/api/auth/twofactor">
+            {failed ? <Alert type="error" message={tr("login.twofaFailed")} class="mb-4" /> : null}
+            <FormItem label={tr("login.twofaCode")}>
+              <Input
+                name="code"
+                type="text"
+                {...({ inputMode: "numeric", maxLength: 6 } as Record<string, unknown>)}
+                autoComplete="one-time-code"
+                placeholder="000000"
+              />
+            </FormItem>
+            <Button type="submit" variant="primary" class="mt-6 h-11 w-full">
+              {tr("login.twofaSubmit")}
+            </Button>
+            <a href="/login" class="mt-4 block text-center text-sm">{tr("login.back")}</a>
+          </form>
+        )
+        : (
+          <div>
+            <form method="post" action="/api/auth/login">
+              {failed ? <Alert type="error" message={tr("login.failed")} class="mb-4" /> : null}
+              <FormItem label={tr("login.username")}>
+                <Input
+                  name="username"
+                  type="text"
+                  autoComplete="username"
+                  placeholder={tr("login.usernamePlaceholder")}
+                />
+              </FormItem>
+              <FormItem label={tr("login.password")} class="mt-4">
+                <Input
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  placeholder={tr("login.passwordPlaceholder")}
+                />
+              </FormItem>
+              {/* Vue form-btn-group: remember + forget on one row */}
+              <div class="mt-4 flex w-full items-center justify-between gap-2">
+                <Checkbox name="remember" value="1" checked={remember}>
+                  {tr("login.remember")}
+                </Checkbox>
+                <a href="/password/forget" class="text-sm text-primary-600 hover:underline">
+                  {tr("login.forgetLink")}
+                </a>
+              </div>
+              <Button type="submit" variant="primary" class="mt-6 h-11 w-full">
+                {tr("login.submit")}
+              </Button>
+            </form>
+            {() =>
+              passkeyOn.value
+                ? (
+                  <div data-testid="passkey-section">
+                    <div class="my-4 flex items-center gap-3 text-xs text-slate-400">
+                      <span class="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
+                      {tr("login.or")}
+                      <span class="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
                     </div>
-                    <Button type="submit" variant="primary" class="mt-6 h-11 w-full">
-                      {tr("login.submit")}
+                    {() => passkeyError.value ? <Alert type="error" message={passkeyError.value} class="mb-3" /> : null}
+                    <Button type="button" class="h-11 w-full" data-testid="passkey-login" onClick={passkeyLogin}>
+                      <span class="inline-flex items-center justify-center gap-2">
+                        <IconFingerprint size="md" />
+                        {tr("login.passkey")}
+                      </span>
                     </Button>
-                    <a href="/password/forget" class="mt-3 block text-center text-sm text-primary-600 hover:underline">
-                      {tr("login.forgetLink")}
-                    </a>
-                  </form>
-                  {() =>
-                    passkeyOn.value
-                      ? (
-                        <div data-testid="passkey-section">
-                          <div class="my-4 flex items-center gap-3 text-xs text-slate-400">
-                            <span class="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
-                            {tr("login.or")}
-                            <span class="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
-                          </div>
-                          {() => passkeyError.value ? <Alert type="error" message={passkeyError.value} class="mb-3" /> : null}
-                          <Button type="button" class="h-11 w-full" data-testid="passkey-login" onClick={passkeyLogin}>
-                            <span class="inline-flex items-center justify-center gap-2">
-                              <IconFingerprint size="md" />
-                              {tr("login.passkey")}
-                            </span>
-                          </Button>
-                        </div>
-                      )
-                      : null}
-                </div>
-              )}
-          </Card>
-        </div>
-      </div>
-    </div>
+                  </div>
+                )
+                : null}
+          </div>
+        )}
+    </AuthShell>
   );
 }
