@@ -1,0 +1,12 @@
+# Local MongoDB for development: `deno task mongo:up`
+services:
+  mongo:
+    image: mongo:8
+    container_name: dweb-admin-mongo
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:27018:27017'
+    volumes:
+      - dweb-admin-mongo-data:/data/db
+volumes:
+  dweb-admin-mongo-data:

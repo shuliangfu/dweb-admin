@@ -1,0 +1,12 @@
+/**
+ * TailwindCSS v4 入口
+ * 指定内容扫描路径（生成 class 时使用）
+ */
+@source "../**/*.{ts,tsx}";
+
+@import "tailwindcss";
+
+@theme {
+  --color-primary-600: #0284c7;
+  --color-primary-700: #0369a1;
+}

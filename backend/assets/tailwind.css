@@ -1,0 +1,296 @@
+/**
+ * TailwindCSS v4 entry (dweb-admin backend).
+ * Palette matches @dreamer/ui-view docs; dark mode is toggled via html.dark.
+ */
+@import "./ui-view-sources.css";
+@source "../**/*.{ts,tsx}";
+
+@import "tailwindcss";
+
+/*
+ * 未在源码里写过的 bg-{palette}-{shade} 不会生成对应工具类，@theme 里的 --color-* 也可能一并省略；
+ * 此处用 @source inline 强制生成全套（与 docs 一致，Tailwind v4.1+）。
+ */
+@source inline("bg-{default,primary,secondary,success,warning,danger,info,green,red,blue,yellow,amber,purple,gray,brown,orange,pink,indigo,emerald,cyan,lime,teal}-{50,100,200,300,400,500,600,700,800,900,950,1000}");
+
+/* 主题由头部切换，通过 html.dark 控制 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* 中文与拉丁混排：系统栈 + 思源黑体回退（无则忽略） */
+  --font-sans:
+    ui-sans-serif,
+    system-ui,
+    "Segoe UI",
+    "PingFang SC",
+    "Hiragino Sans GB",
+    "Microsoft YaHei",
+    "Noto Sans SC",
+    sans-serif;
+
+  /* 默认颜色 */
+  --color-default-50: #f9fafb;
+  --color-default-100: #f3f4f6;
+  --color-default-200: #e5e7eb;
+  --color-default-300: #d1d5db;
+  --color-default-400: #9ca3af;
+  --color-default-500: #6b7280;
+  --color-default-600: #4b5563;
+  --color-default-700: #374151;
+  --color-default-800: #1f2937;
+  --color-default-900: #111827;
+  --color-default-950: #030712;
+  --color-default-1000: #000000;
+
+  /* primary: indigo */
+  --color-primary-50: #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-400: #5aa5cf;
+  --color-primary-500: #3c8dbc;
+  --color-primary-600: #3c8dbc;
+  --color-primary-700: #367fa9;
+  --color-primary-800: #2e6d92;
+  --color-primary-900: #312e81;
+  --color-primary-950: #1e1b4b;
+  --color-primary-1000: #0f0d2e;
+
+  /* 次要颜色 - 紫色系 */
+  --color-secondary-50: #faf5ff;
+  --color-secondary-100: #f3e8ff;
+  --color-secondary-200: #e9d5ff;
+  --color-secondary-300: #d8b4fe;
+  --color-secondary-400: #c084fc;
+  --color-secondary-500: #a855f7;
+  --color-secondary-600: #9333ea;
+  --color-secondary-700: #7e22ce;
+  --color-secondary-800: #6b21a8;
+  --color-secondary-900: #581c87;
+  --color-secondary-950: #3b0764;
+  --color-secondary-1000: #2d0353;
+
+  /* 成功颜色 */
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-200: #bbf7d0;
+  --color-success-300: #86efac;
+  --color-success-400: #4ade80;
+    --color-success-500: #3dd68c;
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+  --color-success-800: #166534;
+  --color-success-900: #14532d;
+  --color-success-950: #052e16;
+  --color-success-1000: #031b0d;
+
+  /* 警告颜色 */
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-200: #fde68a;
+  --color-warning-300: #fcd34d;
+  --color-warning-400: #fbbf24;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+  --color-warning-800: #92400e;
+  --color-warning-900: #78350f;
+  --color-warning-950: #451a03;
+  --color-warning-1000: #2c1102;
+
+  /* 危险颜色 */
+  --color-danger-50: #fef2f2;
+  --color-danger-100: #fee2e2;
+  --color-danger-200: #fecaca;
+  --color-danger-300: #fca5a5;
+  --color-danger-400: #f87171;
+    --color-danger-500: #fe2c55;
+  --color-danger-600: #dc2626;
+  --color-danger-700: #b91c1c;
+  --color-danger-800: #991b1b;
+  --color-danger-900: #7f1d1d;
+  --color-danger-950: #450a0a;
+  --color-danger-1000: #2c0707;
+
+  /* 信息颜色 - 青色系 */
+  --color-info-50: #ecfeff;
+  --color-info-100: #cffafe;
+  --color-info-200: #a5f3fc;
+  --color-info-300: #67e8f9;
+    --color-info-400: #25f4ee;
+  --color-info-500: #06b6d4;
+  --color-info-600: #0891b2;
+  --color-info-700: #0e7490;
+  --color-info-800: #155e75;
+  --color-info-900: #164e63;
+  --color-info-950: #083344;
+  --color-info-1000: #05202a;
+}
+
+/* ------------------------------------------------------------------ admin chrome (Vue Layout IA + side palette) */
+:root {
+  --adm-side: #222d32;
+  --adm-sub: #2c3b41;
+  --adm-active-bg: #1e282c;
+  --adm-text: #b8c7ce;
+  --adm-text-hover: #ffffff;
+  --adm-accent: #3c8dbc;
+  --adm-content: #ecf0f5;
+  --adm-brand-strip: #1a2226;
+  --adm-top-bg: #ffffff;
+  --adm-top-fg: #334155;
+  --adm-tag-bg: #f5f7fa;
+  --adm-tag-border: #e4e7ed;
+  --adm-tag-item-border: #dcdfe6;
+  --adm-tag-on-fg: #3c8dbc;
+  --adm-tag-on-bg: #ecf5ff;
+}
+.dark {
+  --adm-side: #11181b;
+  --adm-sub: #182226;
+  --adm-active-bg: #0b1113;
+  --adm-text: #9fb0b8;
+  --adm-accent: #3c8dbc;
+  --adm-content: #0f172a;
+  --adm-brand-strip: #0b1113;
+  --adm-top-bg: #1e2937;
+  --adm-top-fg: #e2e8f0;
+  --adm-tag-bg: #0f172a;
+  --adm-tag-border: #334155;
+  --adm-tag-item-border: #475569;
+  --adm-tag-on-fg: #7dd3fc;
+  --adm-tag-on-bg: #0c4a6e;
+}
+.adm-content { background: var(--adm-content); }
+.adm-side { background: var(--adm-side); color: var(--adm-text); }
+.adm-side-brand {
+  background: var(--adm-brand-strip);
+  color: #fff;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+.adm-side-brand:hover { color: #fff; }
+.adm-menu a, .adm-menu summary { color: var(--adm-text); }
+.adm-menu .adm-top-item { border-left: 3px solid transparent; }
+.adm-menu .adm-top-item:hover { color: var(--adm-text-hover); background: var(--adm-active-bg); }
+.adm-menu .adm-top-item.adm-on,
+.adm-menu details[open] > summary { color: #fff; background: var(--adm-active-bg); border-left-color: var(--adm-accent); }
+.adm-menu .adm-sublist { background: var(--adm-sub); }
+.adm-menu .adm-sub-item { color: var(--adm-text); }
+.adm-menu .adm-sub-item:hover { color: #fff; }
+.adm-menu .adm-sub-item.adm-on { color: #fff; font-weight: 500; }
+.adm-menu .adm-sub-item.adm-on svg { color: #fff; }
+.adm-menu [role="img"], .adm-menu svg { color: inherit !important; }
+
+/* TopHeader — light bar like Vue header-t */
+.adm-top-header {
+  background: var(--adm-top-bg);
+  color: var(--adm-top-fg);
+  box-shadow: 0 1px 0 #00000014;
+  z-index: 1;
+}
+.adm-top-header .adm-crumb a,
+.adm-top-header .adm-crumb span,
+.adm-top-header .adm-crumb button {
+  color: inherit !important;
+}
+.adm-top-header [role="img"], .adm-top-header svg { color: inherit !important; }
+
+/* TagView — Vue header-x strip */
+.adm-tag-view {
+  padding: 5px 8px 0;
+  border: 1px solid var(--adm-tag-border);
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid var(--adm-tag-border);
+  background: var(--adm-tag-bg);
+}
+.adm-tag-view::-webkit-scrollbar { height: 3px; }
+.adm-tag-view::-webkit-scrollbar-thumb { background: #bdbdbd; border-radius: 3px; }
+.adm-tag-item {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 40px;
+  max-width: 160px;
+  margin-left: 2px;
+  padding: 6px 8px;
+  border: 1px solid var(--adm-tag-item-border);
+  border-radius: 3px 3px 0 0;
+  font-size: 12px;
+  color: var(--adm-top-fg);
+  background: transparent;
+  cursor: default;
+}
+.adm-tag-item:first-child { margin-left: 0; }
+.adm-tag-item.adm-tag-on {
+  color: var(--adm-tag-on-fg);
+  border-color: var(--adm-tag-on-fg);
+  background: var(--adm-tag-on-bg);
+  border-bottom-color: transparent;
+}
+.adm-tag-link { color: inherit; }
+.adm-tag-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.7;
+}
+.adm-tag-close:hover { opacity: 1; }
+.adm-tag-ctx {
+  min-width: 140px;
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid var(--adm-tag-border);
+  background: var(--adm-top-bg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+.adm-tag-ctx-item {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  text-align: left;
+  font-size: 12px;
+  color: var(--adm-top-fg);
+  cursor: pointer;
+}
+.adm-tag-ctx-item:hover { background: rgba(0, 0, 0, 0.06); }
+.dark .adm-tag-ctx-item:hover { background: rgba(255, 255, 255, 0.08); }
+
+/* ---- sidebar width, collapsed rail (desktop) and drawer (mobile) ---- */
+.adm-shell { --adm-w: 200px; }
+.adm-side { width: var(--adm-w); transition: width 0.15s ease; }
+.adm-side { overflow-x: hidden; }
+.adm-backdrop { display: none; }
+@media (min-width: 768px) {
+  .adm-shell.adm-collapsed { --adm-w: 56px; }
+  .adm-shell.adm-collapsed .adm-label,
+  .adm-shell.adm-collapsed .adm-sublist { display: none !important; }
+  .adm-shell.adm-collapsed .adm-side-brand .adm-short { display: inline !important; }
+  .adm-shell.adm-collapsed .adm-side-brand { padding-left: 0; padding-right: 0; }
+  .adm-shell.adm-collapsed .adm-side-brand img { margin: 0 auto; }
+  .adm-shell.adm-collapsed .adm-menu .adm-top-item { justify-content: center; padding-left: 0; padding-right: 0; }
+  .adm-shell.adm-collapsed .adm-menu .adm-chevron { display: none !important; }
+  .adm-shell.adm-collapsed .adm-menu .adm-menu-icon { margin: 0 auto; }
+  .adm-shell.adm-collapsed .adm-menu .adm-top-item { border-left-width: 0; }
+  .adm-shell.adm-collapsed .adm-menu details > summary { pointer-events: auto; }
+}
+
+@media (max-width: 767px) {
+  .adm-side {
+    position: fixed; top: 0; bottom: 0; left: 0; z-index: 50; width: 230px;
+    transform: translateX(-100%); transition: transform 0.2s ease; display: flex;
+  }
+  .adm-shell.adm-drawer-open .adm-side { transform: none; box-shadow: 0 0 24px rgba(0, 0, 0, 0.4); }
+  .adm-shell.adm-drawer-open .adm-backdrop {
+    display: block; position: fixed; inset: 0; z-index: 40; background: rgba(0, 0, 0, 0.4);
+  }
+}
