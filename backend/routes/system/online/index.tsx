@@ -19,7 +19,8 @@ export async function load(ctx: LoadContext) {
     createdAt?: Date;
     updatedAt?: Date;
   }>;
-  const rows = sessions.map((s) => ({
+  const keyword = (new URL(ctx.req.url).searchParams.get("keyword") ?? "").trim().toLowerCase();
+  let rows = sessions.map((s) => ({
     id: String(s._id),
     username: s.username || "—",
     nickname: s.username || "—",
@@ -28,6 +29,7 @@ export async function load(ctx: LoadContext) {
     updatedAt: s.updatedAt ? new Date(s.updatedAt).toISOString() : "—",
     expiresAt: s.expiresAt ? new Date(s.expiresAt).toISOString() : "—",
   }));
+  if (keyword) rows = rows.filter((r) => r.username.toLowerCase().includes(keyword));
   return { locale, rows };
 }
 

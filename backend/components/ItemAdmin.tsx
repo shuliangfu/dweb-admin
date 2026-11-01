@@ -216,9 +216,29 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
     <div>
       <DataPanel
         title={T.list}
-        tools={{ create: true, search: true, refresh: true }}
+        tools={{ create: true, search: true, refresh: true, export: true, print: true, column: true }}
         onCreate={openCreate}
         onRefresh={reload}
+        toolLabels={{
+          export: tr("panel.export"),
+          print: tr("panel.print"),
+          column: tr("panel.column"),
+          search: tr("panel.search"),
+          soon: tr("panel.soon"),
+          resetColumns: tr("panel.resetColumns"),
+          csv: "CSV",
+          excel: "Excel",
+          xml: "XML",
+          html: "HTML",
+        }}
+        columns={[
+          { prop: "idx", label: tr("rbac.index") },
+          { prop: "name", label: tr("rbac.name") },
+          { prop: "ruleName", label: tr("rbac.ruleName") },
+          { prop: "description", label: tr("rbac.description") },
+          { prop: "actions", label: tr("common.actions") },
+        ]}
+        rows={props.rows.map((r, i) => ({ ...r, idx: i + 1 })) as never}
         searchSlot={
           <form method="get" class="m-0 flex items-center gap-2">
             <Input name="keyword" value={props.keyword} placeholder={tr("rbac.searchPlaceholder")} class="w-48" />

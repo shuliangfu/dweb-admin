@@ -1,5 +1,5 @@
-/** Online admin sessions list — DataPanel chrome. */
-import { Table, Tag } from "@dreamer/ui-view";
+/** Online admin sessions list — DataPanel chrome; real AdminSession rows. */
+import { Tag } from "@dreamer/ui-view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { reload } from "@backend/components/crud-kit.tsx";
 import { DataPanel } from "@common/components/DataPanel.tsx";
@@ -16,33 +16,44 @@ export type OnlineRow = {
 
 export function OnlineAdmin(props: { locale: Locale; rows: OnlineRow[] }) {
   const tr = createT(props.locale);
+  const rows = props.rows.map((r, i) => ({ ...r, idx: i + 1 }));
   return (
     <DataPanel
       title={tr("online.title")}
       info={tr("online.info", { n: props.rows.length })}
-      tools={{ refresh: true }}
+      tools={{ refresh: true, export: true, print: true, column: true, search: true }}
       onRefresh={reload}
-    >
-      <Table
-        bordered
-        hoverable
-        size="sm"
-        rowKey="id"
-        dataSource={props.rows.map((r, i) => ({ ...r, idx: i + 1 }))}
-        pagination={{ pageSize: 20, total: props.rows.length }}
-        locale={{ emptyText: tr("common.empty") }}
-        columns={([
-          { key: "idx", title: tr("rbac.index"), dataIndex: "idx", width: 60 },
-          { key: "username", title: tr("users.username"), dataIndex: "username" },
-          {
-            key: "status",
-            title: tr("common.status"),
-            render: () => <Tag size="xs" variant="success">{tr("online.active")}</Tag>,
-          },
-          { key: "updatedAt", title: tr("online.updatedAt"), dataIndex: "updatedAt" },
-          { key: "expiresAt", title: tr("online.expiresAt"), dataIndex: "expiresAt" },
-        ] as never)}
-      />
-    </DataPanel>
+      toolLabels={{
+        export: tr("panel.export"),
+        print: tr("panel.print"),
+        column: tr("panel.column"),
+        search: tr("panel.search"),
+        soon: tr("panel.soon"),
+        resetColumns: tr("panel.resetColumns"),
+        csv: "CSV",
+      }}
+      searchSchemas={[
+        {
+          name: "keyword",
+          label: tr("users.username"),
+          placeholder: tr("usersForm.searchPlaceholder"),
+        },
+      ]}
+      searchLabels={{ open: tr("panel.search"), submit: tr("crud.search"), reset: tr("crud.reset") }}
+      columns={[
+        { prop: "idx", label: tr("rbac.index"), width: 60 },
+        { prop: "username", label: tr("users.username") },
+        {
+          prop: "status",
+          label: tr("common.status"),
+          render: () => <Tag size="xs" variant="success">{tr("online.active")}</Tag>,
+        },
+        { prop: "updatedAt", label: tr("online.updatedAt") },
+        { prop: "expiresAt", label: tr("online.expiresAt") },
+      ]}
+      rows={rows as never}
+      rowKey="id"
+      emptyText={tr("common.empty")}
+    />
   );
 }

@@ -42,12 +42,16 @@ export function RoutesAdmin(props: { locale: Locale; managed: string[]; availabl
     <div>
       <DataPanel
         title={tr("rbac.routeTitle")}
-        tools={{ create: true, refresh: true }}
+        tools={{ create: true, refresh: true, print: true }}
         onCreate={() => {
           addText.value = "";
           addOpen.value = true;
         }}
         onRefresh={reload}
+        toolLabels={{
+          print: tr("panel.print"),
+          soon: tr("panel.soon"),
+        }}
         toolbarExtra={
           <Button type="button" variant="primary" onClick={save}>{tr("rbac.routeSave")}</Button>
         }

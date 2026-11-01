@@ -81,9 +81,36 @@ export function AdminsAdmin(props: {
     <div>
       <DataPanel
         title={tr("nav.admins")}
-        tools={{ create: true, search: true, refresh: true }}
+        tools={{ create: true, search: true, refresh: true, export: true, print: true, column: true }}
         onCreate={() => openForm()}
         onRefresh={reload}
+        toolLabels={{
+          export: tr("panel.export"),
+          import: tr("panel.import"),
+          print: tr("panel.print"),
+          column: tr("panel.column"),
+          search: tr("panel.search"),
+          soon: tr("panel.soon"),
+          resetColumns: tr("panel.resetColumns"),
+          csv: "CSV",
+          excel: "Excel",
+          xml: "XML",
+          html: "HTML",
+        }}
+        columns={[
+          { prop: "idx", label: tr("rbac.index") },
+          { prop: "username", label: tr("users.username") },
+          { prop: "nickname", label: tr("users.nickname") },
+          { prop: "email", label: tr("usersForm.email") },
+          { prop: "roles", label: tr("users.roles") },
+          { prop: "status", label: tr("common.status") },
+          { prop: "actions", label: tr("common.actions") },
+        ]}
+        rows={props.rows.map((r, i) => ({
+          ...r,
+          idx: i + 1,
+          roles: r.roleCodes.join(", "),
+        })) as never}
         searchSlot={
           <form method="get" class="m-0 flex items-center gap-2">
             <Input name="keyword" value={props.keyword} placeholder={tr("usersForm.searchPlaceholder")} class="w-64" />

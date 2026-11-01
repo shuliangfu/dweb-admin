@@ -81,9 +81,37 @@ export function MenusAdmin(props: { locale: Locale; rows: MenuRow[] }) {
     <div>
       <DataPanel
         title={tr("menus.title")}
-        tools={{ create: true, refresh: true }}
+        tools={{ create: true, refresh: true, export: true, print: true, column: true, search: true }}
         onCreate={() => openForm()}
         onRefresh={reload}
+        toolLabels={{
+          export: tr("panel.export"),
+          print: tr("panel.print"),
+          column: tr("panel.column"),
+          search: tr("panel.search"),
+          soon: tr("panel.soon"),
+          resetColumns: tr("panel.resetColumns"),
+          csv: "CSV",
+        }}
+        searchSchemas={[
+          { name: "keyword", label: tr("menus.key"), placeholder: tr("menus.key"), defaultValue: "" },
+        ]}
+        searchLabels={{ open: tr("panel.search"), submit: tr("crud.search"), reset: tr("crud.reset") }}
+        columns={[
+          { prop: "idx", label: tr("rbac.index") },
+          { prop: "key", label: tr("menus.key") },
+          { prop: "parentKey", label: tr("menus.parent") },
+          { prop: "title", label: tr("menus.titleCol") },
+          { prop: "path", label: tr("menus.path") },
+          { prop: "sort", label: tr("menus.sort") },
+          { prop: "status", label: tr("common.status") },
+          { prop: "actions", label: tr("common.actions") },
+        ]}
+        rows={props.rows.map((r, i) => ({
+          ...r,
+          idx: i + 1,
+          title: typeof r.title === "object" ? (r.title["zh-CN"] ?? r.key) : r.title,
+        })) as never}
       >
       <Table
         bordered

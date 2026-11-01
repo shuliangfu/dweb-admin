@@ -45,17 +45,30 @@ export function StubList(props: { locale: Locale; page: StubPage }) {
   return (
     <DataPanel
       title={props.page.title[loc] ?? props.page.title["en-US"]}
-      info={tr("stub.demoInfo", { n: rows.length })}
-      tools={{ create: true, refresh: true, export: true, search: true }}
+      info={`${tr("stub.demoInfo", { n: rows.length })} · ${tr("stub.authNote")}`}
+      tools={{ create: true, refresh: true, export: true, import: true, print: true, column: true, search: true }}
       onCreate={() => message.info(tr("stub.soon"))}
       onRefresh={reload}
       columns={columns as never}
       rows={rows as never}
       rowKey="id"
       emptyText={tr("common.empty")}
+      searchSchemas={[
+        { name: "keyword", placeholder: tr("crud.search"), defaultValue: "" },
+      ]}
+      searchLabels={{ open: tr("panel.search"), submit: tr("crud.search"), reset: tr("crud.reset") }}
       toolLabels={{
-        export: tr("stub.export"),
+        export: tr("panel.export"),
+        import: tr("panel.import"),
+        print: tr("panel.print"),
+        column: tr("panel.column"),
+        search: tr("panel.search"),
         soon: tr("stub.soon"),
+        resetColumns: tr("panel.resetColumns"),
+        csv: "CSV",
+        excel: "Excel",
+        xml: "XML",
+        html: "HTML",
       }}
     />
   );
