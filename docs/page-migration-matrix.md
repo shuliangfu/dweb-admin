@@ -112,21 +112,15 @@ Blocking relation: **TagView + TopHeader breadcrumb** are pure shell; list `Data
 
 ## 5. System
 
+Kept under 系统管理 (3 stubs only):
+
 | Vue file | Title | dweb-admin | Status |
 |---|---|---|---|
-| `developer/menu/index.vue` | 菜单列表 | `/system/menus` → `MenusAdmin.tsx` + real menu APIs | **部分** — DataPanel search/export/print/column |
-| `system/admin-log/index.vue` | 管理员日志列表 | `/system/admin-log` stub DataPanel | **部分** — demo rows |
 | `system/base/index.vue` | 基本设置 | `/system/base` stub Descriptions | **部分** — settings preview |
-| `system/bonus/index.vue` | 奖金设置 | `/system/bonus` stub Descriptions | **部分** — settings preview |
-| `system/datetime/index.vue` | 时间设置 | `/system/datetime` stub Descriptions | **部分** — settings preview |
-| `system/express/index.vue` | 快递公司列表 | `/system/express` stub DataPanel | **部分** — demo rows |
-| `system/finance/index.vue` | 财务设置 | `/system/finance` stub Descriptions | **部分** — settings preview |
-| `system/level/index.vue` | 会员级别列表 | `/system/level` stub DataPanel | **部分** — demo rows |
-| `system/locale/index.vue` | 本地化管理 | `/system/locale` stub DataPanel | **部分** — demo rows |
-| `system/online/index.vue` | 在线管理员 | `/system/online` → `OnlineAdmin.tsx` (DataPanel + real AdminSession) | **部分** — live sessions + IP/UA; kick via `DELETE /api/sessions/:id`; search/export/print/column |
 | `system/region/index.vue` | 地区列表 | `/system/region` stub DataPanel | **部分** — demo rows |
-| `system/transfer/index.vue` | 转账设置 | `/system/transfer` stub Descriptions | **部分** — settings preview |
-| `system/wallet/index.vue` | 钱包设置 | `/system/wallet` stub Descriptions | **部分** — settings preview |
+| `system/datetime/index.vue` | 时间设置 | `/system/datetime` stub Descriptions | **部分** — settings preview |
+
+Removed from 系统管理 (no menu/route/stub here): menus (moved → 开发管理), online, admin-log, express, level, locale, bonus, finance, transfer, wallet.
 
 ---
 
@@ -150,11 +144,13 @@ All **部分** stubs (DataPanel demo): `/cms/article|news|notice|photo|qa|survey
 
 ---
 
-## 8. Developer
+## 8. Developer（开发管理）
+
+Top-level title 开发管理. Menus live page moved here; other leaves stay stubs:
 
 | Vue file | Title | dweb-admin | Status |
 |---|---|---|---|
-| `developer/menu/index.vue` | 菜单列表 | see System `/system/menus` | **部分** (path remap) |
+| `developer/menu/index.vue` | 菜单管理 | `/developer/menus` → `MenusAdmin.tsx` + real menu APIs | **部分** — DataPanel search/export/print/column |
 | `developer/database/index.vue` | 数据备份列表 | `/developer/database` stub | **部分** — demo DataPanel |
 | `developer/feedback/index.vue` | 问题反馈列表 | `/developer/feedback` stub | **部分** — demo DataPanel |
 | `developer/language/index.vue` | 系统语言列表 | `/developer/language` stub | **部分** — demo DataPanel |
@@ -170,19 +166,20 @@ All **部分** stubs (DataPanel demo): `/cms/article|news|notice|photo|qa|survey
 | Fullpage + error | 7 | 7 部分 (login/lock/forget/reset/403/404/500) | 0 (parity pending) |
 | Home | 2 | 2 部分 (dashboard charts + workspace stub) | 0 |
 | Admin/RBAC | 5 | 5 部分 (incl. `/rbac/assign`) | 0 (allow/deny model still absent; gap UI only) |
-| System + developer menu | 13 | 13 部分 (menus/online+kick + 11 stubs) | 0 (no domain models for remaining stubs) |
+| System | 3 kept | 3 部分 (stubs) | extras dropped from 系统管理 |
+| Developer（开发管理） | 5 | 5 部分 (menus live + 4 stubs) | online removed from nav |
 | User | 3 kept | 3 部分 (stubs) | Vue extras intentionally dropped |
 | CMS | 6 | 6 部分 (stubs) | 0 (model/API pending) |
 | Developer (rest) | 4 | 4 部分 (stubs) | 0 (model/API pending) |
 | **DataPanel wrapper** | 1 (CardPanel) | 1 部分 (search/column/CSV export+import/print; children col filter) | Excel/XML/HTML backends pending (no pkgs) |
 
-Vue list entry pages: **64** view files (modules excluded). Dynamic sidebar routes beyond static `/dashboard`/`/workspace`/auth come from backend-fed `routeStore` in Vue; dweb uses Mongo `menus` seed covering dashboard/workspace/rbac/system/user(3)/cms/developer (finance/count removed; extra member leaves removed).
+Vue list entry pages: **64** view files (modules excluded). Dynamic sidebar routes beyond static `/dashboard`/`/workspace`/auth come from backend-fed `routeStore` in Vue; dweb uses Mongo `menus` seed covering dashboard/workspace/rbac/user(3)/cms/system(3)/developer(开发管理: menus+4 stubs). Top-level sort: user above cms. Finance/count removed.
 
 ---
 
 ## 10. Suggested implementation order (next knives)
 
-1. **Model-backed scan (2026-11-01):** Mongo models in-tree are only `AdminUser` / `Auth*` / `Menu` / `AdminSession` / `AdminPasskey` (+ challenges). Every list that can use those models is already live (admins, assign, roles, permissions, routes, menus, online+kick, account security/passkeys). **No remaining model-backed stub pages.** `/system/admin-log` and remaining user(3)/CMS/developer leaves stay stubs until new domain models exist — do not fake APIs. Finance/count menus+routes removed.
+1. **Model-backed scan (2026-11-01):** Mongo models in-tree are only `AdminUser` / `Auth*` / `Menu` / `AdminSession` / `AdminPasskey` (+ challenges). Every list that can use those models is already live (admins, assign, roles, permissions, routes, menus, online+kick, account security/passkeys). **No remaining model-backed stub pages.** Remaining system(3)/user(3)/CMS/developer stub leaves stay stubs until new domain models exist — do not fake APIs. Finance/count removed; menus live at `/developer/menus`.
 2. Next real work needs **new models** (member, CMS, system settings store, admin audit log) or Vue-parity polish on existing live pages (DataPanel Excel/XML once deps land; TagView keep-alive N/A on SSR).
 3. Shell: ChatModal is layout-only (no IM backend); keep honest empty states.
 4. If product needs Vue allow/deny + user-direct routes: add AuthAssignment-class model + API first, then wire the reserved Assign gap panel (do not fake).

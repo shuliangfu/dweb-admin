@@ -20,85 +20,6 @@ export type StubPage = {
 
 export const STUB_PAGES: StubPage[] = [
   {
-    key: "system.admin-log",
-    module: "system",
-    path: "/system/admin-log",
-    title: { "zh-CN": "管理员日志列表", "en-US": "Admin logs" },
-    kind: "list",
-    columns: [
-      { prop: "admin", label: { "zh-CN": "管理员", "en-US": "Admin" } },
-      { prop: "title", label: { "zh-CN": "访问页面", "en-US": "Page" } },
-      { prop: "path", label: { "zh-CN": "访问路径", "en-US": "Path" } },
-      { prop: "method", label: { "zh-CN": "请求方法", "en-US": "Method" } },
-      { prop: "status", label: { "zh-CN": "请求状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
-    ],
-    settings: [
-
-    ],
-    icon: "star",
-    sort: 30,
-    parent: "system",
-  },
-  {
-    key: "system.express",
-    module: "system",
-    path: "/system/express",
-    title: { "zh-CN": "快递公司列表", "en-US": "Express companies" },
-    kind: "list",
-    columns: [
-      { prop: "name", label: { "zh-CN": "公司名称", "en-US": "Name" } },
-      { prop: "code", label: { "zh-CN": "公司编码", "en-US": "Code" } },
-      { prop: "type", label: { "zh-CN": "快递类型", "en-US": "Type" } },
-      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
-    ],
-    settings: [
-
-    ],
-    icon: "star",
-    sort: 40,
-    parent: "system",
-  },
-  {
-    key: "system.level",
-    module: "system",
-    path: "/system/level",
-    title: { "zh-CN": "会员级别列表", "en-US": "Member levels" },
-    kind: "list",
-    columns: [
-      { prop: "name", label: { "zh-CN": "级别名称", "en-US": "Name" } },
-      { prop: "amount", label: { "zh-CN": "购买金额", "en-US": "Amount" } },
-      { prop: "invite", label: { "zh-CN": "推荐人数", "en-US": "Invites" } },
-      { prop: "status", label: { "zh-CN": "是否启用", "en-US": "Enabled" } },
-      { prop: "info", label: { "zh-CN": "级别描述", "en-US": "Info" } },
-      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
-    ],
-    settings: [
-
-    ],
-    icon: "star",
-    sort: 50,
-    parent: "system",
-  },
-  {
-    key: "system.locale",
-    module: "system",
-    path: "/system/locale",
-    title: { "zh-CN": "本地化管理", "en-US": "Localization" },
-    kind: "list",
-    columns: [
-      { prop: "locale", label: { "zh-CN": "词汇", "en-US": "Phrase" } },
-      { prop: "zh", label: { "zh-CN": "中文", "en-US": "Chinese" } },
-      { prop: "en", label: { "zh-CN": "英文", "en-US": "English" } }
-    ],
-    settings: [
-
-    ],
-    icon: "star",
-    sort: 60,
-    parent: "system",
-  },
-  {
     key: "system.region",
     module: "system",
     path: "/system/region",
@@ -114,7 +35,7 @@ export const STUB_PAGES: StubPage[] = [
 
     ],
     icon: "star",
-    sort: 70,
+    sort: 20,
     parent: "system",
   },
   {
@@ -135,26 +56,7 @@ export const STUB_PAGES: StubPage[] = [
       { label: { "zh-CN": "日期时间格式", "en-US": "Datetime format" }, value: "YYYY-MM-DD HH:mm:ss" }
     ],
     icon: "star",
-    sort: 80,
-    parent: "system",
-  },
-  {
-    key: "system.bonus",
-    module: "system",
-    path: "/system/bonus",
-    title: { "zh-CN": "奖金设置", "en-US": "Bonus settings" },
-    kind: "settings",
-    columns: [
-
-    ],
-    settings: [
-      { label: { "zh-CN": "奖金1", "en-US": "Bonus 1" }, value: "直推奖 / Direct" },
-      { label: { "zh-CN": "奖金2", "en-US": "Bonus 2" }, value: "团队奖 / Team" },
-      { label: { "zh-CN": "启用奖金1", "en-US": "Enable bonus 1" }, value: "开启 / On" },
-      { label: { "zh-CN": "启用奖金2", "en-US": "Enable bonus 2" }, value: "开启 / On" }
-    ],
-    icon: "star",
-    sort: 90,
+    sort: 10,
     parent: "system",
   },
   {
@@ -172,64 +74,7 @@ export const STUB_PAGES: StubPage[] = [
       { label: { "zh-CN": "偏移秒", "en-US": "Offset seconds" }, value: "0" }
     ],
     icon: "star",
-    sort: 100,
-    parent: "system",
-  },
-  {
-    key: "system.finance",
-    module: "system",
-    path: "/system/finance",
-    title: { "zh-CN": "财务设置", "en-US": "Finance settings" },
-    kind: "settings",
-    columns: [
-
-    ],
-    settings: [
-      { label: { "zh-CN": "转账手续费", "en-US": "Transfer fee" }, value: "1%" },
-      { label: { "zh-CN": "提现手续费", "en-US": "Withdraw fee" }, value: "2%" },
-      { label: { "zh-CN": "兑换手续费", "en-US": "Exchange fee" }, value: "0.5%" },
-      { label: { "zh-CN": "交易手续费", "en-US": "Trade fee" }, value: "0.3%" }
-    ],
-    icon: "star",
-    sort: 110,
-    parent: "system",
-  },
-  {
-    key: "system.transfer",
-    module: "system",
-    path: "/system/transfer",
-    title: { "zh-CN": "转账设置", "en-US": "Transfer settings" },
-    kind: "settings",
-    columns: [
-
-    ],
-    settings: [
-      { label: { "zh-CN": "钱包1转账", "en-US": "Wallet 1 transfer" }, value: "允许 / Allow" },
-      { label: { "zh-CN": "钱包2转账", "en-US": "Wallet 2 transfer" }, value: "允许 / Allow" },
-      { label: { "zh-CN": "最低转账", "en-US": "Min transfer" }, value: "10" },
-      { label: { "zh-CN": "最高转账", "en-US": "Max transfer" }, value: "100000" }
-    ],
-    icon: "star",
-    sort: 120,
-    parent: "system",
-  },
-  {
-    key: "system.wallet",
-    module: "system",
-    path: "/system/wallet",
-    title: { "zh-CN": "钱包设置", "en-US": "Wallet settings" },
-    kind: "settings",
-    columns: [
-
-    ],
-    settings: [
-      { label: { "zh-CN": "钱包1", "en-US": "Wallet 1" }, value: "开启 / On" },
-      { label: { "zh-CN": "钱包2", "en-US": "Wallet 2" }, value: "开启 / On" },
-      { label: { "zh-CN": "钱包3", "en-US": "Wallet 3" }, value: "关闭 / Off" },
-      { label: { "zh-CN": "钱包名称1", "en-US": "Wallet 1 name" }, value: "余额 / Balance" }
-    ],
-    icon: "star",
-    sort: 130,
+    sort: 30,
     parent: "system",
   },
   {

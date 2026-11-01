@@ -120,66 +120,12 @@ const MENUS: Omit<MenuDocument, "_id" | "createdAt" | "updatedAt">[] = [
     status: "active",
   },
   {
-    key: "system.menus",
-    parentKey: "system",
-    title: { "zh-CN": "菜单管理", "en-US": "Menus" },
-    path: "/system/menus",
-    icon: "star",
-    sort: 10,
-    status: "active",
-  },
-  {
-    key: "system.online",
-    parentKey: "system",
-    title: { "zh-CN": "在线管理员", "en-US": "Online admins" },
-    path: "/system/online",
-    icon: "star",
-    sort: 20,
-    status: "active",
-  },
-  {
-    key: "system.admin-log",
-    parentKey: "system",
-    title: { "zh-CN": "管理员日志列表", "en-US": "Admin logs" },
-    path: "/system/admin-log",
-    icon: "star",
-    sort: 30,
-    status: "active",
-  },
-  {
-    key: "system.express",
-    parentKey: "system",
-    title: { "zh-CN": "快递公司列表", "en-US": "Express companies" },
-    path: "/system/express",
-    icon: "star",
-    sort: 40,
-    status: "active",
-  },
-  {
-    key: "system.level",
-    parentKey: "system",
-    title: { "zh-CN": "会员级别列表", "en-US": "Member levels" },
-    path: "/system/level",
-    icon: "star",
-    sort: 50,
-    status: "active",
-  },
-  {
-    key: "system.locale",
-    parentKey: "system",
-    title: { "zh-CN": "本地化管理", "en-US": "Localization" },
-    path: "/system/locale",
-    icon: "star",
-    sort: 60,
-    status: "active",
-  },
-  {
     key: "system.region",
     parentKey: "system",
     title: { "zh-CN": "地区列表", "en-US": "Regions" },
     path: "/system/region",
     icon: "star",
-    sort: 70,
+    sort: 20,
     status: "active",
   },
   {
@@ -188,16 +134,7 @@ const MENUS: Omit<MenuDocument, "_id" | "createdAt" | "updatedAt">[] = [
     title: { "zh-CN": "基本设置", "en-US": "Base settings" },
     path: "/system/base",
     icon: "star",
-    sort: 80,
-    status: "active",
-  },
-  {
-    key: "system.bonus",
-    parentKey: "system",
-    title: { "zh-CN": "奖金设置", "en-US": "Bonus settings" },
-    path: "/system/bonus",
-    icon: "star",
-    sort: 90,
+    sort: 10,
     status: "active",
   },
   {
@@ -206,34 +143,7 @@ const MENUS: Omit<MenuDocument, "_id" | "createdAt" | "updatedAt">[] = [
     title: { "zh-CN": "时间设置", "en-US": "Datetime settings" },
     path: "/system/datetime",
     icon: "star",
-    sort: 100,
-    status: "active",
-  },
-  {
-    key: "system.finance",
-    parentKey: "system",
-    title: { "zh-CN": "财务设置", "en-US": "Finance settings" },
-    path: "/system/finance",
-    icon: "star",
-    sort: 110,
-    status: "active",
-  },
-  {
-    key: "system.transfer",
-    parentKey: "system",
-    title: { "zh-CN": "转账设置", "en-US": "Transfer settings" },
-    path: "/system/transfer",
-    icon: "star",
-    sort: 120,
-    status: "active",
-  },
-  {
-    key: "system.wallet",
-    parentKey: "system",
-    title: { "zh-CN": "钱包设置", "en-US": "Wallet settings" },
-    path: "/system/wallet",
-    icon: "star",
-    sort: 130,
+    sort: 30,
     status: "active",
   },
   {
@@ -242,7 +152,7 @@ const MENUS: Omit<MenuDocument, "_id" | "createdAt" | "updatedAt">[] = [
     title: { "zh-CN": "会员管理", "en-US": "Members" },
     path: "",
     icon: "users",
-    sort: 70,
+    sort: 60,
     status: "active",
   },
   {
@@ -278,7 +188,7 @@ const MENUS: Omit<MenuDocument, "_id" | "createdAt" | "updatedAt">[] = [
     title: { "zh-CN": "内容管理", "en-US": "CMS" },
     path: "",
     icon: "book",
-    sort: 60,
+    sort: 70,
     status: "active",
   },
   {
@@ -338,10 +248,19 @@ const MENUS: Omit<MenuDocument, "_id" | "createdAt" | "updatedAt">[] = [
   {
     key: "developer",
     parentKey: "",
-    title: { "zh-CN": "开发工具", "en-US": "Developer" },
+    title: { "zh-CN": "开发管理", "en-US": "Development" },
     path: "",
     icon: "database",
     sort: 100,
+    status: "active",
+  },
+  {
+    key: "developer.menus",
+    parentKey: "developer",
+    title: { "zh-CN": "菜单管理", "en-US": "Menus" },
+    path: "/developer/menus",
+    icon: "star",
+    sort: 5,
     status: "active",
   },
   {
@@ -409,10 +328,21 @@ export async function seedAll(): Promise<void> {
     }
   }
   for (const m of MENUS) {
-    if (!await Menu.findOne({ key: m.key })) await Menu.create(m);
+    const existing = await Menu.findOne({ key: m.key });
+    if (!existing) await Menu.create(m);
+    else {
+      await Menu.updateById(String(existing._id), {
+        title: m.title,
+        path: m.path,
+        parentKey: m.parentKey,
+        icon: m.icon,
+        sort: m.sort,
+        status: m.status,
+      });
+    }
   }
 
-  // Drop obsolete menus removed from MENUS (member cull + finance/count removed).
+  // Drop obsolete menus removed from MENUS (member/finance/count + system cull; menus → developer).
   const OBSOLETE_MENU_KEYS = [
     "count",
     "count.bonus",
@@ -430,6 +360,16 @@ export async function seedAll(): Promise<void> {
     "finance.wallet-add-sub",
     "finance.wallet-log",
     "finance.withdraw",
+    "system.admin-log",
+    "system.bonus",
+    "system.express",
+    "system.finance",
+    "system.level",
+    "system.locale",
+    "system.menus",
+    "system.online",
+    "system.transfer",
+    "system.wallet",
     "user.black",
     "user.location",
     "user.locked",

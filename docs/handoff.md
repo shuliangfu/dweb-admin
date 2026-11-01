@@ -53,7 +53,7 @@ dweb-admin/
 ### 参照仓
 
 - **唯一 UI 参照**：`/home/vue/dreamer-vue`（已确认，非临时／待确认）。
-- 对稿范围：**全站**——侧栏、顶栏、二级头／多标签、登录／锁屏／错误页，以及侧栏菜单覆盖的**全部内容页**（RBAC／系统／会员（三项）／CMS／开发者等（财务／统计已撤））。勿只做单页「能开」而忽略壳层或菜单叶子。
+- 对稿范围：**全站**——侧栏、顶栏、二级头／多标签、登录／锁屏／错误页，以及侧栏菜单覆盖的**全部内容页**（RBAC／会员（三项）／CMS／系统（三项）／开发管理等（财务／统计已撤；菜单管理在开发管理））。勿只做单页「能开」而忽略壳层或菜单叶子。
 
 ### 技术约束（对稿时的实现栈）
 
@@ -175,7 +175,7 @@ dweb-admin 对应物：
 ### 数据面板与列表页
 
 - 封装：`common/components/DataPanel.tsx`（多格式 export／import、打印、列显隐、`DataPanelChildrenCtx`）。
-- 真列表：`AdminsAdmin`、`ItemAdmin`、`MenusAdmin`、`RoutesAdmin`、`AssignAdmin`、`OnlineAdmin` + 对应 `backend/routes/...` load 真 API。
+- 真列表：`AdminsAdmin`、`ItemAdmin`、`MenusAdmin`（`/developer/menus`）、`RoutesAdmin`、`AssignAdmin`；`OnlineAdmin` 组件仍在，侧栏已从系统管理撤下。
 - Stub：`common/stubs/catalog.ts` + `StubList`／`StubSettings`／`StubChart`／`stub-page.tsx`；无领域模型前用演示行，且 **AUTH_ONLY 已收紧**（非超管需显式路由授权）。
 
 ### i18n

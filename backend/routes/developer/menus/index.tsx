@@ -1,4 +1,4 @@
-/** Menu definitions stored in the DB, Modal create/edit. Route: /system/menus */
+/** Menu definitions stored in the DB, Modal create/edit. Route: /developer/menus */
 import type { LoadContext } from "@dreamer/dweb";
 import { type Locale, resolveLocale } from "@common/i18n/mod.ts";
 import { type MenuRow, MenusAdmin } from "@backend/components/MenusAdmin.tsx";
