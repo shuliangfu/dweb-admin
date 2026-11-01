@@ -30,12 +30,15 @@ export const STUB_PAGES: StubPage[] = [
       { prop: "name", label: { "zh-CN": "地区名称", "en-US": "Name" } },
       { prop: "pname", label: { "zh-CN": "父级地区", "en-US": "Parent" } },
       { prop: "level", label: { "zh-CN": "等级", "en-US": "Level" } },
-      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
     ],
-    settings: [
-
+    searchFields: [
+      { name: "gid", label: { "zh-CN": "区域ID", "en-US": "Region ID" }, placeholder: { "zh-CN": "请输入区域ID查询", "en-US": "Search region ID" } },
+      { name: "pid", label: { "zh-CN": "父级ID", "en-US": "Parent ID" }, placeholder: { "zh-CN": "请输入父级ID查询", "en-US": "Search parent ID" } },
+      { name: "name", label: { "zh-CN": "名称", "en-US": "Name" }, placeholder: { "zh-CN": "请输入名称查询", "en-US": "Search name" } },
+      { name: "level", label: { "zh-CN": "等级", "en-US": "Level" }, placeholder: { "zh-CN": "请输入等级查询", "en-US": "Search level" } },
     ],
-    icon: "star",
+    settings: [],
+    icon: "compass",
     sort: 20,
     parent: "system",
   },
@@ -45,18 +48,19 @@ export const STUB_PAGES: StubPage[] = [
     path: "/system/base",
     title: { "zh-CN": "基本设置", "en-US": "Base settings" },
     kind: "settings",
-    columns: [
-
-    ],
+    columns: [],
     settings: [
       { label: { "zh-CN": "网站名称", "en-US": "Site name" }, value: "Dreamer Admin" },
       { label: { "zh-CN": "公司名称", "en-US": "Company" }, value: "Demo Co." },
       { label: { "zh-CN": "验证码类型", "en-US": "Captcha" }, value: "字符验证码 / Character" },
+      { label: { "zh-CN": "年份格式", "en-US": "Year format" }, value: "YYYY" },
+      { label: { "zh-CN": "月份格式", "en-US": "Month format" }, value: "YYYY-MM" },
+      { label: { "zh-CN": "日期格式", "en-US": "Date format" }, value: "YYYY-MM-DD" },
+      { label: { "zh-CN": "日期时间格式", "en-US": "Datetime format" }, value: "YYYY-MM-DD HH:mm:ss" },
       { label: { "zh-CN": "默认语言", "en-US": "Default locale" }, value: "zh-CN" },
       { label: { "zh-CN": "默认分页", "en-US": "Page size" }, value: "20" },
-      { label: { "zh-CN": "日期时间格式", "en-US": "Datetime format" }, value: "YYYY-MM-DD HH:mm:ss" }
     ],
-    icon: "star",
+    icon: "sliders",
     sort: 10,
     parent: "system",
   },
@@ -66,15 +70,12 @@ export const STUB_PAGES: StubPage[] = [
     path: "/system/datetime",
     title: { "zh-CN": "时间设置", "en-US": "Datetime settings" },
     kind: "settings",
-    columns: [
-
-    ],
+    columns: [],
     settings: [
-      { label: { "zh-CN": "服务器时间", "en-US": "Server time" }, value: "(demo clock)" },
       { label: { "zh-CN": "时区", "en-US": "Timezone" }, value: "Asia/Shanghai" },
-      { label: { "zh-CN": "偏移秒", "en-US": "Offset seconds" }, value: "0" }
+      { label: { "zh-CN": "偏移秒", "en-US": "Offset seconds" }, value: "0" },
     ],
-    icon: "star",
+    icon: "clock",
     sort: 30,
     parent: "system",
   },

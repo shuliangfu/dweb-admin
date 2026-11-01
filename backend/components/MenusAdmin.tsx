@@ -29,7 +29,7 @@ const errors = createSignal<string[]>([]);
 const deleting = createSignal("");
 const busy = createSignal(false);
 
-export function MenusAdmin(props: { locale: Locale; rows: MenuRow[] }) {
+export function MenusAdmin(props: { locale: Locale; rows: MenuRow[]; keyword?: string; path?: string }) {
   const tr = createT(props.locale);
   const tops = props.rows.filter((m) => !m.parentKey);
   const parentTitle = (parentKey: string) => {
@@ -100,7 +100,8 @@ export function MenusAdmin(props: { locale: Locale; rows: MenuRow[] }) {
           csv: "CSV",
         }}
         searchSchemas={[
-          { name: "keyword", label: tr("menus.key"), placeholder: tr("menus.key"), defaultValue: "" },
+          { name: "keyword", label: tr("menus.key"), placeholder: tr("menus.key"), defaultValue: props.keyword ?? "" },
+          { name: "path", label: tr("menus.path"), placeholder: tr("menus.path"), defaultValue: props.path ?? "" },
         ]}
         searchLabels={{ open: tr("panel.search"), submit: tr("crud.search"), reset: tr("crud.reset") }}
         columns={[

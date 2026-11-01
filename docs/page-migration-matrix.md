@@ -57,8 +57,8 @@ el-main → router-view
 |---|---|---|---|---|---|
 | App HTML shell | `index.html` + Vue app | title, root mount | `backend/routes/_app.tsx` | **部分** | OK structurally; branding/title still “Dweb Admin” |
 | Layout frame | `src/components/Layout/Layout.vue` | side + dual headers + main; mobile drawer | `backend/routes/_layout.tsx` | **部分** | Vue grid + mobile drawer; lock/chat/settings wired into chrome (minimal). Theme primary presets + ColorPicker in SettingsDrawer |
-| Sidebar / 左侧菜单 | `Layout/Side/Side.vue` + `Side/Item.vue` | logo「浮生若梦」, collapse, `el-menu` from `routeStore.routes` | `SideBrand.tsx` + `SideMenu.tsx` + menu DB | **部分** | Logo strip + key→icon map + collapse; menu margin-top 15px; DB menu; not full Vue m-icon / unique-opened |
-| Top bar / 顶部栏 | `Layout/TopHeader/TopHeader.vue` (+ `modules/Profile.vue`, `UpdatePassword.vue`, `UpdateProfile.vue`) | collapse control, breadcrumb, avatar menu (profile/password/lock/logout), chat, language, theme, fullscreen, settings drawer | `TopHeader.tsx` + Lang/Theme/User + FullscreenToggle + ChatModal + SettingsDrawer | **部分** | Settings drawer width 400; breadcrumb + primary presets/ColorPicker; Vue multi-token theme.other not mirrored |
+| Sidebar / 左侧菜单 | `Layout/Side/Side.vue` + `Side/Item.vue` | logo「浮生若梦」, collapse, `el-menu` from `routeStore.routes` | `SideBrand.tsx` + `SideMenu.tsx` + menu DB | **部分** | Logo strip + ICON_BY_KEY + collapse; margin-top 15px; **unique-opened** via details; no Vue m-icon font |
+| Top bar / 顶部栏 | `Layout/TopHeader/TopHeader.vue` (+ `modules/Profile.vue`, `UpdatePassword.vue`, `UpdateProfile.vue`) | collapse control, breadcrumb, avatar menu (profile/password/lock/logout), chat, language, theme, fullscreen, settings drawer | `TopHeader.tsx` + Lang/Theme/User + FullscreenToggle + ChatModal + SettingsDrawer | **部分** | Settings 400; breadcrumb + primary + **theme.other→`--adm-*` subset** + semantic colors; dialog/card tokens handoff |
 | Second header / Tag tabs | `Layout/SecondHeader/SecondHeader.vue` → `TagView/*` | multi-tab visited pages | `backend/components/TagView.tsx` | **部分** | Tabs + localStorage + close/context; active border-bottom none; keep-alive N/A (SSR) |
 | Mobile side drawer | `Layout.vue` `el-drawer` | drawer when mobile | `_layout.tsx` backdrop + `SidebarToggle` | **部分** | Full-height drawer + backdrop aligned with Vue aside drawer |
 | Login / no-chrome | `views/fullpage/*` rendered outside Layout | fullpage | `_layout.tsx` skips `/login`, `/password/*`, `/error/*` | **已有** | forget/reset + error pages use AuthShell/ErrorPage |
@@ -66,7 +66,7 @@ el-main → router-view
 ### Shell cut order (recommended)
 
 1. **Layout frame** — restyle `_layout.tsx` to Vue grid: left logo+menu, top TopHeader, second TagView row, content.
-2. **SideMenu** — align logo/title, icons, active/collapse with `Side.vue` / `Item.vue`; keep DB menu source.
+2. **SideMenu** — unique-opened + ICON_BY_KEY done; remaining: full m-icon parity N/A (ui-view only).
 3. **TopHeader** — breadcrumb (`@dreamer/ui-view` Breadcrumb), user dropdown parity, lang/theme/fullscreen placements.
 4. **TagView** — new common/backend component (缺); then wire into layout.
 5. Only then content pages (so lists sit in correct chrome).
@@ -116,9 +116,9 @@ Kept under 系统管理 (3 stubs only):
 
 | Vue file | Title | dweb-admin | Status |
 |---|---|---|---|
-| `system/base/index.vue` | 基本设置 | `/system/base` stub Descriptions | **部分** — settings preview |
-| `system/region/index.vue` | 地区列表 | `/system/region` stub DataPanel | **部分** — demo rows |
-| `system/datetime/index.vue` | 时间设置 | `/system/datetime` stub Descriptions | **部分** — settings preview |
+| `system/base/index.vue` | 基本设置 | `/system/base` StubSettings | **部分** — Vue field order (site/company/captcha/formats/locale/pageSize); no Config API |
+| `system/region/index.vue` | 地区列表 | `/system/region` StubList | **部分** — cols name/pname/level + search gid/pid/name/level; no Region model |
+| `system/datetime/index.vue` | 时间设置 | `/system/datetime` StubDatetime | **部分** — digital clock + tz/offset demo; no setTime/sync API |
 
 Removed from 系统管理 (no menu/route/stub here): menus (moved → 开发管理), online, admin-log, express, level, locale, bonus, finance, transfer, wallet.
 
@@ -150,7 +150,7 @@ Top-level title 开发管理. Menus live page moved here; other leaves stay stub
 
 | Vue file | Title | dweb-admin | Status |
 |---|---|---|---|
-| `developer/menu/index.vue` | 菜单管理 | `/developer/menus` → `MenusAdmin.tsx` + real menu APIs | **部分** — cols title/parent/path/icon/sort/visible(+key); no component/show fields on Menu |
+| `developer/menu/index.vue` | 菜单管理 | `/developer/menus` → `MenusAdmin.tsx` + real menu APIs | **部分** — cols title/parent/path/icon/sort/visible(+key); search key/path; no component/show |
 | `developer/database/index.vue` | 数据备份列表 | `/developer/database` stub | **部分** — demo DataPanel |
 | `developer/feedback/index.vue` | 问题反馈列表 | `/developer/feedback` stub | **部分** — demo DataPanel |
 | `developer/language/index.vue` | 系统语言列表 | `/developer/language` stub | **部分** — demo DataPanel |

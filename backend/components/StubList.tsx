@@ -25,6 +25,10 @@ function demoRows(page: StubPage, n = 3): Record<string, unknown>[] {
         row[c.prop] = `user${i + 1}@example.com`;
       } else if (c.prop === "mobile") {
         row[c.prop] = `1380000000${i}`;
+      } else if (c.prop === "level" || c.prop === "_level") {
+        row[c.prop] = i + 1;
+      } else if (c.prop === "pname") {
+        row[c.prop] = i === 0 ? "#" : `Parent #${i}`;
       } else {
         row[c.prop] = `${c.label["en-US"]} #${i + 1}`;
       }

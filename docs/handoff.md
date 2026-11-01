@@ -233,11 +233,11 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 
 ### 已相对落地（截至本 handoff 撰写时，以 matrix + 仓库为准）
 
-- 壳层：Side／Top／TagView／主题／设置抽屉（主色＋`--adm-accent`）——登录左饰＋锁屏背景／DS-Digital 时钟已对稿；ChatModal 为分栏壳（无 IM 后端）；**TagView keep-alive = N/A**（dweb SSR 全页导航，无 Vue `<keep-alive>` 等价；标签仅记路径，不缓存页面实例）。
+- 壳层：Side／Top／TagView／主题／设置抽屉（主色＋`--adm-accent`＋**theme.other→`--adm-*` 可映子集**＋semantic success/info/warning/danger）——登录左饰＋锁屏背景／DS-Digital 时钟已对稿；ChatModal 为分栏壳（无 IM 后端）；**TagView keep-alive = N/A**；SideMenu **unique-opened**（`<details>` 互斥）＋`ICON_BY_KEY`／ui-view Icon（非 Vue m-icon 全套）。
 - 全页：login／lock／forget／reset／403／404／500——**部分**。
 - Home：dashboard + workspace——**部分**。
 - RBAC：admins／roles／permissions／routes／**assign（roleCodes＝允许型可跑；modal 含禁用 gap UI）**——**部分**；真 list／CRUD API。
-- System：menus（CRUD）、online（真 AdminSession＋IP／UA＋踢下线）——**部分**；其余多为 stub。
+- System：menus 已迁 `/developer/menus`（CRUD）；online（真 AdminSession）——**部分**；**base／region／datetime 仍 stub**（字段／时钟对稿 Vue，无 Config／Region／setTime 模型）。
 - DataPanel：search／列显隐／多格式导出（CSV／HTML-as-xls／XML／TXT／JSON）＋导入解析／打印／图标工具条；children `filterTableColumns` 已接 admins／roles／menus；壳层顶栏高度对齐 Vue（`h-adm-top`）。
 - Tailwind 4：禁止 3.x 任意值 bracket 烂用（见上文「Tailwind 4 约定」）。
 - AUTH_ONLY 收紧：stub 页不再白名单放行，需超管或显式路由授权。
@@ -251,8 +251,10 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 5. **DataPanel**：浏览器侧 CSV／HTML-table-as-xls／XML／HTML／JSON 已接。**无 OOXML／xlsx 扩展包** → `panel.xlsxGap`。
 6. **RBAC Assign**：`roleCodes` 真 API；Vue allow／deny＋直绑路由需 **AuthAssignment**（无模型）→ gap UI，禁止假提交。 列表列已对齐 Vue（#／username／权限／操作）。
 
-7. **Menus**：模型仅有 key／parentKey／title／path／icon／sort／status — **无** Vue `component`／`show`；列表用 icon＋status→是否显示，上级显示标题；component 不造字段。
+7. **Menus**（`/developer/menus`）：模型仅有 key／parentKey／title／path／icon／sort／status — **无** Vue `component`／`show`；列表用 icon＋status→是否显示，上级显示标题；搜索 keyword／path；component 不造字段。
 8. **Routes**：保留 Transfer 纳管；另附 managed 表（path／method／source／createdAt）；AuthRoute **无** name 字段故不造。
+9. **Settings theme.other**：已映 `--adm-side/sub/active-bg/text/text-hover/brand-strip/brand-fg/top-*/tag-*/content`；**未映** Vue 弹窗／卡片斑马／菜单项高度／圆角／`--el-text-color-regular`／二级独立 hover（无对应壳变量）→ 勿假造 CSS 变量。
+10. **SideMenu m-icon**：仅 ui-view Icon 名＋`ICON_BY_KEY`；无独立 m-icon 字体包。
 
 ### 工作区提示
 
@@ -292,5 +294,6 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 | 2026-11-01 | API 双模板：handlers 双导出 restful+action；`backend/api-style.ts`；handoff § API；DataPanel 多格式导出／壳层视觉对齐 |
 | 2026-11-01 | API 改 `apiMode:"action"`：hello→`index.ts`、去掉 REST 别名、动态一动作一文件；handoff 记明 kind:api 根 `/` 不回落 index；壳层 lock/login/TagView 打磨 |
 | 2026-11-01 | Menus 列对齐（icon／visible／parent 标题）；Assign 列表精简＋gap 维持；Routes Transfer＋managed 表；Settings 宽 400／TagView active 底边／SideMenu margin 15px |
+| 2026-11-01 | Settings 接 Vue theme.other／semantic 可映 token；SideMenu unique-opened＋ICON_BY_KEY；system base／region／datetime stub 对稿；`/developer/menus` 搜索 path；勿 push |
 | 2026-11-01 | 弱项：login 左饰＋lock 背景／DS-Digital；member／CMS stub 列／搜索对稿 Vue；handoff 记 Assign／OOXML／TagView keep-alive N/A |
 | 2026-11-01 | 第③环收口：锁 `@dreamer/dweb@^3.7.6`（传递 `@dreamer/server@1.2.2`）；`dev:api` 验通 `GET /`／`/index`／`/users`／`/users/index` 均 200（根 `/` 回落已通）；JSR 已发 server 1.2.2、dweb 3.7.6；本地 commit，勿 push |

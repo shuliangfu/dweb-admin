@@ -1,17 +1,29 @@
 /**
  * Left sidebar. Tree from DB (common/service/menu.ts), RBAC-filtered + localized.
- * Aligns with Vue Side/Item: icon + title, collapse centers icon, mobile click closes drawer.
+ * Aligns with Vue Side/Item: icon + title, collapse centers icon, unique-opened groups,
+ * mobile click closes drawer. Leaf icons resolve via icon field or ICON_BY_KEY (not fake m-icon set).
  */
 import {
   IconBookOpen,
   IconChevronRight,
+  IconClock,
+  IconCompass,
   IconDatabase,
+  IconFileText,
+  IconFolder,
+  IconGlobe,
   IconGrid,
   IconHome,
+  IconImage,
   IconKey,
+  IconLayers,
   IconList,
   IconLock,
   IconMenu,
+  IconMessageSquare,
+  IconNewspaper,
+  IconPalette,
+  IconServer,
   IconSettings,
   IconShield,
   IconShieldCheck,
@@ -44,23 +56,57 @@ const ICONS: Record<string, IconComp> = {
   database: IconDatabase,
   book: IconBookOpen,
   sliders: IconSlidersHorizontal,
+  clock: IconClock,
+  compass: IconCompass,
+  globe: IconGlobe,
+  image: IconImage,
+  newspaper: IconNewspaper,
+  server: IconServer,
+  folder: IconFolder,
+  layers: IconLayers,
+  palette: IconPalette,
+  message: IconMessageSquare,
+  file: IconFileText,
+  filetext: IconFileText,
 };
 
-/** Top-level only; secondary sidebar items always use IconStar. */
+/** Prefer DB icon; when icon is blank/"star", fall back by menu key (Vue m-icon subset). */
 const ICON_BY_KEY: Record<string, string> = {
-  "dashboard": "home",
-  "workspace": "grid",
-  "rbac": "shield",
-  "system": "settings",
-  "user": "users",
-  "cms": "book",
-  "developer": "database",
+  dashboard: "home",
+  workspace: "grid",
+  rbac: "shield",
+  system: "settings",
+  user: "users",
+  cms: "book",
+  developer: "database",
+  "system.region": "compass",
+  "system.base": "sliders",
+  "system.datetime": "clock",
+  "user.index": "users",
+  "user.active": "user",
+  "user.zombie": "user",
+  "developer.menus": "menu",
+  "developer.database": "database",
+  "developer.language": "globe",
+  "developer.feedback": "message",
+  "developer.system": "server",
+  "cms.article": "file",
+  "cms.news": "newspaper",
+  "cms.notice": "file",
+  "cms.photo": "image",
+  "rbac.admins": "usercog",
+  "rbac.assign": "key",
+  "rbac.roles": "shieldcheck",
+  "rbac.permissions": "lock",
+  "rbac.routes": "list",
 };
 
 function resolveIconName(node: MenuNode): string {
   const raw = (node.icon || "").trim().toLowerCase();
   if (raw && raw !== "star" && ICONS[raw]) return raw;
-  return ICON_BY_KEY[node.key] ?? (raw || "menu");
+  const byKey = ICON_BY_KEY[node.key];
+  if (byKey && ICONS[byKey]) return byKey;
+  return (raw && ICONS[raw] ? raw : "") || "menu";
 }
 
 function Icon(props: { name: string }) {
@@ -76,8 +122,18 @@ function isActive(pathname: string, path: string): boolean {
 }
 
 function onNavClick(): void {
-  // Vue Item closes the mobile drawer after a menu click.
   closeDrawer();
+}
+
+/** Vue el-menu unique-opened: opening one group closes siblings. */
+function onGroupToggle(e: Event): void {
+  const el = e.currentTarget as unknown as { open?: boolean; closest?: (s: string) => { querySelectorAll: (s: string) => { open: boolean }[] } | null };
+  if (!el?.open || !el.closest) return;
+  const nav = el.closest("nav.adm-menu");
+  if (!nav) return;
+  for (const d of nav.querySelectorAll("details.adm-menu-group") as unknown as { open: boolean }[]) {
+    if (d !== el) d.open = false;
+  }
 }
 
 const topBase =
@@ -109,7 +165,7 @@ export function SideMenu(props: { tree: MenuNode[]; pathname: string }) {
           const open = node.children.some((c) => isActive(props.pathname, c.path));
           return (
             <li key={node.key}>
-              <details class="group/nav" open={open}>
+              <details class="adm-menu-group group/nav" open={open} onToggle={onGroupToggle}>
                 <summary
                   class={`${topBase} cursor-pointer list-none select-none`}
                   title={node.title}
@@ -130,7 +186,7 @@ export function SideMenu(props: { tree: MenuNode[]; pathname: string }) {
                         class={`${subBase} ${isActive(props.pathname, child.path) ? "adm-on" : ""}`}
                         onClick={onNavClick}
                       >
-                        <Icon name="star" />
+                        <Icon name={resolveIconName(child)} />
                         <span class="truncate">{child.title}</span>
                       </Link>
                     </li>

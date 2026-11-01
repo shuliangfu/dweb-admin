@@ -6,6 +6,7 @@ import { resolveLocale, type Locale } from "@common/i18n/mod.ts";
 import { STUB_BY_KEY, type StubPage } from "@common/stubs/catalog.ts";
 import { StubList } from "@backend/components/StubList.tsx";
 import { StubSettings } from "@backend/components/StubSettings.tsx";
+import { StubDatetime } from "@backend/components/StubDatetime.tsx";
 import { StubChart } from "@backend/components/StubChart.tsx";
 
 export function stubLoad(key: string) {
@@ -25,6 +26,7 @@ export function StubPageView(props: { data?: Data; pageKey: string }) {
   if (!page) {
     return <div class="p-4 text-sm text-danger-600">Unknown stub: {key}</div>;
   }
+  if (page.key === "system.datetime") return <StubDatetime locale={locale} page={page} />;
   if (page.kind === "settings") return <StubSettings locale={locale} page={page} />;
   if (page.kind === "chart") return <StubChart locale={locale} page={page} />;
   return <StubList locale={locale} page={page} />;

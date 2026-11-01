@@ -158,6 +158,7 @@
   --adm-accent: #3c8dbc;
   --adm-content: #ecf0f5;
   --adm-brand-strip: #1a2226;
+  --adm-brand-fg: #ffffff;
   --adm-top-bg: #ffffff;
   --adm-top-fg: #334155;
   --adm-tag-bg: #f5f7fa;
@@ -174,6 +175,7 @@
   --adm-accent: #3c8dbc;
   --adm-content: #0f172a;
   --adm-brand-strip: #0b1113;
+  --adm-brand-fg: #b7b7b7;
   --adm-top-bg: #1e2937;
   --adm-top-fg: #e2e8f0;
   --adm-tag-bg: #0f172a;
@@ -186,10 +188,10 @@
 .adm-side { background: var(--adm-side); color: var(--adm-text); }
 .adm-side-brand {
   background: var(--adm-brand-strip);
-  color: #fff;
+  color: var(--adm-brand-fg, #fff);
   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
 }
-.adm-side-brand:hover { color: #fff; }
+.adm-side-brand:hover { color: var(--adm-brand-fg, #fff); }
 .adm-menu a, .adm-menu summary { color: var(--adm-text); }
 .adm-menu { margin-top: 15px; } /* Vue Side .menu margin-top: 15px */
 .adm-menu .adm-top-item { border-left: 3px solid transparent; }
@@ -294,6 +296,11 @@
 }
 .adm-tag-ctx-item:hover { background: rgba(0, 0, 0, 0.06); }
 .dark .adm-tag-ctx-item:hover { background: rgba(255, 255, 255, 0.08); }
+
+.adm-digital-clock {
+  font-family: var(--font-digital);
+  font-variant-numeric: tabular-nums;
+}
 
 /* ---- sidebar width, collapsed rail (desktop) and drawer (mobile) ---- */
 .adm-shell { --adm-w: 200px; }
