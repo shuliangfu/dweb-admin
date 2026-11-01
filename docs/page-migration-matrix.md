@@ -1,6 +1,6 @@
 # dreamer-admin ↔ dweb-admin page migration matrix
 
-Generated: 2026-11-01 (Asia/Shanghai) · updated same day (assign + DataPanel quality)
+Generated: 2026-11-01 (Asia/Shanghai) · updated same day (handoff + assign gap UI + DataPanel children/CSV)
 
 ## Path note (confirmed)
 
@@ -10,6 +10,8 @@ Generated: 2026-11-01 (Asia/Shanghai) · updated same day (assign + DataPanel qu
 | **dweb-admin target** | `/home/deno/dreamer-jsr/dweb-admin` (admin UI in **`backend/`**; `frontend/` / `mobile/` are separate consumer apps) |
 
 Historical dispatch alias `dreamer-admin` resolves to `/home/vue/dreamer-vue` (package `dreamer`, remote `git@git.shuliangfu.com:dreamer-vue.git`). There is no separate `/home/vue/dreamer-admin` tree on this machine.
+
+**Successor handoff:** `docs/handoff.md` (项目说明、栈、跑法、硬规则、进度).
 
 Status legend: **已有** = present and usable · **部分** = exists but not aligned to Vue look/IA · **缺** = missing
 
@@ -32,7 +34,7 @@ dweb-admin today:
 |---|---|---|
 | Page-level CRUD admins | `backend/components/*Admin.tsx`, `crud-kit.tsx` | **部分** — per-page UI, not a reusable CardPanel |
 | ui-view Table/Card/List/Pagination/Modal | via `@dreamer/ui-view` | **已有** (library) |
-| Callable `DataPanel` / `CardPanel` in `common/components/` | `common/components/DataPanel.tsx` | **部分** — search schemas + column/export/import/print interactive; CSV export default; wired on model lists + stubs |
+| Callable `DataPanel` / `CardPanel` in `common/components/` | `common/components/DataPanel.tsx` | **部分** — search/column/CSV export+import(`parseCsv`→`onImportRows`)/print; `children` ctx.`filterTableColumns` hides cols; Excel/XML/HTML unavailable without pkgs; wired on model lists + stubs |
 
 **Target:** `common/components/DataPanel.tsx` (name TBD) composed from `@dreamer/ui-view` only; all list pages consume it.
 
@@ -102,7 +104,7 @@ Blocking relation: **TagView + TopHeader breadcrumb** are pure shell; list `Data
 | `admin/role/index.vue` | 角色列表 | `/rbac/roles` | `ItemAdmin.tsx` + real RBAC APIs | **部分** — DataPanel tools + Transfer children |
 | `admin/access/index.vue` | 权限列表 | `/rbac/permissions` | `ItemAdmin.tsx` + real RBAC APIs | **部分** — DataPanel tools + Transfer children |
 | `admin/route/index.vue` | 路由列表 | `/rbac/routes` | `RoutesAdmin.tsx` + real route registry APIs | **部分** — Transfer + print |
-| `admin/assign/index.vue` | 权限分配 | `/rbac/assign` | `AssignAdmin.tsx` + Transfer → `PUT /api/users/:id` roleCodes | **部分** — roles assign runnable; Vue allow/deny + direct route-on-user not modeled |
+| `admin/assign/index.vue` | 权限分配 | `/rbac/assign` | `AssignAdmin.tsx` + Transfer → `PUT /api/users/:id` roleCodes | **部分** — roles=allow runnable; modal has disabled allow/deny + direct-route gap UI (documented; no fake API) |
 
 ---
 
@@ -185,14 +187,14 @@ All **部分** stubs (DataPanel demo): `/count/bonus|invest|point|recharge|withd
 | Shell pieces (layout/side/top/second/tag) | 5+ | 5 部分 | TagView keep-alive N/A; chat still stub |
 | Fullpage + error | 7 | 7 部分 (login/lock/forget/reset/403/404/500) | 0 (parity pending) |
 | Home | 2 | 2 部分 (dashboard charts + workspace stub) | 0 |
-| Admin/RBAC | 5 | 5 部分 (incl. `/rbac/assign`) | 0 (allow/deny UX pending) |
+| Admin/RBAC | 5 | 5 部分 (incl. `/rbac/assign`) | 0 (allow/deny model still absent; gap UI only) |
 | System + developer menu | 13 | 13 部分 (menus/online + 11 stubs) | 0 (model/API pending) |
 | User | 13 | 13 部分 (stubs) | 0 (model/API pending) |
 | CMS | 6 | 6 部分 (stubs) | 0 (model/API pending) |
 | Finance | 9 | 9 部分 (stubs incl. bonus/log + wallet add-sub/log) | 0 (model/API pending) |
 | Count | 5 | 5 部分 (stubs) | 0 (model/API pending) |
 | Developer (rest) | 4 | 4 部分 (stubs) | 0 (model/API pending) |
-| **DataPanel wrapper** | 1 (CardPanel) | 1 部分 (search/column/export/import/print) | Excel/XML backends + import parsers pending |
+| **DataPanel wrapper** | 1 (CardPanel) | 1 部分 (search/column/CSV export+import/print; children col filter) | Excel/XML/HTML backends pending (no pkgs) |
 
 Vue list entry pages: **64** view files (modules excluded). Dynamic sidebar routes beyond static `/dashboard`/`/workspace`/auth come from backend-fed `routeStore` in Vue; dweb uses Mongo `menus` seed covering dashboard/workspace/rbac/system/user/cms/finance/count/developer (stub leaves included).
 
@@ -200,10 +202,11 @@ Vue list entry pages: **64** view files (modules excluded). Dynamic sidebar rout
 
 ## 12. Suggested implementation order (next knives)
 
-1. Replace stubs with real models/APIs (system settings store, member, CMS, finance).
-2. DataPanel further parity (Excel/XML/HTML export backends, import parsers, row-level forms).
-3. Vue-style allow/deny + direct route assignment on a user (beyond roleCodes Transfer).
-4. Done this knife: `/rbac/assign` runnable; DataPanel search/column/export/import/print skeleton; theme primary picker; stub AUTH_ONLY removed (super / explicit grants only).
+1. Replace stubs with real models/APIs (system settings store, member, CMS, finance). No remaining *model-backed* demo lists — AdminUser/Auth*/Menu/Session already live.
+2. DataPanel: Excel/XML/HTML only after adding real deps; row-level forms / CardPanel store parity.
+3. If product needs Vue allow/deny + user-direct routes: add AuthAssignment-class model + API first, then wire the reserved Assign gap panel (do not fake).
+4. Done recently: `/rbac/assign` roleCodes + gap UI; DataPanel CSV import parse + children `filterTableColumns` on admins/roles/menus; theme primary; AUTH_ONLY tighten; `docs/handoff.md`.
+5. Handoff for successors: `docs/handoff.md` (Chinese).
 
 ### Hard constraints reminder
 
