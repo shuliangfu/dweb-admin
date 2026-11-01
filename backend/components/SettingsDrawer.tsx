@@ -81,13 +81,13 @@ export function SettingsDrawer(props: { locale: Locale }) {
     <Drawer
       open={settingsOpen}
       placement="right"
-      width={360}
+      width={400}
       title={tr("shell.settingsTitle")}
       onClose={() => {
         settingsOpen.value = false;
       }}
     >
-      <div class="flex flex-col gap-5 p-1" data-testid="settings-drawer">
+      <div class="flex flex-col gap-4 p-1" data-testid="settings-drawer">
         <label class="flex items-center justify-between gap-3 text-sm">
           <span>{tr("shell.breadcrumb")}</span>
           <Switch

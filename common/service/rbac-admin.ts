@@ -230,7 +230,15 @@ export async function listRoutes() {
   const available = (await scanRoutes())
     .map((r) => routeKey(r.method, r.path))
     .filter((k) => !have.has(k));
-  return { managed, available };
+  /** Vue route list columns that exist on AuthRoute (no separate route `name`). */
+  const managedDetail = managedRows.map((r) => ({
+    key: routeKey(r.method, r.path),
+    method: r.method,
+    path: r.path,
+    source: r.source,
+    createdAt: r.createdAt ? new Date(r.createdAt).toISOString() : undefined,
+  }));
+  return { managed, available, managedDetail };
 }
 
 /** Parse "GET /a, /b\nPOST /c" — method optional (defaults to "*"). */

@@ -106,6 +106,8 @@ export default {
     info: "{n} administrator(s)",
     modalTitle: "{name} — assign roles",
     hint: "Roles below map to allow-style grants via AdminUser.roleCodes. Permission/route trees stay on the role or permission pages.",
+    /** Vue assign column `权限`. */
+    access: "Access",
     allowAction: "allow",
     denyAction: "deny",
     rolesSection: "Roles (allow)",
@@ -207,6 +209,13 @@ export default {
     routeInputHint: "One per line: [METHOD] /path. Method defaults to * (any). Paths support /* and /xxx/* wildcards.",
     routeUnmanaged: "Unmanaged (scanned)",
     routeManaged: "Managed",
+    routePath: "Path",
+    routeMethod: "Method",
+    routeSource: "Source",
+    routeManagedTable: "Managed routes",
+    sourceManual: "Manual",
+    sourceScan: "Scan",
+    sourceSeed: "Seed",
     routeNote: "Only managed routes can be assigned to roles/permissions; moving one back removes it from every role/permission.",
     routeSave: "Save changes",
     routeScanned: "Refreshed: {n} unmanaged route(s) found",
@@ -218,7 +227,10 @@ export default {
     parent: "Parent",
     titleCol: "Title",
     path: "Path",
+    icon: "Icon",
     sort: "Sort",
+    /** Maps Vue list `show`; Menu model uses status (no separate show/component fields). */
+    visible: "Visible",
   },
   error: {
     unauthorized: "Not signed in or session expired",

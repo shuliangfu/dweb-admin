@@ -57,9 +57,9 @@ el-main → router-view
 |---|---|---|---|---|---|
 | App HTML shell | `index.html` + Vue app | title, root mount | `backend/routes/_app.tsx` | **部分** | OK structurally; branding/title still “Dweb Admin” |
 | Layout frame | `src/components/Layout/Layout.vue` | side + dual headers + main; mobile drawer | `backend/routes/_layout.tsx` | **部分** | Vue grid + mobile drawer; lock/chat/settings wired into chrome (minimal). Theme primary presets + ColorPicker in SettingsDrawer |
-| Sidebar / 左侧菜单 | `Layout/Side/Side.vue` + `Side/Item.vue` | logo「浮生若梦」, collapse, `el-menu` from `routeStore.routes` | `SideBrand.tsx` + `SideMenu.tsx` + menu DB | **部分** | Logo strip + key→icon map + collapse icon centering; DB menu retained; not full Vue m-icon set |
-| Top bar / 顶部栏 | `Layout/TopHeader/TopHeader.vue` (+ `modules/Profile.vue`, `UpdatePassword.vue`, `UpdateProfile.vue`) | collapse control, breadcrumb, avatar menu (profile/password/lock/logout), chat, language, theme, fullscreen, settings drawer | `TopHeader.tsx` + Lang/Theme/User + FullscreenToggle + ChatModal + SettingsDrawer | **部分** | Breadcrumb toggle, lock entry, chat shell (split panes, no IM backend), settings drawer (breadcrumb switch); primary color presets + ColorPicker in settings |
-| Second header / Tag tabs | `Layout/SecondHeader/SecondHeader.vue` → `TagView/*` | multi-tab visited pages | `backend/components/TagView.tsx` | **部分** | Tabs + localStorage + close/context actions; keep-alive page cache not applicable (SSR/view) |
+| Sidebar / 左侧菜单 | `Layout/Side/Side.vue` + `Side/Item.vue` | logo「浮生若梦」, collapse, `el-menu` from `routeStore.routes` | `SideBrand.tsx` + `SideMenu.tsx` + menu DB | **部分** | Logo strip + key→icon map + collapse; menu margin-top 15px; DB menu; not full Vue m-icon / unique-opened |
+| Top bar / 顶部栏 | `Layout/TopHeader/TopHeader.vue` (+ `modules/Profile.vue`, `UpdatePassword.vue`, `UpdateProfile.vue`) | collapse control, breadcrumb, avatar menu (profile/password/lock/logout), chat, language, theme, fullscreen, settings drawer | `TopHeader.tsx` + Lang/Theme/User + FullscreenToggle + ChatModal + SettingsDrawer | **部分** | Settings drawer width 400; breadcrumb + primary presets/ColorPicker; Vue multi-token theme.other not mirrored |
+| Second header / Tag tabs | `Layout/SecondHeader/SecondHeader.vue` → `TagView/*` | multi-tab visited pages | `backend/components/TagView.tsx` | **部分** | Tabs + localStorage + close/context; active border-bottom none; keep-alive N/A (SSR) |
 | Mobile side drawer | `Layout.vue` `el-drawer` | drawer when mobile | `_layout.tsx` backdrop + `SidebarToggle` | **部分** | Full-height drawer + backdrop aligned with Vue aside drawer |
 | Login / no-chrome | `views/fullpage/*` rendered outside Layout | fullpage | `_layout.tsx` skips `/login`, `/password/*`, `/error/*` | **已有** | forget/reset + error pages use AuthShell/ErrorPage |
 
@@ -105,8 +105,8 @@ Blocking relation: **TagView + TopHeader breadcrumb** are pure shell; list `Data
 | `admin/index.vue` | 管理员列表 | `/rbac/admins` | `AdminsAdmin.tsx` + real `/api/users` | **部分** — DataPanel + export/print/column; live list |
 | `admin/role/index.vue` | 角色列表 | `/rbac/roles` | `ItemAdmin.tsx` + real RBAC APIs | **部分** — DataPanel tools + Transfer children |
 | `admin/access/index.vue` | 权限列表 | `/rbac/permissions` | `ItemAdmin.tsx` + real RBAC APIs | **部分** — DataPanel tools + Transfer children |
-| `admin/route/index.vue` | 路由列表 | `/rbac/routes` | `RoutesAdmin.tsx` + real route registry APIs | **部分** — Transfer + print |
-| `admin/assign/index.vue` | 权限分配 | `/rbac/assign` | `AssignAdmin.tsx` + Transfer → `PUT /api/users/:id` roleCodes | **部分** — roles=allow runnable; modal has disabled allow/deny + direct-route gap UI (documented; no fake API) |
+| `admin/route/index.vue` | 路由列表 | `/rbac/routes` | `RoutesAdmin.tsx` + real route registry APIs | **部分** — Transfer + managed table (path/method/source/createdAt; no AuthRoute.name) |
+| `admin/assign/index.vue` | 权限分配 | `/rbac/assign` | `AssignAdmin.tsx` + Transfer → `PUT /api/users/:id` roleCodes | **部分** — list cols #/username/access/actions; roles=allow runnable; gap UI for AuthAssignment (no fake API) |
 
 ---
 
@@ -150,7 +150,7 @@ Top-level title 开发管理. Menus live page moved here; other leaves stay stub
 
 | Vue file | Title | dweb-admin | Status |
 |---|---|---|---|
-| `developer/menu/index.vue` | 菜单管理 | `/developer/menus` → `MenusAdmin.tsx` + real menu APIs | **部分** — DataPanel search/export/print/column |
+| `developer/menu/index.vue` | 菜单管理 | `/developer/menus` → `MenusAdmin.tsx` + real menu APIs | **部分** — cols title/parent/path/icon/sort/visible(+key); no component/show fields on Menu |
 | `developer/database/index.vue` | 数据备份列表 | `/developer/database` stub | **部分** — demo DataPanel |
 | `developer/feedback/index.vue` | 问题反馈列表 | `/developer/feedback` stub | **部分** — demo DataPanel |
 | `developer/language/index.vue` | 系统语言列表 | `/developer/language` stub | **部分** — demo DataPanel |

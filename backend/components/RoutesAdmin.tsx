@@ -1,20 +1,37 @@
 /**
- * Route registry. Left = scanned routes not yet managed, right = managed routes
- * (the only ones assignable to roles / permissions). "Add route" is a Modal;
- * "Refresh" re-scans backend/routes. Transfer edits are saved with "Save changes".
+ * Route registry. Transfer (Yii-style manage/unmanage) + managed table for Vue column parity.
+ * AuthRoute has method/path/source/timestamps — no separate route `name` (Vue name column N/A).
  */
 import { createSignal } from "@dreamer/view";
-import { Alert, Button, FormItem, Modal, Textarea, Transfer } from "@dreamer/ui-view";
+import { Alert, Button, FormItem, Modal, Table, Tag, Textarea, Transfer } from "@dreamer/ui-view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { api, reload, toastResult } from "@backend/components/crud-kit.tsx";
-import { DataPanel } from "@common/components/DataPanel.tsx";
+import { DataPanel, type DataPanelChildrenCtx } from "@common/components/DataPanel.tsx";
+
+export type ManagedRouteRow = {
+  key: string;
+  method: string;
+  path: string;
+  source: string;
+  createdAt?: string;
+};
 
 const addOpen = createSignal(false);
 const addText = createSignal("");
 const target = createSignal<string[]>([]);
 const busy = createSignal(false);
 
-export function RoutesAdmin(props: { locale: Locale; managed: string[]; available: string[] }) {
+function fmtTs(iso?: string): string {
+  if (!iso) return "—";
+  return iso.slice(0, 19).replace("T", " ");
+}
+
+export function RoutesAdmin(props: {
+  locale: Locale;
+  managed: string[];
+  available: string[];
+  managedDetail: ManagedRouteRow[];
+}) {
   const tr = createT(props.locale);
   target.value = [...props.managed];
   const data = [...props.managed, ...props.available]
@@ -38,11 +55,13 @@ export function RoutesAdmin(props: { locale: Locale; managed: string[]; availabl
     if (toastResult(r, tr("crud.saved"), tr("crud.networkError"))) reload();
   }
 
+  const tableRows = props.managedDetail.map((r, i) => ({ ...r, idx: i + 1 }));
+
   return (
     <div>
       <DataPanel
         title={tr("rbac.routeTitle")}
-        tools={{ create: true, refresh: true, print: true }}
+        tools={{ create: true, refresh: true, print: true, column: true, export: true }}
         onCreate={() => {
           addText.value = "";
           addOpen.value = true;
@@ -50,28 +69,84 @@ export function RoutesAdmin(props: { locale: Locale; managed: string[]; availabl
         onRefresh={reload}
         toolLabels={{
           print: tr("panel.print"),
+          column: tr("panel.column"),
+          export: tr("panel.export"),
           soon: tr("panel.soon"),
+          resetColumns: tr("panel.resetColumns"),
+          csv: "CSV",
         }}
         toolbarExtra={
           <Button type="button" variant="primary" onClick={save}>{tr("rbac.routeSave")}</Button>
         }
+        columns={[
+          { prop: "idx", label: tr("rbac.index") },
+          { prop: "path", label: tr("rbac.routePath") },
+          { prop: "method", label: tr("rbac.routeMethod") },
+          { prop: "source", label: tr("rbac.routeSource") },
+          { prop: "createdAt", label: tr("common.createdAt") },
+        ]}
+        rows={tableRows as never}
+        rowKey="key"
+        emptyText={tr("common.empty")}
       >
-      <Alert type="info" message={tr("rbac.routeNote")} class="mb-3" />
-      <p class="mb-2 text-xs opacity-70">
-        {tr("rbac.routeScanned", { n: props.available.length })}
-      </p>
-      <Transfer
-        dataSource={data}
-        targetKeys={target}
-        showSearch
-        titles={[tr("rbac.routeUnmanaged"), tr("rbac.routeManaged")]}
-        searchPlaceholder={[tr("rbac.transferSearch"), tr("rbac.transferSearch")]}
-        listStyle={{ width: 420, height: 420 }}
-        onChange={(next: string[]) => {
-          target.value = next;
-        }}
-        messages={{ count: (n: number) => `${n}`, selectedSuffix: (n: number) => ` / ${n}` }}
-      />
+        {(ctx: DataPanelChildrenCtx) => (
+          <>
+            <Alert type="info" message={tr("rbac.routeNote")} class="mb-3" />
+            <p class="mb-2 text-xs opacity-70">
+              {tr("rbac.routeScanned", { n: props.available.length })}
+            </p>
+            <Transfer
+              dataSource={data}
+              targetKeys={target}
+              showSearch
+              titles={[tr("rbac.routeUnmanaged"), tr("rbac.routeManaged")]}
+              searchPlaceholder={[tr("rbac.transferSearch"), tr("rbac.transferSearch")]}
+              listStyle={{ width: 420, height: 360 }}
+              onChange={(next: string[]) => {
+                target.value = next;
+              }}
+              messages={{ count: (n: number) => `${n}`, selectedSuffix: (n: number) => ` / ${n}` }}
+            />
+            <h3 class="mb-2 mt-5 text-sm font-medium text-slate-700 dark:text-slate-200">
+              {tr("rbac.routeManagedTable")}
+            </h3>
+            <Table
+              bordered
+              hoverable
+              size="sm"
+              rowKey="key"
+              dataSource={tableRows}
+              pagination={{ pageSize: 50, total: tableRows.length }}
+              locale={{ emptyText: tr("common.empty") }}
+              columns={ctx.filterTableColumns(([
+                { key: "idx", title: tr("rbac.index"), dataIndex: "idx", width: 60 },
+                { key: "path", title: tr("rbac.routePath"), dataIndex: "path" },
+                {
+                  key: "method",
+                  title: tr("rbac.routeMethod"),
+                  render: (_v: unknown, r: ManagedRouteRow) => (
+                    <Tag size="xs" variant="default">{r.method}</Tag>
+                  ),
+                },
+                {
+                  key: "source",
+                  title: tr("rbac.routeSource"),
+                  render: (_v: unknown, r: ManagedRouteRow) => (
+                    r.source === "manual" ? tr("rbac.sourceManual")
+                      : r.source === "scan" ? tr("rbac.sourceScan")
+                      : r.source === "seed" ? tr("rbac.sourceSeed")
+                      : r.source
+                  ),
+                },
+                {
+                  key: "createdAt",
+                  title: tr("common.createdAt"),
+                  render: (_v: unknown, r: ManagedRouteRow) => fmtTs(r.createdAt),
+                },
+              ] as never))}
+            />
+          </>
+        )}
       </DataPanel>
 
       <Modal

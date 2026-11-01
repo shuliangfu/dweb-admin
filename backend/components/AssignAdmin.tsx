@@ -71,11 +71,9 @@ export function AssignAdmin(props: {
   const columns = [
     { prop: "idx", label: tr("rbac.index"), width: 60 },
     { prop: "username", label: tr("users.username") },
-    { prop: "nickname", label: tr("users.nickname") },
-    { prop: "email", label: tr("usersForm.email") },
     {
       prop: "roles",
-      label: tr("users.roles"),
+      label: tr("assign.access"),
       render: (_v: unknown, r: AssignUserRow & { idx: number }) => (
         <span class="flex flex-wrap gap-1">
           {(r.roleCodes ?? []).length
@@ -87,15 +85,6 @@ export function AssignAdmin(props: {
             ))
             : <span class="text-xs text-slate-400">—</span>}
         </span>
-      ),
-    },
-    {
-      prop: "status",
-      label: tr("common.status"),
-      render: (_v: unknown, r: AssignUserRow) => (
-        <Tag size="xs" variant={r.status === "active" ? "success" : "default"}>
-          {tr(r.status === "active" ? "common.active" : "common.disabled")}
-        </Tag>
       ),
     },
     {

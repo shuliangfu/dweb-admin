@@ -191,7 +191,7 @@
 }
 .adm-side-brand:hover { color: #fff; }
 .adm-menu a, .adm-menu summary { color: var(--adm-text); }
-.adm-menu { margin-top: 0.875rem; } /* Vue Side .menu margin-top ≈ 14–15px */
+.adm-menu { margin-top: 15px; } /* Vue Side .menu margin-top: 15px */
 .adm-menu .adm-top-item { border-left: 3px solid transparent; }
 .adm-menu .adm-top-item:hover { color: var(--adm-text-hover); background: var(--adm-active-bg); }
 .adm-menu .adm-top-item.adm-on,
@@ -257,7 +257,7 @@
   color: var(--adm-tag-on-fg);
   border-color: var(--adm-tag-on-fg);
   background: var(--adm-tag-on-bg);
-  border-bottom-color: transparent;
+  border-bottom: none; /* Vue TagItem.active */
 }
 .adm-tag-link { color: inherit; }
 .adm-tag-close {

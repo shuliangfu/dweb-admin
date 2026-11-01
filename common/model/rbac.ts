@@ -57,6 +57,8 @@ export interface AuthRouteDocument {
   path: string;
   /** Where it came from: typed in by an admin, or accepted from a scan. */
   source: "manual" | "scan" | "seed";
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 /** Routes that are *managed* (assignable to roles/permissions). */

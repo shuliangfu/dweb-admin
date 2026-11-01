@@ -32,6 +32,12 @@ const busy = createSignal(false);
 export function MenusAdmin(props: { locale: Locale; rows: MenuRow[] }) {
   const tr = createT(props.locale);
   const tops = props.rows.filter((m) => !m.parentKey);
+  const parentTitle = (parentKey: string) => {
+    if (!parentKey) return "-";
+    const p = props.rows.find((m) => m.key === parentKey);
+    return p ? pickLocalized(p.title, props.locale, p.key) : parentKey;
+  };
+
   const err = (f: string) => (errors.value.includes(f) ? tr("crud.required") : undefined);
 
   function openForm(row?: MenuRow) {
@@ -99,12 +105,13 @@ export function MenusAdmin(props: { locale: Locale; rows: MenuRow[] }) {
         searchLabels={{ open: tr("panel.search"), submit: tr("crud.search"), reset: tr("crud.reset") }}
         columns={[
           { prop: "idx", label: tr("rbac.index") },
-          { prop: "key", label: tr("menus.key") },
-          { prop: "parentKey", label: tr("menus.parent") },
           { prop: "title", label: tr("menus.titleCol") },
+          { prop: "parentKey", label: tr("menus.parent") },
           { prop: "path", label: tr("menus.path") },
+          { prop: "icon", label: tr("menus.icon") },
           { prop: "sort", label: tr("menus.sort") },
-          { prop: "status", label: tr("common.status") },
+          { prop: "status", label: tr("menus.visible") },
+          { prop: "key", label: tr("menus.key") },
           { prop: "actions", label: tr("common.actions") },
         ]}
         rows={props.rows.map((r, i) => ({
@@ -124,20 +131,21 @@ export function MenusAdmin(props: { locale: Locale; rows: MenuRow[] }) {
                   locale={{ emptyText: tr("common.empty") }}
                   columns={ctx.filterTableColumns(([
           { key: "idx", title: tr("rbac.index"), dataIndex: "idx", width: 60 },
-          { key: "key", title: tr("menus.key"), dataIndex: "key" },
-          { key: "parentKey", title: tr("menus.parent"), render: (_v: unknown, r: MenuRow) => r.parentKey || "-" },
           { key: "title", title: tr("menus.titleCol"), render: (_v: unknown, r: MenuRow) => pickLocalized(r.title, props.locale, r.key) },
+          { key: "parentKey", title: tr("menus.parent"), render: (_v: unknown, r: MenuRow) => parentTitle(r.parentKey) },
           { key: "path", title: tr("menus.path"), render: (_v: unknown, r: MenuRow) => r.path || "-" },
-          { key: "sort", title: tr("menus.sort"), dataIndex: "sort" },
+          { key: "icon", title: tr("menus.icon"), render: (_v: unknown, r: MenuRow) => r.icon || "-" },
+          { key: "sort", title: tr("menus.sort"), dataIndex: "sort", width: 80 },
           {
             key: "status",
-            title: tr("common.status"),
+            title: tr("menus.visible"),
             render: (_v: unknown, r: MenuRow) => (
               <Tag size="xs" variant={r.status === "active" ? "success" : "default"}>
                 {tr(r.status === "active" ? "common.active" : "common.disabled")}
               </Tag>
             ),
           },
+          { key: "key", title: tr("menus.key"), dataIndex: "key" },
           {
             key: "actions",
             title: tr("common.actions"),
@@ -196,7 +204,7 @@ export function MenusAdmin(props: { locale: Locale; rows: MenuRow[] }) {
             <FormItem label={tr("menusForm.path")}>{input(fPath, { placeholder: "/rbac/admins" })}</FormItem>
             <FormItem label={tr("menusForm.icon")}>{input(fIcon)}</FormItem>
             <FormItem label={tr("menusForm.sort")}>{input(fSort, { type: "number" })}</FormItem>
-            <FormItem label={tr("common.status")}>
+            <FormItem label={tr("menus.visible")}>
               <Switch checked={fActive} />
             </FormItem>
             <div class="mt-2 flex justify-end gap-2">

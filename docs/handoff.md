@@ -249,7 +249,10 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 3. **Dashboard**：`dashboard-live-kpis`（admins 计数／可见菜单／当前角色数）为 **live**（AdminUser.count + menu tree）。会员 KPI、财务条、图表为 **demo**（`dashboard.demoBadge`；缺 Member／Finance 服务）。
 4. **Admins／Roles 列表列（2026-11-01 再对齐 Vue）**：Admins＝`#／username／email／status／lastLoginAt／createdAt／actions`（去掉列表 nickname／roles，表单仍保留；无 `login_count` 字段故用 `lastLoginAt`）。Roles／Permissions＝`#／name／description／createdAt／actions`（`ruleName` 仅表单／详情）。
 5. **DataPanel**：浏览器侧 CSV／HTML-table-as-xls／XML／HTML／JSON 已接。**无 OOXML／xlsx 扩展包** → `panel.xlsxGap`。
-6. **RBAC Assign**：`roleCodes` 真 API；Vue allow／deny＋直绑路由需 **AuthAssignment**（无模型）→ gap UI，禁止假提交。
+6. **RBAC Assign**：`roleCodes` 真 API；Vue allow／deny＋直绑路由需 **AuthAssignment**（无模型）→ gap UI，禁止假提交。 列表列已对齐 Vue（#／username／权限／操作）。
+
+7. **Menus**：模型仅有 key／parentKey／title／path／icon／sort／status — **无** Vue `component`／`show`；列表用 icon＋status→是否显示，上级显示标题；component 不造字段。
+8. **Routes**：保留 Transfer 纳管；另附 managed 表（path／method／source／createdAt）；AuthRoute **无** name 字段故不造。
 
 ### 工作区提示
 
@@ -288,5 +291,6 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 | 2026-11-01 | 初版 handoff + matrix + extension-packages；模型扫仓／online kick；TW4 约定 |
 | 2026-11-01 | API 双模板：handlers 双导出 restful+action；`backend/api-style.ts`；handoff § API；DataPanel 多格式导出／壳层视觉对齐 |
 | 2026-11-01 | API 改 `apiMode:"action"`：hello→`index.ts`、去掉 REST 别名、动态一动作一文件；handoff 记明 kind:api 根 `/` 不回落 index；壳层 lock/login/TagView 打磨 |
+| 2026-11-01 | Menus 列对齐（icon／visible／parent 标题）；Assign 列表精简＋gap 维持；Routes Transfer＋managed 表；Settings 宽 400／TagView active 底边／SideMenu margin 15px |
 | 2026-11-01 | 弱项：login 左饰＋lock 背景／DS-Digital；member／CMS stub 列／搜索对稿 Vue；handoff 记 Assign／OOXML／TagView keep-alive N/A |
 | 2026-11-01 | 第③环收口：锁 `@dreamer/dweb@^3.7.6`（传递 `@dreamer/server@1.2.2`）；`dev:api` 验通 `GET /`／`/index`／`/users`／`/users/index` 均 200（根 `/` 回落已通）；JSR 已发 server 1.2.2、dweb 3.7.6；本地 commit，勿 push |
