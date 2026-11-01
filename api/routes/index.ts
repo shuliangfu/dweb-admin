@@ -1,8 +1,8 @@
 /**
  * API root sample (kind:"api", apiMode:"action").
  * File `index.ts` → route `/`. Export `index` is the default action for
- * `/index` (via `/:method`) and for `/api/<resource>` under web apps.
- * Bare `/` does NOT auto-dispatch `index` in @dreamer/server@1.2.1 — see handoff.
+ * bare `/`, `/index` (via `/:method`), and for `/api/<resource>` under web apps
+ * (@dreamer/server@^1.2.2 apiOnly + `/api/<resource>` fallback).
  */
 import type { ApiContext } from "@dreamer/dweb";
 import { json } from "@dreamer/router";
@@ -17,4 +17,3 @@ export async function create(ctx: ApiContext) {
     await ctx.req.json().catch(() => ({}));
   return json({ message: "Created", data: body });
 }
-

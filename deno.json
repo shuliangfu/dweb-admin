@@ -27,7 +27,7 @@
     "@mobile/": "./mobile/",
     "@api/": "./api/",
     "@console/": "./console/",
-    "@dreamer/dweb": "jsr:@dreamer/dweb@^3.7.5",
+    "@dreamer/dweb": "jsr:@dreamer/dweb@^3.7.6",
     "@dreamer/render": "jsr:@dreamer/render@^1.3.0",
     "@dreamer/router": "jsr:@dreamer/router@^1.2.1",
     "@dreamer/test": "jsr:@dreamer/test@^1.1.10",

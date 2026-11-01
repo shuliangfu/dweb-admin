@@ -120,16 +120,16 @@ dweb-admin 对应物：
 
 ### API 写法（本仓：`apiMode: "action"`）
 
-框架（dweb **3.7.5** + `@dreamer/router` / `@dreamer/server` **1.2.1**）支持 `restful` 与 `action` 两种全局模式；**本仓两应用均固定 `action`**，handler **只导出方法名**，**禁止** `export const GET|POST|… = …` 别名。
+框架（dweb **3.7.6** + `@dreamer/server` **1.2.2**；经 `deno.json` 锁 `@dreamer/dweb@^3.7.6`，传递解析 server **1.2.2**）支持 `restful` 与 `action` 两种全局模式；**本仓两应用均固定 `action`**，handler **只导出方法名**，**禁止** `export const GET|POST|… = …` 别名。
 
 | 项 | 约定 |
 |----|------|
 | 配置 | `backend/config/main.ts`、`api/config/main.ts` → `router.apiMode: "action"` |
 | 导出 | `export function index` / `login` / `create` / `update` / `remove` … |
-| 匹配 | ① `params.method`（`…/:method`）② 路径末段（kebab→camel）③ **仅 web**：`/api/<resource>`（两段且首段 `api`）回落 `index` |
-| 动态资源 | 一动作一文件：`users/[id]/update.ts` → `/api/users/:id/update` |
-| 纯 API 应用（`kind:"api"`，`:3003`） | 无 `/api` 前缀；**`GET /` 不会**自动调 `index`（server 回落未覆盖 apiOnly 根路径）。验证用 **`GET /index`**。`index.ts` 负责路由 `/` 的注册，但默认 action 需显式 `/index` 或等框架扩展——**勿为此升 dweb/server**（JSR 已是最新 3.7.5 / 1.2.1） |
-| 示例 | `api/routes/index.ts`（`index`+`create`）；管理端 auth／account／users／rbac／menus 均为 action 导出 |
+| 匹配 | ① `params.method`（`…/:method`）② 路径末段（kebab→camel）③ 资源路径缺 method 时回落导出 `index`（web：`/api/<resource>`；**kind:api** 含根 `/` 与 `/<resource>`） |
+| 纯 API 应用（`kind:"api"`，`:3003`） | 无 `/api` 前缀。**根 `/` 已回落 `index`（server 1.2.2）**。`deno task dev:api` 实测：`GET /`→200、`GET /index`→200、`GET /users`→200、`GET /users/index`→200；`GET /api/users`→404（kind:api 无此前缀，属预期） |
+| 示例 | `api/routes/index.ts`（`index`+`create`）；`api/routes/users/index.ts`；管理端 `backend/routes/api/**` 均为 action 导出 |
+| 版本／JSR（第③环） | `@dreamer/server` **1.2.1→1.2.2**、`@dreamer/dweb` **3.7.5→3.7.6** 均已发 JSR；本仓只锁 dweb，禁升无关包 |
 
 细节见 `backend/api-style.ts`。
 
@@ -287,3 +287,4 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 | 2026-11-01 | API 双模板：handlers 双导出 restful+action；`backend/api-style.ts`；handoff § API；DataPanel 多格式导出／壳层视觉对齐 |
 | 2026-11-01 | API 改 `apiMode:"action"`：hello→`index.ts`、去掉 REST 别名、动态一动作一文件；handoff 记明 kind:api 根 `/` 不回落 index；壳层 lock/login/TagView 打磨 |
 | 2026-11-01 | 弱项：login 左饰＋lock 背景／DS-Digital；member／CMS stub 列／搜索对稿 Vue；handoff 记 Assign／OOXML／TagView keep-alive N/A |
+| 2026-11-01 | 第③环收口：锁 `@dreamer/dweb@^3.7.6`（传递 `@dreamer/server@1.2.2`）；`dev:api` 验通 `GET /`／`/index`／`/users`／`/users/index` 均 200（根 `/` 回落已通）；JSR 已发 server 1.2.2、dweb 3.7.6；本地 commit，勿 push |

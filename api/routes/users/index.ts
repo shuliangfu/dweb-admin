@@ -1,5 +1,6 @@
 /**
- * Sample users list — dual: `index` (action) + `GET` (restful).
+ * Sample users list — action-mode `index` (apiMode:"action").
+ * Paths: `/users`, `/users/index` (kind:api has no `/api` prefix).
  */
 import type { ApiContext } from "@dreamer/dweb";
 import { json } from "@dreamer/router";
@@ -12,4 +13,3 @@ const users = [
 export function index(_ctx: ApiContext) {
   return json({ users });
 }
-
