@@ -397,12 +397,14 @@
   --adm-fg: #334155;
   --adm-brand-strip: #0f172a /* light: logo strip = 1 shade darker than sidebar (slate-900) */;
   --adm-brand-fg: #ffffff;
-  --adm-top-bg: #020617 /* light: navbar = 2 shades darker than sidebar (slate-950) */;
+  --adm-top-bg: #0f172a /* light: navbar = logo strip = 1 shade darker than sidebar (slate-900) */;
   --adm-top-fg: #ffffff;
   --adm-tag-bg: #f8fafc;
   --adm-tag-border: #e2e8f0;
   --adm-tag-item-border: #cbd5e1;
   --adm-tag-fg: #334155;
+  --adm-tag-close: var(--color-warning-600); /* orange x; >= 3:1 on the light tab bar */
+  --adm-tag-close-hover: var(--color-warning-700);
   --adm-tag-on-fg: var(--adm-accent, #14b8a6);
   --adm-tag-on-bg: color-mix(in srgb, var(--adm-accent, #14b8a6) 12%, white);
   --adm-card-title-bg: #d9edf7;
@@ -437,6 +439,8 @@
   --adm-tag-border: #1e293b;
   --adm-tag-item-border: #334155;
   --adm-tag-fg: #e2e8f0;
+  --adm-tag-close: var(--color-warning-500);
+  --adm-tag-close-hover: var(--color-warning-600); /* slightly darker on hover */
   --adm-tag-on-fg: #5eead4;
   --adm-tag-on-bg: #134e4a;
   --adm-card-title-bg: var(--color-adminlte-panel-dark);
@@ -752,12 +756,16 @@ button[data-variant="primary"]:hover:not(:disabled) {
   padding: 0;
   border: 0;
   background: transparent;
-  color: inherit;
+  color: var(--adm-tag-close);
   cursor: pointer;
-  opacity: 0.7;
 }
 .adm-tag-close:hover {
-  opacity: 1;
+  color: var(--adm-tag-close-hover);
+}
+/* the icon component sets its own text colour; force it to follow the button */
+.adm-tag-close > *,
+.adm-tag-close svg {
+  color: inherit !important;
 }
 .adm-tag-ctx {
   min-width: 140px;
