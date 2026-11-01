@@ -1,4 +1,8 @@
 # Local MongoDB for development: `deno task mongo:up`
+# Own compose project so `docker compose up` (docker-compose.yml) does not
+# treat this container as an orphan and try to delete the shared default network.
+name: dweb-admin-dev
+
 services:
   mongo:
     image: mongo:8
@@ -8,5 +12,8 @@ services:
       - '127.0.0.1:27018:27017'
     volumes:
       - dweb-admin-mongo-data:/data/db
+
 volumes:
   dweb-admin-mongo-data:
+    # Volume created while this file still shared the `dweb-admin` project name.
+    name: dweb-admin_dweb-admin-mongo-data

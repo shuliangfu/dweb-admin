@@ -13,8 +13,14 @@ services:
     restart: unless-stopped
     stop_grace_period: 5s
     user: '0:0'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    environment:
+      # Reach Mongo published on the host (dev container, 127.0.0.1:27018).
+      # Set before the app loads .env so DB_HOST=127.0.0.1 inside the file does not win.
+      DB_HOST: host.docker.internal
     ports:
-      - '0.0.0.0:3000:3000'
+      - '0.0.0.0:${HOST_PORT_BACKEND:-3000}:3000'
     command: ["deno","run","-A","dist/backend/server.js"]
     volumes:
       - .:/app
@@ -24,8 +30,8 @@ services:
       test: ['CMD-SHELL', 'grep -q "0BB8" /proc/net/tcp 2>/dev/null || exit 1']
       interval: 10s
       timeout: 5s
-      retries: 5
-      start_period: 5s
+      retries: 12
+      start_period: 120s
     logging:
       driver: 'local'
       options:
@@ -42,8 +48,12 @@ services:
     restart: unless-stopped
     stop_grace_period: 5s
     user: '0:0'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    environment:
+      DB_HOST: host.docker.internal
     ports:
-      - '0.0.0.0:3001:3001'
+      - '0.0.0.0:${HOST_PORT_FRONTEND:-3001}:3001'
     command: ["deno","run","-A","dist/frontend/server.js"]
     volumes:
       - .:/app
@@ -53,8 +63,8 @@ services:
       test: ['CMD-SHELL', 'grep -q "0BB9" /proc/net/tcp 2>/dev/null || exit 1']
       interval: 10s
       timeout: 5s
-      retries: 5
-      start_period: 5s
+      retries: 12
+      start_period: 120s
     logging:
       driver: 'local'
       options:
@@ -71,8 +81,12 @@ services:
     restart: unless-stopped
     stop_grace_period: 5s
     user: '0:0'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    environment:
+      DB_HOST: host.docker.internal
     ports:
-      - '0.0.0.0:3002:3002'
+      - '0.0.0.0:${HOST_PORT_MOBILE:-3002}:3002'
     command: ["deno","run","-A","dist/mobile/server.js"]
     volumes:
       - .:/app
@@ -82,8 +96,8 @@ services:
       test: ['CMD-SHELL', 'grep -q "0BBA" /proc/net/tcp 2>/dev/null || exit 1']
       interval: 10s
       timeout: 5s
-      retries: 5
-      start_period: 5s
+      retries: 12
+      start_period: 120s
     logging:
       driver: 'local'
       options:
@@ -100,8 +114,12 @@ services:
     restart: unless-stopped
     stop_grace_period: 5s
     user: '0:0'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    environment:
+      DB_HOST: host.docker.internal
     ports:
-      - '0.0.0.0:3003:3003'
+      - '0.0.0.0:${HOST_PORT_API:-3003}:3003'
     command: ["deno","run","-A","dist/api/server.js"]
     volumes:
       - .:/app
@@ -111,8 +129,8 @@ services:
       test: ['CMD-SHELL', 'grep -q "0BBB" /proc/net/tcp 2>/dev/null || exit 1']
       interval: 10s
       timeout: 5s
-      retries: 5
-      start_period: 5s
+      retries: 12
+      start_period: 120s
     logging:
       driver: 'local'
       options:
