@@ -1,5 +1,7 @@
 # dreamer-admin ↔ dweb-admin page migration matrix
 
+> **Stop-work (2026-11-01 Asia/Shanghai):** zero-context entry → [`ai-handoff.md`](./ai-handoff.md); long-form → [`handoff.md`](./handoff.md). Do not treat uncommitted captcha/forget/reset WIP as done.
+
 > **API (2026-11-01):** apps use `apiMode: "action"` (see `docs/handoff.md`). On dweb 3.7.5, kind:api bare `/` does **not** auto-run `index` — use `/index`.
 
 Generated: 2026-11-01 (Asia/Shanghai) · updated: RBAC search/detail deepen; online route restored (no menu); home/error adm chrome

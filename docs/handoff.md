@@ -1,7 +1,11 @@
 # dweb-admin 接手文档（handoff）
 
+> **【停工】2026-11-01 Asia/Shanghai** — 用户口令：用量烧太快，后台模板即刻停工，**勿再改业务代码**。  
+> **零上下文入口请先读 [`docs/ai-handoff.md`](./ai-handoff.md)**（本文为长文细节）。本轮仅文档 commit；**勿 push**；**禁 CloudAgent**；**勿升依赖**。  
+> 停工瞬间工作区另有 **未提交** login／forget／reset／captcha 半成品（见 ai-handoff §1）——**勿当成已完成**。
+
 > 面向后续代理人／开发者的全面接手说明。中文为主；**路径与包名以本机实况为准**。  
-> 生成：2026-11-01（Asia/Shanghai）。配套对照表见同目录 `page-migration-matrix.md`、扩展包清单见 `extension-packages.md`。
+> 生成：2026-11-01（Asia/Shanghai）。配套对照表见同目录 `page-migration-matrix.md`、扩展包清单见 `extension-packages.md`；**停工入口**见 `ai-handoff.md`。
 
 ---
 
@@ -277,12 +281,13 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 
 ## 8. 建议阅读顺序（新人／新代理）
 
-1. 本文 `docs/handoff.md`
-2. `docs/extension-packages.md`
-3. `docs/page-migration-matrix.md`（整表 + §12）
-4. `deno.json` → `backend/main.ts` → `backend/routes/_layout.tsx`
-5. `common/components/DataPanel.tsx` + 任一 `*Admin.tsx` + `common/model/rbac.ts`
-6. Vue 对照：`/home/vue/dreamer-vue/src/views/...` 与 `components/Card/CardPanel.vue`
+1. **`docs/ai-handoff.md`（零上下文停工入口，先读）**
+2. 本文 `docs/handoff.md`
+3. `docs/extension-packages.md`
+4. `docs/page-migration-matrix.md`（整表 + §12）
+5. `deno.json` → `backend/main.ts` → `backend/routes/_layout.tsx`
+6. `common/components/DataPanel.tsx` + 任一 `*Admin.tsx` + `common/model/rbac.ts`
+7. Vue 对照：`/home/vue/dreamer-vue/src/views/...` 与 `components/Card/CardPanel.vue`
 
 ---
 
@@ -290,6 +295,7 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 
 | 日期 (Asia/Shanghai) | 说明 |
 |---|---|
+| 2026-11-01 | **停工交接**：新增 `docs/ai-handoff.md` 零上下文入口；本文加停工横幅；只 commit 文档，勿改业务码／勿 push |
 | 2026-11-01 | 续刀：RBAC 表单／搜索加深（admins／roles／permissions／routes）；online 路由恢复无菜单；home／error `adm-panel-card`／`adm-error`；无模型页仅 docs；勿 push |
 | 2026-11-01 | 续刀：Admins／Roles 列表列再对齐 Vue；CMS／会员确认无模型→骨架＋handoff；dashboard live 管理条 vs demo KPI 写入本文 |
 | 2026-11-01 | 初版 handoff + matrix + extension-packages；模型扫仓／online kick；TW4 约定 |
