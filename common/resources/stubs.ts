@@ -36,7 +36,7 @@ export function stubResource(p: StubPage): ResourceDef {
   const columns: ColDef[] = p.columns.map((c): ColDef => {
     if (TIME.has(c.prop)) return { prop: "createdAt", label: c.label, type: "datetime", sortable: true };
     if (c.prop === "status") return { prop: c.prop, label: c.label, type: "tag", options: STATUS, sortable: true };
-    if (NUM.has(c.prop)) return { prop: c.prop, label: c.label, type: "number", sortable: true };
+    if (NUM.has(c.prop)) return { prop: c.prop, label: c.label, type: "number", sortable: true, inline: "number" };
     return { prop: c.prop, label: c.label, sortable: true };
   });
 
