@@ -8,8 +8,10 @@
  *   deno run -A upgrade.ts --install-hook
  *
  * 服务从 compose 自动识别，一般不用改脚本：
- * - web：command 含 `dist/<应用>/server.js` 或 `.dist/<应用>/server.js`，且带 `--start`
+ * - web：command 含 `dist/<应用>/server.js` 或 `.dist/<应用>/server.js`
+ *   （`--start` 可有可无，生产包在构建时已经 start）
  *   → 删除该 dist → `deno task build:<服务名>` → restart
+ * - static：command 含 `scripts/serve-*.ts`（如网页版）→ 不构建，只 restart
  * - console：command 含 `console/cli.ts` → 只 restart
  *
  * 可选 labels（写在对应 service 上）：
@@ -18,7 +20,7 @@
  * - dreamer.upgrade.buildTask: 如 `build:backend`（默认 `build:<服务名>`）
  * - dreamer.upgrade.paths: 额外监听的目录前缀，逗号分隔，如 `vendor/ui/`
  *
- * 只处理正在运行的容器。用 `.data/upgrade-state.json` 记录上次成功时的 commit，
+ * 只处理正在运行的容器。用 `runtime/logs/upgrade-state.json` 记录上次成功时的 commit，
  * 再和当前工作区做 diff，因此 tests、docs 之类的提交不会触发构建。
  *
  *   deno run -A upgrade.ts                  # 按变更升级正在运行的服务
@@ -35,14 +37,14 @@
 // deno-lint-ignore no-import-prefix
 import { parse as parseYaml } from "jsr:@std/yaml@^1";
 
-/** 升级状态与日志目录（本地文件，不提交） */
-const DATA_DIR = ".data";
+/** 升级状态、锁和日志目录（runtime 已忽略，不提交） */
+const DATA_DIR = "runtime/logs";
 
 /** 上次成功升级到的 commit */
 const STATE_FILE = `${DATA_DIR}/upgrade-state.json`;
 
 /** 升级日志 */
-const LOG_FILE = `${DATA_DIR}/logs/upgrade.log`;
+const LOG_FILE = `${DATA_DIR}/upgrade.log`;
 
 /** 防止 post-merge 与手动升级叠在一起 */
 const LOCK_FILE = `${DATA_DIR}/upgrade.lock`;
@@ -55,8 +57,8 @@ const GREEN = "\x1b[0;32m";
 const YELLOW = "\x1b[1;33m";
 const NC = "\x1b[0m";
 
-/** 可升级服务类型：web 要构建，console 只重启 */
-type UpgradeServiceKind = "web" | "console";
+/** 可升级服务类型：web 要构建，static 和 console 只重启 */
+type UpgradeServiceKind = "web" | "static" | "console";
 
 /**
  * 从 compose 解析出的一个可升级服务
@@ -64,7 +66,7 @@ type UpgradeServiceKind = "web" | "console";
 interface UpgradeServiceConfig {
   /** compose 里的服务名 */
   name: string;
-  /** web 清 dist 再构建；console 只重启 */
+  /** web 清 dist 再构建；static 和 console 只重启 */
   kind: UpgradeServiceKind;
   /** web 构建前要删掉的目录，相对项目根 */
   distDir?: string;
@@ -75,7 +77,7 @@ interface UpgradeServiceConfig {
 }
 
 /**
- * 记在 .data/upgrade-state.json 里的成功记录
+ * 记在 runtime/logs/upgrade-state.json 里的成功记录
  */
 interface UpgradeState {
   /** 服务名 → 上次成功升级时的 HEAD */
@@ -153,9 +155,9 @@ function timestamp(): string {
  */
 async function writeLog(level: string, message: string): Promise<void> {
   try {
-    await Deno.mkdir(`${DATA_DIR}/logs`, { recursive: true });
+    await Deno.mkdir(`${ROOT}/${DATA_DIR}`, { recursive: true });
     await Deno.writeTextFile(
-      LOG_FILE,
+      `${ROOT}/${LOG_FILE}`,
       `[${timestamp()}] [${level}] ${message}\n`,
       { append: true },
     );
@@ -332,7 +334,8 @@ function showUsage(): void {
 post-merge 在 git pull / merge 成功后执行本脚本（--hook）。
 
 自动识别:
-  web      command 含 dist/.../server.js 或 .dist/.../server.js，且有 --start
+  web      command 含 dist/.../server.js 或 .dist/.../server.js（--start 可选）
+  static   command 含 scripts/serve-*.ts，只重启，不构建
   console  command 含 console/cli.ts
   labels   dreamer.upgrade.kind / dist / buildTask / paths
 `);
@@ -425,8 +428,14 @@ function defaultWatchPaths(
   extra: string[],
 ): string[] {
   const own = kind === "console" ? ["src/console/"] : [`src/${name}/`];
-  const paths = [...own, "src/common/", ...extra];
-  return paths.map((path) => (path.endsWith("/") ? path : `${path}/`));
+  // 静态网页不编译 src/common，避免公共代码一改就重启网页容器。
+  const paths = kind === "static"
+    ? [...own, ...extra]
+    : [...own, "src/common/", ...extra];
+  return paths.map((path) => {
+    if (path.endsWith("/") || path.includes(".")) return path;
+    return `${path}/`;
+  });
 }
 
 /**
@@ -447,20 +456,23 @@ function parseUpgradeService(
   const command = flattenCommand(service.command);
   const labelKind = labels["dreamer.upgrade.kind"];
 
-  // dist/backend/server.js 与旧布局 .dist/dapp/server.js 都认
+  // dist/backend/server.js 与旧布局 .dist/dapp/server.js 都认。
+  // 生产构建产物自己会 start，compose 里可以不写 --start。
   const distMatch = command.match(
     /(?:^|\s)((?:\.?dist)\/[^\s'"]+\/server\.(?:js|ts))(?:\s|$)/,
   );
-  const hasStart = /(?:^|\s)--start(?:\s|$)/.test(command);
   const isConsole = command.includes("console/cli.ts");
+  const staticScript = command.match(/scripts\/serve-[\w-]+\.ts/);
 
   let kind: UpgradeServiceKind | null = null;
-  if (labelKind === "web" || labelKind === "console") {
+  if (labelKind === "web" || labelKind === "console" || labelKind === "static") {
     kind = labelKind;
-  } else if (distMatch && hasStart) {
+  } else if (distMatch) {
     kind = "web";
   } else if (isConsole) {
     kind = "console";
+  } else if (staticScript) {
+    kind = "static";
   }
   if (!kind) return null;
 
@@ -477,6 +489,9 @@ function parseUpgradeService(
     config.distDir = labels["dreamer.upgrade.dist"] || fromCommand ||
       `dist/${name}`;
     config.buildTask = labels["dreamer.upgrade.buildTask"] || `build:${name}`;
+  }
+  if (kind === "static" && staticScript) {
+    config.watchPaths.push(staticScript[0]);
   }
 
   return config;
@@ -574,6 +589,8 @@ async function logDiscovered(
       await logInfo(
         `  • ${service.name} [web] dist=${service.distDir} task=${service.buildTask}`,
       );
+    } else if (service.kind === "static") {
+      await logInfo(`  • ${service.name} [static] 只重启`);
     } else {
       await logInfo(`  • ${service.name} [console] 只重启`);
     }
