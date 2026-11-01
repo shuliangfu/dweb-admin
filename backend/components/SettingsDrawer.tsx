@@ -130,7 +130,7 @@ const OTHER: OtherTok[] = [
     id: "brandStrip",
     cssVar: "--adm-brand-strip",
     labelKey: "shell.tokBrand",
-    light: "#0f172a",
+    light: "#1e293b",
     dark: "#0f172a",
   },
   {
@@ -144,7 +144,7 @@ const OTHER: OtherTok[] = [
     id: "topBg",
     cssVar: "--adm-top-bg",
     labelKey: "shell.tokTopBg",
-    light: "#0f172a",
+    light: "#1e293b",
     dark: "#0f172a",
   },
   {
@@ -274,6 +274,9 @@ const SUPERSEDED_OTHER: Record<string, string> = {
   cardTitleFg: "#0f766e",
   cardBorder: "#99f6e4",
   content: "#020617",
+  // Earlier light-mode navbar/logo defaults that a browser may have persisted; drop them so #1e293b applies.
+  brandStrip: "#0f172a",
+  topBg: "#0f172a",
 };
 
 /** Vue length tokens (menu item height / radius) — not colors. */

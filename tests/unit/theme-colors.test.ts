@@ -65,11 +65,10 @@ const hsl = (c: string) => {
   return (max + min) / 2; // lightness 0..1
 };
 
-Deno.test("light navbar equals the logo strip and is only slightly (3-5% lightness) darker than the sidebar", () => {
-  assertEquals(L("--adm-top-bg").toLowerCase(), "#18212f");
-  assertEquals(L("--adm-top-bg").toLowerCase(), L("--adm-brand-strip").toLowerCase(), "navbar must match the logo area exactly");
-  const delta = (hsl(L("--adm-side")) - hsl(L("--adm-top-bg"))) * 100;
-  assert(delta >= 3 && delta <= 5, `lightness delta ${delta.toFixed(2)}% must be within 3-5%`);
+Deno.test("light navbar and logo strip are exactly the sidebar colour #1e293b", () => {
+  assertEquals(L("--adm-side").toLowerCase(), "#1e293b");
+  assertEquals(L("--adm-top-bg").toLowerCase(), "#1e293b");
+  assertEquals(L("--adm-brand-strip").toLowerCase(), "#1e293b");
 });
 
 Deno.test("light chrome text/icon contrast meets WCAG AA (4.5:1)", () => {
