@@ -53,7 +53,7 @@ dweb-admin/
 ### 参照仓
 
 - **唯一 UI 参照**：`/home/vue/dreamer-vue`（已确认，非临时／待确认）。
-- 对稿范围：**全站**——侧栏、顶栏、二级头／多标签、登录／锁屏／错误页，以及侧栏菜单覆盖的**全部内容页**（RBAC／系统／会员／CMS／财务／统计／开发者等）。勿只做单页「能开」而忽略壳层或菜单叶子。
+- 对稿范围：**全站**——侧栏、顶栏、二级头／多标签、登录／锁屏／错误页，以及侧栏菜单覆盖的**全部内容页**（RBAC／系统／会员（三项）／CMS／开发者等（财务／统计已撤））。勿只做单页「能开」而忽略壳层或菜单叶子。
 
 ### 技术约束（对稿时的实现栈）
 
@@ -245,7 +245,7 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 ### 未完／仍弱（优先队列，细节以 matrix §12 为准）
 
 1. **扫仓结论（2026-11-01）**：有领域模型却仍 stub 的页＝**无**。AdminUser／Auth*／Menu／AdminSession／AdminPasskey 相关 list／CRUD（含 online 踢下线、账号安全）已接真 API。
-2. **无模型 stub 保持 stub**（勿假接）：会员／CMS／财务／统计／developer 备份反馈语言系统日志／system 设置与 admin-log 等——需先新增领域模型再接线。
+2. **无模型 stub 保持 stub**（勿假接）：会员（三项）／CMS／developer 备份反馈语言系统日志／system 设置与 admin-log 等——需先新增领域模型再接线。
 3. **DataPanel**：浏览器侧 CSV／HTML-table-as-xls／XML／HTML／JSON 已接（对齐 Vue `excel.js`）。**dreamer-jsr 无 OOXML／xlsx 扩展包**（已扫 utils 等）→ 勿另起炉灶；原生 `.xlsx` 仍标 `panel.xlsxGap`，等有官方包再接。
 4. **RBAC Assign**：角色分配（`roleCodes`）真 API 已通；Vue 条目级 allow／deny＋用户直绑路由需 **AuthAssignment**（本仓无此模型）——`AssignAdmin` gap 面板＋i18n `assign.gap*` 已标明，**禁止假提交**。
 5. **会员／CMS**：无领域模型 → 保持 stub；列／搜索已按 Vue CardPanel 对稿加深（`searchFields`），仍演示行。

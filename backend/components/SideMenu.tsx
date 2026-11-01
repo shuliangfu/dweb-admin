@@ -46,72 +46,15 @@ const ICONS: Record<string, IconComp> = {
   sliders: IconSlidersHorizontal,
 };
 
-/** When seed still says "star", pick a sensible icon from the menu key. */
+/** Top-level only; secondary sidebar items always use IconStar. */
 const ICON_BY_KEY: Record<string, string> = {
   "dashboard": "home",
   "workspace": "grid",
   "rbac": "shield",
-  "rbac.admins": "users",
-  "rbac.assign": "shieldcheck",
-  "rbac.roles": "shieldcheck",
-  "rbac.permissions": "key",
-  "rbac.routes": "list",
   "system": "settings",
-  "system.menus": "menu",
-  "system.online": "users",
   "user": "users",
   "cms": "book",
-  "finance": "sliders",
-  "count": "list",
   "developer": "database",
-  "system.admin-log": "list",
-  "system.express": "list",
-  "system.level": "star",
-  "system.locale": "book",
-  "system.region": "grid",
-  "system.base": "sliders",
-  "system.bonus": "star",
-  "system.datetime": "sliders",
-  "system.finance": "sliders",
-  "system.transfer": "sliders",
-  "system.wallet": "sliders",
-  "user.index": "users",
-  "user.new": "users",
-  "user.active": "users",
-  "user.black": "users",
-  "user.locked": "users",
-  "user.zombie": "users",
-  "user.online": "users",
-  "user.log": "list",
-  "user.receipt": "list",
-  "user.upgrade-log": "list",
-  "user.location": "grid",
-  "user.path-invite": "grid",
-  "user.path-position": "grid",
-  "cms.article": "book",
-  "cms.news": "book",
-  "cms.notice": "book",
-  "cms.photo": "book",
-  "cms.qa": "book",
-  "cms.survey": "book",
-  "finance.bonus": "star",
-  "finance.bonus-log": "list",
-  "finance.invest": "list",
-  "finance.point": "list",
-  "finance.recharge": "list",
-  "finance.wallet": "list",
-  "finance.wallet-add-sub": "sliders",
-  "finance.wallet-log": "list",
-  "finance.withdraw": "list",
-  "count.bonus": "list",
-  "count.invest": "list",
-  "count.point": "list",
-  "count.recharge": "list",
-  "count.withdraw": "list",
-  "developer.database": "database",
-  "developer.feedback": "list",
-  "developer.language": "book",
-  "developer.system": "list",
 };
 
 function resolveIconName(node: MenuNode): string {
@@ -187,7 +130,7 @@ export function SideMenu(props: { tree: MenuNode[]; pathname: string }) {
                         class={`${subBase} ${isActive(props.pathname, child.path) ? "adm-on" : ""}`}
                         onClick={onNavClick}
                       >
-                        <Icon name={resolveIconName(child)} />
+                        <Icon name="star" />
                         <span class="truncate">{child.title}</span>
                       </Link>
                     </li>

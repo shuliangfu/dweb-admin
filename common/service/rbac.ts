@@ -39,7 +39,7 @@ const AUTH_ONLY_PREFIX = [
 
 /** Logged-in users may always access these (no role binding required). */
 /** Logged-in users may always access these (no role binding required).
- * Stub module pages (user/cms/finance/count/developer + most /system/*) are NOT
+ * Stub module pages (user/cms/developer + most /system/*) are NOT
  * listed here — they require a super role or an explicit route grant.
  */
 const AUTH_ONLY_EXACT = new Set([

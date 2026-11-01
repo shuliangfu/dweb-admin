@@ -132,23 +132,15 @@ Blocking relation: **TagView + TopHeader breadcrumb** are pure shell; list `Data
 
 ## 6. User（会员）
 
-All **部分** as catalog-driven stubs (`common/stubs/catalog.ts` + DataPanel / chart placeholder); no domain models yet:
+Keep only three catalog stubs (DataPanel demo); no domain models yet:
 
 | Vue file | Title | dweb-admin | Status |
 |---|---|---|---|
 | `user/index.vue` | 会员列表 | `/user` | **部分** — demo DataPanel |
-| `user/new.vue` | 新增会员 | `/user/new` | **部分** — demo DataPanel |
 | `user/active.vue` | 活跃会员 | `/user/active` | **部分** — demo DataPanel |
-| `user/black.vue` | 黑名单会员 | `/user/black` | **部分** — demo DataPanel |
-| `user/locked.vue` | 锁定会员 | `/user/locked` | **部分** — demo DataPanel |
 | `user/zombie.vue` | 僵尸会员 | `/user/zombie` | **部分** — demo DataPanel |
-| `user/online/index.vue` | 在线会员 | `/user/online` | **部分** — demo DataPanel |
-| `user/log/index.vue` | 会员日志列表 | `/user/log` | **部分** — demo DataPanel |
-| `user/receipt/index.vue` | 收款方式列表 | `/user/receipt` | **部分** — demo DataPanel |
-| `user/upgrade-log/index.vue` | 升级记录列表 | `/user/upgrade-log` | **部分** — demo DataPanel |
-| `user/location/index.vue` | 会员分布图 | `/user/location` | **部分** — chart placeholder |
-| `user/path-invite/index.vue` | 推荐图 | `/user/path-invite` | **部分** — chart placeholder |
-| `user/path-position/index.vue` | 安置图 | `/user/path-position` | **部分** — chart placeholder |
+
+Removed from dweb-admin (no route/menu/stub): new / black / locked / online / log / receipt / upgrade-log / location / path-invite / path-position.
 
 ---
 
@@ -158,19 +150,7 @@ All **部分** stubs (DataPanel demo): `/cms/article|news|notice|photo|qa|survey
 
 ---
 
-## 8. Finance
-
-All **部分** stubs (DataPanel demo): `/finance/bonus` (+`/log`), `/invest`, `/point`, `/recharge`, `/wallet` (+`/add-sub`, `/log`), `/withdraw`.
-
----
-
-## 9. Count（统计）
-
-All **部分** stubs (DataPanel demo): `/count/bonus|invest|point|recharge|withdraw`.
-
----
-
-## 10. Developer
+## 8. Developer
 
 | Vue file | Title | dweb-admin | Status |
 |---|---|---|---|
@@ -182,7 +162,7 @@ All **部分** stubs (DataPanel demo): `/count/bonus|invest|point|recharge|withd
 
 ---
 
-## 11. Counts summary
+## 9. Counts summary
 
 | Area | Vue pages (excl. modules) | dweb 已有/部分 | 缺 |
 |---|---:|---:|---:|
@@ -191,24 +171,22 @@ All **部分** stubs (DataPanel demo): `/count/bonus|invest|point|recharge|withd
 | Home | 2 | 2 部分 (dashboard charts + workspace stub) | 0 |
 | Admin/RBAC | 5 | 5 部分 (incl. `/rbac/assign`) | 0 (allow/deny model still absent; gap UI only) |
 | System + developer menu | 13 | 13 部分 (menus/online+kick + 11 stubs) | 0 (no domain models for remaining stubs) |
-| User | 13 | 13 部分 (stubs) | 0 (model/API pending) |
+| User | 3 kept | 3 部分 (stubs) | Vue extras intentionally dropped |
 | CMS | 6 | 6 部分 (stubs) | 0 (model/API pending) |
-| Finance | 9 | 9 部分 (stubs incl. bonus/log + wallet add-sub/log) | 0 (model/API pending) |
-| Count | 5 | 5 部分 (stubs) | 0 (model/API pending) |
 | Developer (rest) | 4 | 4 部分 (stubs) | 0 (model/API pending) |
 | **DataPanel wrapper** | 1 (CardPanel) | 1 部分 (search/column/CSV export+import/print; children col filter) | Excel/XML/HTML backends pending (no pkgs) |
 
-Vue list entry pages: **64** view files (modules excluded). Dynamic sidebar routes beyond static `/dashboard`/`/workspace`/auth come from backend-fed `routeStore` in Vue; dweb uses Mongo `menus` seed covering dashboard/workspace/rbac/system/user/cms/finance/count/developer (stub leaves included).
+Vue list entry pages: **64** view files (modules excluded). Dynamic sidebar routes beyond static `/dashboard`/`/workspace`/auth come from backend-fed `routeStore` in Vue; dweb uses Mongo `menus` seed covering dashboard/workspace/rbac/system/user(3)/cms/developer (finance/count removed; extra member leaves removed).
 
 ---
 
-## 12. Suggested implementation order (next knives)
+## 10. Suggested implementation order (next knives)
 
-1. **Model-backed scan (2026-11-01):** Mongo models in-tree are only `AdminUser` / `Auth*` / `Menu` / `AdminSession` / `AdminPasskey` (+ challenges). Every list that can use those models is already live (admins, assign, roles, permissions, routes, menus, online+kick, account security/passkeys). **No remaining model-backed stub pages.** `/system/admin-log` and all user/CMS/finance/count/developer leaves stay stubs until new domain models exist — do not fake APIs.
-2. Next real work needs **new models** (member, CMS, finance, system settings store, admin audit log) or Vue-parity polish on existing live pages (DataPanel Excel/XML once deps land; TagView keep-alive N/A on SSR).
+1. **Model-backed scan (2026-11-01):** Mongo models in-tree are only `AdminUser` / `Auth*` / `Menu` / `AdminSession` / `AdminPasskey` (+ challenges). Every list that can use those models is already live (admins, assign, roles, permissions, routes, menus, online+kick, account security/passkeys). **No remaining model-backed stub pages.** `/system/admin-log` and remaining user(3)/CMS/developer leaves stay stubs until new domain models exist — do not fake APIs. Finance/count menus+routes removed.
+2. Next real work needs **new models** (member, CMS, system settings store, admin audit log) or Vue-parity polish on existing live pages (DataPanel Excel/XML once deps land; TagView keep-alive N/A on SSR).
 3. Shell: ChatModal is layout-only (no IM backend); keep honest empty states.
 4. If product needs Vue allow/deny + user-direct routes: add AuthAssignment-class model + API first, then wire the reserved Assign gap panel (do not fake).
-5. member / CMS stub columns + searchFields aligned to Vue CardPanel (still demo rows; no domain models).
+5. Kept member(3) / CMS stub columns + searchFields aligned to Vue CardPanel (still demo rows; no domain models).
 5. Done recently: Tailwind 4 arbitrary-size cleanup; session IP/UA; online kick (`DELETE /api/sessions/:id`); ChatModal split shell; assign gap UI; DataPanel CSV import + `filterTableColumns`; `docs/handoff.md`.
 
 ### Hard constraints reminder

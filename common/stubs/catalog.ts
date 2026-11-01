@@ -36,7 +36,7 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "list",
+    icon: "star",
     sort: 30,
     parent: "system",
   },
@@ -55,7 +55,7 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "list",
+    icon: "star",
     sort: 40,
     parent: "system",
   },
@@ -94,7 +94,7 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "book",
+    icon: "star",
     sort: 60,
     parent: "system",
   },
@@ -113,7 +113,7 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "grid",
+    icon: "star",
     sort: 70,
     parent: "system",
   },
@@ -134,7 +134,7 @@ export const STUB_PAGES: StubPage[] = [
       { label: { "zh-CN": "默认分页", "en-US": "Page size" }, value: "20" },
       { label: { "zh-CN": "日期时间格式", "en-US": "Datetime format" }, value: "YYYY-MM-DD HH:mm:ss" }
     ],
-    icon: "sliders",
+    icon: "star",
     sort: 80,
     parent: "system",
   },
@@ -171,7 +171,7 @@ export const STUB_PAGES: StubPage[] = [
       { label: { "zh-CN": "时区", "en-US": "Timezone" }, value: "Asia/Shanghai" },
       { label: { "zh-CN": "偏移秒", "en-US": "Offset seconds" }, value: "0" }
     ],
-    icon: "sliders",
+    icon: "star",
     sort: 100,
     parent: "system",
   },
@@ -190,7 +190,7 @@ export const STUB_PAGES: StubPage[] = [
       { label: { "zh-CN": "兑换手续费", "en-US": "Exchange fee" }, value: "0.5%" },
       { label: { "zh-CN": "交易手续费", "en-US": "Trade fee" }, value: "0.3%" }
     ],
-    icon: "sliders",
+    icon: "star",
     sort: 110,
     parent: "system",
   },
@@ -209,7 +209,7 @@ export const STUB_PAGES: StubPage[] = [
       { label: { "zh-CN": "最低转账", "en-US": "Min transfer" }, value: "10" },
       { label: { "zh-CN": "最高转账", "en-US": "Max transfer" }, value: "100000" }
     ],
-    icon: "sliders",
+    icon: "star",
     sort: 120,
     parent: "system",
   },
@@ -228,7 +228,7 @@ export const STUB_PAGES: StubPage[] = [
       { label: { "zh-CN": "钱包3", "en-US": "Wallet 3" }, value: "关闭 / Off" },
       { label: { "zh-CN": "钱包名称1", "en-US": "Wallet 1 name" }, value: "余额 / Balance" }
     ],
-    icon: "sliders",
+    icon: "star",
     sort: 130,
     parent: "system",
   },
@@ -259,39 +259,8 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "users",
+    icon: "star",
     sort: 10,
-    parent: "user",
-  },
-  {
-    key: "user.new",
-    module: "user",
-    path: "/user/new",
-    title: { "zh-CN": "新增会员", "en-US": "New members" },
-    kind: "list",
-    columns: [
-      { prop: "username", label: { "zh-CN": "用户名", "en-US": "Username" } },
-      { prop: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" } },
-      { prop: "level", label: { "zh-CN": "级别", "en-US": "Level" } },
-      { prop: "email", label: { "zh-CN": "邮箱", "en-US": "Email" } },
-      { prop: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" } },
-      { prop: "status", label: { "zh-CN": "用户状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
-    ],
-    searchFields: [
-      { name: "username", label: { "zh-CN": "用户名", "en-US": "Username" }, placeholder: { "zh-CN": "请输入用户名查询", "en-US": "Search Username" } },
-      { name: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" }, placeholder: { "zh-CN": "请输入昵称查询", "en-US": "Search Nickname" } },
-      { name: "email", label: { "zh-CN": "邮箱", "en-US": "Email" }, placeholder: { "zh-CN": "请输入邮箱查询", "en-US": "Search Email" } },
-      { name: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" }, placeholder: { "zh-CN": "请输入手机号查询", "en-US": "Search Mobile" } },
-      { name: "status", label: { "zh-CN": "用户状态", "en-US": "Status" }, placeholder: { "zh-CN": "请输入用户状态查询", "en-US": "Search Status" } },
-      { name: "start", label: { "zh-CN": "开始时间", "en-US": "Start" }, placeholder: { "zh-CN": "请输入开始时间查询", "en-US": "Search Start" } },
-      { name: "end", label: { "zh-CN": "结束时间", "en-US": "End" }, placeholder: { "zh-CN": "请输入结束时间查询", "en-US": "Search End" } }
-    ],
-    settings: [
-
-    ],
-    icon: "users",
-    sort: 20,
     parent: "user",
   },
   {
@@ -321,70 +290,8 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "users",
-    sort: 30,
-    parent: "user",
-  },
-  {
-    key: "user.black",
-    module: "user",
-    path: "/user/black",
-    title: { "zh-CN": "黑名单会员", "en-US": "Blacklist" },
-    kind: "list",
-    columns: [
-      { prop: "username", label: { "zh-CN": "用户名", "en-US": "Username" } },
-      { prop: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" } },
-      { prop: "level", label: { "zh-CN": "级别", "en-US": "Level" } },
-      { prop: "email", label: { "zh-CN": "邮箱", "en-US": "Email" } },
-      { prop: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" } },
-      { prop: "status", label: { "zh-CN": "用户状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
-    ],
-    searchFields: [
-      { name: "username", label: { "zh-CN": "用户名", "en-US": "Username" }, placeholder: { "zh-CN": "请输入用户名查询", "en-US": "Search Username" } },
-      { name: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" }, placeholder: { "zh-CN": "请输入昵称查询", "en-US": "Search Nickname" } },
-      { name: "email", label: { "zh-CN": "邮箱", "en-US": "Email" }, placeholder: { "zh-CN": "请输入邮箱查询", "en-US": "Search Email" } },
-      { name: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" }, placeholder: { "zh-CN": "请输入手机号查询", "en-US": "Search Mobile" } },
-      { name: "status", label: { "zh-CN": "用户状态", "en-US": "Status" }, placeholder: { "zh-CN": "请输入用户状态查询", "en-US": "Search Status" } },
-      { name: "start", label: { "zh-CN": "开始时间", "en-US": "Start" }, placeholder: { "zh-CN": "请输入开始时间查询", "en-US": "Search Start" } },
-      { name: "end", label: { "zh-CN": "结束时间", "en-US": "End" }, placeholder: { "zh-CN": "请输入结束时间查询", "en-US": "Search End" } }
-    ],
-    settings: [
-
-    ],
-    icon: "users",
-    sort: 40,
-    parent: "user",
-  },
-  {
-    key: "user.locked",
-    module: "user",
-    path: "/user/locked",
-    title: { "zh-CN": "锁定会员", "en-US": "Locked members" },
-    kind: "list",
-    columns: [
-      { prop: "username", label: { "zh-CN": "用户名", "en-US": "Username" } },
-      { prop: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" } },
-      { prop: "level", label: { "zh-CN": "级别", "en-US": "Level" } },
-      { prop: "email", label: { "zh-CN": "邮箱", "en-US": "Email" } },
-      { prop: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" } },
-      { prop: "status", label: { "zh-CN": "用户状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
-    ],
-    searchFields: [
-      { name: "username", label: { "zh-CN": "用户名", "en-US": "Username" }, placeholder: { "zh-CN": "请输入用户名查询", "en-US": "Search Username" } },
-      { name: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" }, placeholder: { "zh-CN": "请输入昵称查询", "en-US": "Search Nickname" } },
-      { name: "email", label: { "zh-CN": "邮箱", "en-US": "Email" }, placeholder: { "zh-CN": "请输入邮箱查询", "en-US": "Search Email" } },
-      { name: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" }, placeholder: { "zh-CN": "请输入手机号查询", "en-US": "Search Mobile" } },
-      { name: "status", label: { "zh-CN": "用户状态", "en-US": "Status" }, placeholder: { "zh-CN": "请输入用户状态查询", "en-US": "Search Status" } },
-      { name: "start", label: { "zh-CN": "开始时间", "en-US": "Start" }, placeholder: { "zh-CN": "请输入开始时间查询", "en-US": "Search Start" } },
-      { name: "end", label: { "zh-CN": "结束时间", "en-US": "End" }, placeholder: { "zh-CN": "请输入结束时间查询", "en-US": "Search End" } }
-    ],
-    settings: [
-
-    ],
-    icon: "users",
-    sort: 50,
+    icon: "star",
+    sort: 20,
     parent: "user",
   },
   {
@@ -414,157 +321,8 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "users",
-    sort: 60,
-    parent: "user",
-  },
-  {
-    key: "user.online",
-    module: "user",
-    path: "/user/online",
-    title: { "zh-CN": "在线会员", "en-US": "Online members" },
-    kind: "list",
-    columns: [
-      { prop: "username", label: { "zh-CN": "用户名", "en-US": "Username" } },
-      { prop: "title", label: { "zh-CN": "页面", "en-US": "Page" } },
-      { prop: "browser", label: { "zh-CN": "浏览器", "en-US": "Browser" } },
-      { prop: "device", label: { "zh-CN": "设备", "en-US": "Device" } },
-      { prop: "language", label: { "zh-CN": "语言", "en-US": "Language" } },
-      { prop: "updatedAt", label: { "zh-CN": "时间", "en-US": "Time" } }
-    ],
-    searchFields: [
-      { name: "username", label: { "zh-CN": "会员", "en-US": "Member" }, placeholder: { "zh-CN": "请输入会员查询", "en-US": "Search Member" } },
-      { name: "title", label: { "zh-CN": "页面", "en-US": "Page" }, placeholder: { "zh-CN": "请输入页面查询", "en-US": "Search Page" } }
-    ],
-    settings: [
-
-    ],
-    icon: "users",
-    sort: 70,
-    parent: "user",
-  },
-  {
-    key: "user.log",
-    module: "user",
-    path: "/user/log",
-    title: { "zh-CN": "会员日志列表", "en-US": "Member logs" },
-    kind: "list",
-    columns: [
-      { prop: "user", label: { "zh-CN": "用户", "en-US": "User" } },
-      { prop: "title", label: { "zh-CN": "访问页面", "en-US": "Page" } },
-      { prop: "path", label: { "zh-CN": "访问路径", "en-US": "Path" } },
-      { prop: "method", label: { "zh-CN": "请求方法", "en-US": "Method" } },
-      { prop: "success", label: { "zh-CN": "请求结果", "en-US": "Result" } },
-      { prop: "createdAt", label: { "zh-CN": "操作时间", "en-US": "Operated" } }
-    ],
-    searchFields: [
-      { name: "user", label: { "zh-CN": "用户", "en-US": "User" }, placeholder: { "zh-CN": "请输入用户查询", "en-US": "Search User" } },
-      { name: "title", label: { "zh-CN": "访问页面", "en-US": "Page" }, placeholder: { "zh-CN": "请输入访问页面查询", "en-US": "Search Page" } },
-      { name: "path", label: { "zh-CN": "访问路径", "en-US": "Path" }, placeholder: { "zh-CN": "请输入访问路径查询", "en-US": "Search Path" } },
-      { name: "method", label: { "zh-CN": "请求方法", "en-US": "Method" }, placeholder: { "zh-CN": "请输入请求方法查询", "en-US": "Search Method" } },
-      { name: "success", label: { "zh-CN": "请求结果", "en-US": "Result" }, placeholder: { "zh-CN": "请输入请求结果查询", "en-US": "Search Result" } },
-      { name: "start", label: { "zh-CN": "开始时间", "en-US": "Start" }, placeholder: { "zh-CN": "请输入开始时间查询", "en-US": "Search Start" } },
-      { name: "end", label: { "zh-CN": "结束时间", "en-US": "End" }, placeholder: { "zh-CN": "请输入结束时间查询", "en-US": "Search End" } }
-    ],
-    settings: [
-
-    ],
-    icon: "list",
-    sort: 80,
-    parent: "user",
-  },
-  {
-    key: "user.receipt",
-    module: "user",
-    path: "/user/receipt",
-    title: { "zh-CN": "收款方式列表", "en-US": "Receipt methods" },
-    kind: "list",
-    columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
-      { prop: "type", label: { "zh-CN": "类型", "en-US": "Type" } },
-      { prop: "account", label: { "zh-CN": "账号", "en-US": "Account" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "时间", "en-US": "Created" } }
-    ],
-    settings: [
-
-    ],
-    icon: "list",
-    sort: 90,
-    parent: "user",
-  },
-  {
-    key: "user.upgrade-log",
-    module: "user",
-    path: "/user/upgrade-log",
-    title: { "zh-CN": "升级记录列表", "en-US": "Upgrade logs" },
-    kind: "list",
-    columns: [
-      { prop: "username", label: { "zh-CN": "用户名", "en-US": "Username" } },
-      { prop: "oldLevel", label: { "zh-CN": "旧级别", "en-US": "Old level" } },
-      { prop: "newLevel", label: { "zh-CN": "新级别", "en-US": "New level" } },
-      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
-    ],
-    searchFields: [
-      { name: "username", label: { "zh-CN": "用户名", "en-US": "Username" }, placeholder: { "zh-CN": "请输入用户名查询", "en-US": "Search Username" } },
-      { name: "old_level", label: { "zh-CN": "旧级别", "en-US": "Old level" }, placeholder: { "zh-CN": "请输入旧级别查询", "en-US": "Search Old level" } },
-      { name: "new_level", label: { "zh-CN": "新级别", "en-US": "New level" }, placeholder: { "zh-CN": "请输入新级别查询", "en-US": "Search New level" } },
-      { name: "start", label: { "zh-CN": "开始时间", "en-US": "Start" }, placeholder: { "zh-CN": "请输入开始时间查询", "en-US": "Search Start" } },
-      { name: "end", label: { "zh-CN": "结束时间", "en-US": "End" }, placeholder: { "zh-CN": "请输入结束时间查询", "en-US": "Search End" } }
-    ],
-    settings: [
-
-    ],
-    icon: "list",
-    sort: 100,
-    parent: "user",
-  },
-  {
-    key: "user.location",
-    module: "user",
-    path: "/user/location",
-    title: { "zh-CN": "会员分布图", "en-US": "Member map" },
-    kind: "chart",
-    columns: [
-
-    ],
-    settings: [
-
-    ],
-    icon: "grid",
-    sort: 110,
-    parent: "user",
-  },
-  {
-    key: "user.path-invite",
-    module: "user",
-    path: "/user/path-invite",
-    title: { "zh-CN": "推荐图", "en-US": "Invite tree" },
-    kind: "chart",
-    columns: [
-
-    ],
-    settings: [
-
-    ],
-    icon: "grid",
-    sort: 120,
-    parent: "user",
-  },
-  {
-    key: "user.path-position",
-    module: "user",
-    path: "/user/path-position",
-    title: { "zh-CN": "安置图", "en-US": "Placement tree" },
-    kind: "chart",
-    columns: [
-
-    ],
-    settings: [
-
-    ],
-    icon: "grid",
-    sort: 130,
+    icon: "star",
+    sort: 30,
     parent: "user",
   },
   {
@@ -591,7 +349,7 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "book",
+    icon: "star",
     sort: 10,
     parent: "cms",
   },
@@ -615,7 +373,7 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "book",
+    icon: "star",
     sort: 20,
     parent: "cms",
   },
@@ -639,7 +397,7 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "book",
+    icon: "star",
     sort: 30,
     parent: "cms",
   },
@@ -666,7 +424,7 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "book",
+    icon: "star",
     sort: 40,
     parent: "cms",
   },
@@ -693,7 +451,7 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "book",
+    icon: "star",
     sort: 50,
     parent: "cms",
   },
@@ -716,275 +474,9 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "book",
+    icon: "star",
     sort: 60,
     parent: "cms",
-  },
-  {
-    key: "finance.bonus",
-    module: "finance",
-    path: "/finance/bonus",
-    title: { "zh-CN": "奖金列表", "en-US": "Bonus list" },
-    kind: "list",
-    columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
-      { prop: "amount", label: { "zh-CN": "金额", "en-US": "Amount" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "时间", "en-US": "Time" } }
-    ],
-    settings: [
-
-    ],
-    icon: "star",
-    sort: 10,
-    parent: "finance",
-  },
-  {
-    key: "finance.bonus-log",
-    module: "finance",
-    path: "/finance/bonus/log",
-    title: { "zh-CN": "奖金日志", "en-US": "Bonus logs" },
-    kind: "list",
-    columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
-      { prop: "amount", label: { "zh-CN": "金额", "en-US": "Amount" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "时间", "en-US": "Time" } }
-    ],
-    settings: [
-
-    ],
-    icon: "list",
-    sort: 15,
-    parent: "finance",
-  },
-  {
-    key: "finance.invest",
-    module: "finance",
-    path: "/finance/invest",
-    title: { "zh-CN": "投资记录列表", "en-US": "Invest records" },
-    kind: "list",
-    columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
-      { prop: "amount", label: { "zh-CN": "金额", "en-US": "Amount" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "时间", "en-US": "Time" } }
-    ],
-    settings: [
-
-    ],
-    icon: "list",
-    sort: 20,
-    parent: "finance",
-  },
-  {
-    key: "finance.point",
-    module: "finance",
-    path: "/finance/point",
-    title: { "zh-CN": "积分列表", "en-US": "Points" },
-    kind: "list",
-    columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
-      { prop: "amount", label: { "zh-CN": "金额", "en-US": "Amount" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "时间", "en-US": "Time" } }
-    ],
-    settings: [
-
-    ],
-    icon: "list",
-    sort: 30,
-    parent: "finance",
-  },
-  {
-    key: "finance.recharge",
-    module: "finance",
-    path: "/finance/recharge",
-    title: { "zh-CN": "充值记录列表", "en-US": "Recharges" },
-    kind: "list",
-    columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
-      { prop: "amount", label: { "zh-CN": "金额", "en-US": "Amount" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "时间", "en-US": "Time" } }
-    ],
-    settings: [
-
-    ],
-    icon: "list",
-    sort: 40,
-    parent: "finance",
-  },
-  {
-    key: "finance.wallet",
-    module: "finance",
-    path: "/finance/wallet",
-    title: { "zh-CN": "钱包列表", "en-US": "Wallets" },
-    kind: "list",
-    columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
-      { prop: "wallet", label: { "zh-CN": "钱包", "en-US": "Wallet" } },
-      { prop: "balance", label: { "zh-CN": "余额", "en-US": "Balance" } },
-      { prop: "updatedAt", label: { "zh-CN": "更新时间", "en-US": "Updated" } }
-    ],
-    settings: [
-
-    ],
-    icon: "list",
-    sort: 50,
-    parent: "finance",
-  },
-  {
-    key: "finance.wallet-add-sub",
-    module: "finance",
-    path: "/finance/wallet/add-sub",
-    title: { "zh-CN": "钱包加减款", "en-US": "Wallet adjust" },
-    kind: "list",
-    columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
-      { prop: "amount", label: { "zh-CN": "金额", "en-US": "Amount" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "时间", "en-US": "Time" } }
-    ],
-    settings: [
-
-    ],
-    icon: "sliders",
-    sort: 55,
-    parent: "finance",
-  },
-  {
-    key: "finance.wallet-log",
-    module: "finance",
-    path: "/finance/wallet/log",
-    title: { "zh-CN": "钱包日志", "en-US": "Wallet logs" },
-    kind: "list",
-    columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
-      { prop: "amount", label: { "zh-CN": "金额", "en-US": "Amount" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "时间", "en-US": "Time" } }
-    ],
-    settings: [
-
-    ],
-    icon: "list",
-    sort: 58,
-    parent: "finance",
-  },
-  {
-    key: "finance.withdraw",
-    module: "finance",
-    path: "/finance/withdraw",
-    title: { "zh-CN": "提现列表", "en-US": "Withdrawals" },
-    kind: "list",
-    columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
-      { prop: "amount", label: { "zh-CN": "金额", "en-US": "Amount" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "时间", "en-US": "Time" } }
-    ],
-    settings: [
-
-    ],
-    icon: "list",
-    sort: 60,
-    parent: "finance",
-  },
-  {
-    key: "count.bonus",
-    module: "count",
-    path: "/count/bonus",
-    title: { "zh-CN": "奖金统计表", "en-US": "Bonus stats" },
-    kind: "list",
-    columns: [
-      { prop: "period", label: { "zh-CN": "周期", "en-US": "Period" } },
-      { prop: "total", label: { "zh-CN": "合计", "en-US": "Total" } },
-      { prop: "count", label: { "zh-CN": "笔数", "en-US": "Count" } },
-      { prop: "remark", label: { "zh-CN": "备注", "en-US": "Remark" } }
-    ],
-    settings: [
-
-    ],
-    icon: "list",
-    sort: 10,
-    parent: "count",
-  },
-  {
-    key: "count.invest",
-    module: "count",
-    path: "/count/invest",
-    title: { "zh-CN": "投资统计表", "en-US": "Invest stats" },
-    kind: "list",
-    columns: [
-      { prop: "period", label: { "zh-CN": "周期", "en-US": "Period" } },
-      { prop: "total", label: { "zh-CN": "合计", "en-US": "Total" } },
-      { prop: "count", label: { "zh-CN": "笔数", "en-US": "Count" } },
-      { prop: "remark", label: { "zh-CN": "备注", "en-US": "Remark" } }
-    ],
-    settings: [
-
-    ],
-    icon: "list",
-    sort: 20,
-    parent: "count",
-  },
-  {
-    key: "count.point",
-    module: "count",
-    path: "/count/point",
-    title: { "zh-CN": "业绩统计表", "en-US": "Point stats" },
-    kind: "list",
-    columns: [
-      { prop: "period", label: { "zh-CN": "周期", "en-US": "Period" } },
-      { prop: "total", label: { "zh-CN": "合计", "en-US": "Total" } },
-      { prop: "count", label: { "zh-CN": "笔数", "en-US": "Count" } },
-      { prop: "remark", label: { "zh-CN": "备注", "en-US": "Remark" } }
-    ],
-    settings: [
-
-    ],
-    icon: "list",
-    sort: 30,
-    parent: "count",
-  },
-  {
-    key: "count.recharge",
-    module: "count",
-    path: "/count/recharge",
-    title: { "zh-CN": "充值统计表", "en-US": "Recharge stats" },
-    kind: "list",
-    columns: [
-      { prop: "period", label: { "zh-CN": "周期", "en-US": "Period" } },
-      { prop: "total", label: { "zh-CN": "合计", "en-US": "Total" } },
-      { prop: "count", label: { "zh-CN": "笔数", "en-US": "Count" } },
-      { prop: "remark", label: { "zh-CN": "备注", "en-US": "Remark" } }
-    ],
-    settings: [
-
-    ],
-    icon: "list",
-    sort: 40,
-    parent: "count",
-  },
-  {
-    key: "count.withdraw",
-    module: "count",
-    path: "/count/withdraw",
-    title: { "zh-CN": "提现统计表", "en-US": "Withdraw stats" },
-    kind: "list",
-    columns: [
-      { prop: "period", label: { "zh-CN": "周期", "en-US": "Period" } },
-      { prop: "total", label: { "zh-CN": "合计", "en-US": "Total" } },
-      { prop: "count", label: { "zh-CN": "笔数", "en-US": "Count" } },
-      { prop: "remark", label: { "zh-CN": "备注", "en-US": "Remark" } }
-    ],
-    settings: [
-
-    ],
-    icon: "list",
-    sort: 50,
-    parent: "count",
   },
   {
     key: "developer.database",
@@ -1000,7 +492,7 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "database",
+    icon: "star",
     sort: 10,
     parent: "developer",
   },
@@ -1019,7 +511,7 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "list",
+    icon: "star",
     sort: 20,
     parent: "developer",
   },
@@ -1037,7 +529,7 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "book",
+    icon: "star",
     sort: 30,
     parent: "developer",
   },
@@ -1055,10 +547,11 @@ export const STUB_PAGES: StubPage[] = [
     settings: [
 
     ],
-    icon: "list",
+    icon: "star",
     sort: 40,
     parent: "developer",
   },
+
 ];
 
 export const STUB_BY_KEY: Record<string, StubPage> = Object.fromEntries(
