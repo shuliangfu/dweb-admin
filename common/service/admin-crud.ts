@@ -69,16 +69,31 @@ const userSchema = {
   status: string().optional(),
 };
 
-export async function listUsers(q: Page) {
-  const where = q.keyword
-    ? {
+export type UserListQuery = Page & {
+  /** Vue admin search: username / email / status (active|disabled). */
+  username?: string;
+  email?: string;
+  status?: string;
+};
+
+export async function listUsers(q: UserListQuery) {
+  const and: Record<string, unknown>[] = [];
+  if (q.keyword) {
+    and.push({
       $or: [
         { username: { $regex: escapeRe(q.keyword), $options: "i" } },
         { nickname: { $regex: escapeRe(q.keyword), $options: "i" } },
         { email: { $regex: escapeRe(q.keyword), $options: "i" } },
       ],
-    }
-    : {};
+    });
+  }
+  const uname = (q.username ?? "").trim().slice(0, 64);
+  if (uname) and.push({ username: { $regex: escapeRe(uname), $options: "i" } });
+  const email = (q.email ?? "").trim().slice(0, 128);
+  if (email) and.push({ email: { $regex: escapeRe(email), $options: "i" } });
+  const st = (q.status ?? "").trim();
+  if (st === "active" || st === "disabled") and.push({ status: st });
+  const where = and.length === 0 ? {} : and.length === 1 ? and[0]! : { $and: and };
   const r = await AdminUser.paginate(where as never, q.page, q.pageSize, { username: 1 });
   return {
     items: (r.data as unknown as AdminUserDocument[]).map((u) => ({
@@ -90,6 +105,7 @@ export async function listUsers(q: Page) {
       status: u.status,
       lastLoginAt: u.lastLoginAt ? new Date(u.lastLoginAt).toISOString() : "",
       createdAt: u.createdAt ? new Date(u.createdAt).toISOString() : "",
+      updatedAt: u.updatedAt ? new Date(u.updatedAt).toISOString() : "",
     })),
     total: r.total,
     page: r.page,

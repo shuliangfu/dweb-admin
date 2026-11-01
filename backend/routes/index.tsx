@@ -121,7 +121,7 @@ export default function Home(props: { data?: Data } & Data) {
       {/* Vue home/dashboard.vue — member row */}
       <section class="grid grid-cols-2 gap-3 lg:grid-cols-4" data-testid="dashboard-member-kpis">
         {memberKpis.map((k) => (
-          <Card bordered size="sm" data-testid={`kpi-member-${k.key}`}>
+          <Card bordered size="sm" class="adm-panel-card" data-testid={`kpi-member-${k.key}`}>
             <div class="flex items-center justify-between gap-3">
               <div>
                 <p class="m-0 text-xs text-slate-500 dark:text-slate-400">
@@ -141,7 +141,7 @@ export default function Home(props: { data?: Data } & Data) {
       </section>
 
       {/* Vue finance income strip (demo) */}
-      <Card bordered data-testid="dashboard-finance-strip">
+      <Card bordered class="adm-panel-card" data-testid="dashboard-finance-strip">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p class="m-0 text-xs text-slate-500 dark:text-slate-400">
@@ -168,7 +168,7 @@ export default function Home(props: { data?: Data } & Data) {
       {/* Live admin / menu / role strip */}
       <section class="grid grid-cols-3 gap-3" data-testid="dashboard-live-kpis">
         {liveKpis.map((k) => (
-          <Card bordered size="sm" data-testid={`kpi-${k.key}`}>
+          <Card bordered size="sm" class="adm-panel-card" data-testid={`kpi-${k.key}`}>
             <p class="m-0 text-xs text-slate-500 dark:text-slate-400">
               {k.label}
               <span class="ml-1 rounded bg-emerald-50 px-1 text-xs text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
@@ -181,12 +181,12 @@ export default function Home(props: { data?: Data } & Data) {
       </section>
 
       <section class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card bordered class="lg:col-span-2" title={tr("dashboard.chartVisits")} bodyClass="pt-2">
+        <Card bordered class="adm-panel-card lg:col-span-2" title={tr("dashboard.chartVisits")} bodyClass="pt-2">
           <div class="h-64">
             <ChartLine data={lineData} options={chartOpts} class="h-full w-full" height={256} />
           </div>
         </Card>
-        <Card bordered title={tr("dashboard.chartMembers")} bodyClass="pt-2">
+        <Card bordered class="adm-panel-card" title={tr("dashboard.chartMembers")} bodyClass="pt-2">
           <div class="h-64">
             <ChartDoughnut
               data={doughnutData}
@@ -196,7 +196,7 @@ export default function Home(props: { data?: Data } & Data) {
             />
           </div>
         </Card>
-        <Card bordered class="lg:col-span-3" title={tr("dashboard.chartIncome")} bodyClass="pt-2">
+        <Card bordered class="adm-panel-card lg:col-span-3" title={tr("dashboard.chartIncome")} bodyClass="pt-2">
           <div class="h-56">
             <ChartBar data={barData} options={chartOpts} class="h-full w-full" height={224} />
           </div>
@@ -204,11 +204,11 @@ export default function Home(props: { data?: Data } & Data) {
       </section>
 
       <section class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Card bordered>
+        <Card bordered class="adm-panel-card">
           <p class="text-sm text-slate-500">{tr("dashboard.yourRoles")}</p>
           <p class="mt-1 text-lg font-semibold" data-testid="roles">{(d.roles ?? []).join(", ") || "—"}</p>
         </Card>
-        <Card bordered>
+        <Card bordered class="adm-panel-card">
           <p class="text-sm text-slate-500">{tr("dashboard.menuCount")}</p>
           <p class="mt-1 text-lg font-semibold" data-testid="menu-count">{d.menuCount ?? 0}</p>
         </Card>

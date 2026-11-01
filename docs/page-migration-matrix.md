@@ -2,7 +2,7 @@
 
 > **API (2026-11-01):** apps use `apiMode: "action"` (see `docs/handoff.md`). On dweb 3.7.5, kind:api bare `/` does **not** auto-run `index` — use `/index`.
 
-Generated: 2026-11-01 (Asia/Shanghai) · updated: admins/roles Vue columns; CMS/member skeleton handoff; dashboard live vs demo
+Generated: 2026-11-01 (Asia/Shanghai) · updated: RBAC search/detail deepen; online route restored (no menu); home/error adm chrome
 
 ## Path note (confirmed)
 
@@ -83,9 +83,9 @@ Blocking relation: **TagView + TopHeader breadcrumb** are pure shell; list `Data
 | `/lock` | `fullpage/lock.vue` | 锁屏 | `backend/routes/lock.tsx` + `/api/auth/unlock` | **部分** — clock/avatar/password; cookie gate |
 | `/password/forget` | `fullpage/password/forget.vue` | 找回密码 | `backend/routes/password/forget.tsx` + `AuthShell` | **部分** — UI stub (captcha/mail not wired) |
 | `/password/reset` | `fullpage/password/reset.vue` | 重置密码 | `backend/routes/password/reset.tsx` + `AuthShell` | **部分** — UI stub (not persisted) |
-| `/error/403` | `error/403.vue` | 403 | `backend/routes/error/403.tsx` + `ErrorPage`; guard → `/error/403` | **部分** |
-| `/error/404` | `error/404.vue` | 404 | `backend/routes/error/404.tsx` + `_404.tsx` | **部分** |
-| `/error/500` | `error/500.vue` | 500 | `backend/routes/error/500.tsx` + `_error.tsx` | **部分** |
+| `/error/403` | `error/403.vue` | 403 | `backend/routes/error/403.tsx` + `ErrorPage`; guard → `/error/403` | **部分** — `adm-error` chrome |
+| `/error/404` | `error/404.vue` | 404 | `backend/routes/error/404.tsx` + `_404.tsx` | **部分** — `adm-error` chrome |
+| `/error/500` | `error/500.vue` | 500 | `backend/routes/error/500.tsx` + `_error.tsx` | **部分** — `adm-error` chrome |
 
 ---
 
@@ -93,8 +93,8 @@ Blocking relation: **TagView + TopHeader breadcrumb** are pure shell; list `Data
 
 | Vue route | Vue file | dweb-admin | Status |
 |---|---|---|---|
-| `/dashboard` | `home/dashboard.vue` | `backend/routes/index.tsx` (`/`) | **部分** — live admin strip (AdminUser/menus/roles); member/finance/charts DEMO (handoff) |
-| `/workspace` | `home/workplace.vue` | `backend/routes/workspace.tsx` | **部分** — button playground stub |
+| `/dashboard` | `home/dashboard.vue` | `backend/routes/index.tsx` (`/`) | **部分** — live admin strip; member/finance/charts DEMO; Cards `adm-panel-card` |
+| `/workspace` | `home/workplace.vue` | `backend/routes/workspace.tsx` | **部分** — button playground stub; `adm-panel-card` |
 
 ---
 
@@ -102,10 +102,10 @@ Blocking relation: **TagView + TopHeader breadcrumb** are pure shell; list `Data
 
 | Vue file | Title | Suggested dweb route | dweb file | Status |
 |---|---|---|---|---|
-| `admin/index.vue` | 管理员列表 | `/rbac/admins` | `AdminsAdmin.tsx` + real `/api/users` | **部分** — DataPanel + export/print/column; live list |
-| `admin/role/index.vue` | 角色列表 | `/rbac/roles` | `ItemAdmin.tsx` + real RBAC APIs | **部分** — DataPanel tools + Transfer children |
-| `admin/access/index.vue` | 权限列表 | `/rbac/permissions` | `ItemAdmin.tsx` + real RBAC APIs | **部分** — DataPanel tools + Transfer children |
-| `admin/route/index.vue` | 路由列表 | `/rbac/routes` | `RoutesAdmin.tsx` + real route registry APIs | **部分** — Transfer + managed table (path/method/source/createdAt; no AuthRoute.name) |
+| `admin/index.vue` | 管理员列表 | `/rbac/admins` | `AdminsAdmin.tsx` + real `/api/users` | **部分** — search username/email/status; view Descriptions; password confirm; no avatar/login_count |
+| `admin/role/index.vue` | 角色列表 | `/rbac/roles` | `ItemAdmin.tsx` + real RBAC APIs | **部分** — search name/info; detail timestamps; Transfer children |
+| `admin/access/index.vue` | 权限列表 | `/rbac/permissions` | `ItemAdmin.tsx` + real RBAC APIs | **部分** — search name/info; detail timestamps; Transfer children |
+| `admin/route/index.vue` | 路由列表 | `/rbac/routes` | `RoutesAdmin.tsx` + real route registry APIs | **部分** — search path/method; Transfer + managed table; no AuthRoute.name |
 | `admin/assign/index.vue` | 权限分配 | `/rbac/assign` | `AssignAdmin.tsx` + Transfer → `PUT /api/users/:id` roleCodes | **部分** — list cols #/username/access/actions; roles=allow runnable; gap UI for AuthAssignment (no fake API) |
 
 ---
@@ -119,6 +119,7 @@ Kept under 系统管理 (3 stubs only):
 | `system/base/index.vue` | 基本设置 | `/system/base` StubSettings | **部分** — Vue field order (site/company/captcha/formats/locale/pageSize); no Config API |
 | `system/region/index.vue` | 地区列表 | `/system/region` StubList | **部分** — cols name/pname/level + search gid/pid/name/level; no Region model |
 | `system/datetime/index.vue` | 时间设置 | `/system/datetime` StubDatetime | **部分** — digital clock + tz/offset demo; no setTime/sync API |
+| `system/online/index.vue` | 在线管理员 | `/system/online` `OnlineAdmin` + AdminSession kick | **部分** — route restored, **no menu** (OBSOLETE); keyword search |
 
 Removed from 系统管理 (no menu/route/stub here): menus (moved → 开发管理), online, admin-log, express, level, locale, bonus, finance, transfer, wallet.
 
@@ -167,7 +168,7 @@ Top-level title 开发管理. Menus live page moved here; other leaves stay stub
 | Home | 2 | 2 部分 (dashboard charts + workspace stub) | 0 |
 | Admin/RBAC | 5 | 5 部分 (incl. `/rbac/assign`) | 0 (allow/deny model still absent; gap UI only) |
 | System | 3 kept | 3 部分 (stubs) | extras dropped from 系统管理 |
-| Developer（开发管理） | 5 | 5 部分 (menus live + 4 stubs) | online removed from nav |
+| Developer（开发管理） | 5 | 5 部分 (menus live + 4 stubs) | online route-only under system; not in nav |
 | User | 3 kept | 3 部分 (stubs) | Vue extras intentionally dropped |
 | CMS | 4 kept | 4 部分 (stubs) | qa/survey dropped |
 | Developer (rest) | 4 | 4 部分 (stubs) | 0 (model/API pending) |
@@ -179,12 +180,12 @@ Vue list entry pages: **64** view files (modules excluded). Dynamic sidebar rout
 
 ## 10. Suggested implementation order (next knives)
 
-1. **Model-backed scan (2026-11-01):** Mongo models in-tree are only `AdminUser` / `Auth*` / `Menu` / `AdminSession` / `AdminPasskey` (+ challenges). Every list that can use those models is already live (admins, assign, roles, permissions, routes, menus, online+kick, account security/passkeys). **No remaining model-backed stub pages.** Remaining system(3)/user(3)/CMS/developer stub leaves stay stubs until new domain models exist — do not fake APIs. Finance/count removed; menus live at `/developer/menus`.
+1. **Model-backed scan (2026-11-01):** Mongo models in-tree are only `AdminUser` / `Auth*` / `Menu` / `AdminSession` / `AdminPasskey` (+ challenges). Every list that can use those models is already live (admins, assign, roles, permissions, routes, menus, online+kick route, account security/passkeys). **No remaining model-backed stub pages.** Remaining system(3)/user(3)/CMS/developer(4 stubs) stay stubs — docs only this knife; do not fake Member／Cms／AuthAssignment／Config／Region. menus live at `/developer/menus`.
 2. Next real work needs **new models** (member, CMS, system settings store, admin audit log) or Vue-parity polish on existing live pages (DataPanel Excel/XML once deps land; TagView keep-alive N/A on SSR).
 3. Shell: ChatModal is layout-only (no IM backend); keep honest empty states.
 4. If product needs Vue allow/deny + user-direct routes: add AuthAssignment-class model + API first, then wire the reserved Assign gap panel (do not fake).
 5. Kept member(3) / CMS as skeleton StubList (Vue columns/search; stub.skeletonHint; no domain models — do not fake APIs).
-6. Admins/Roles list columns re-aligned to Vue (2026-11-01); dashboard live admin strip vs demo member/finance KPIs documented in handoff.
+6. RBAC deepen (2026-11-01): admins/roles/permissions/routes search+detail vs Vue; online URL restored without nav; home/error adm chrome; assign AuthAssignment gap kept.
 5. Done recently: Tailwind 4 arbitrary-size cleanup; session IP/UA; online kick (`DELETE /api/sessions/:id`); ChatModal split shell; assign gap UI; DataPanel CSV import + `filterTableColumns`; `docs/handoff.md`.
 
 ### Hard constraints reminder

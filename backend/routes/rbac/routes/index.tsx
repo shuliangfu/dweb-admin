@@ -5,7 +5,13 @@ import { RoutesAdmin, type ManagedRouteRow } from "@backend/components/RoutesAdm
 
 export async function load(ctx: LoadContext) {
   const { listRoutes } = await import("@common/service/rbac-admin.ts");
-  return { locale: resolveLocale(ctx.req), ...(await listRoutes()) };
+  const url = new URL(ctx.req.url);
+  return {
+    locale: resolveLocale(ctx.req),
+    ...(await listRoutes()),
+    pathQ: url.searchParams.get("path") ?? "",
+    methodQ: url.searchParams.get("method") ?? "",
+  };
 }
 
 type Data = {
@@ -13,6 +19,8 @@ type Data = {
   managed?: string[];
   available?: string[];
   managedDetail?: ManagedRouteRow[];
+  pathQ?: string;
+  methodQ?: string;
 };
 
 export default function Page(props: { data?: Data } & Data) {
@@ -23,6 +31,8 @@ export default function Page(props: { data?: Data } & Data) {
       managed={d.managed ?? []}
       available={d.available ?? []}
       managedDetail={d.managedDetail ?? []}
+      pathQ={d.pathQ ?? ""}
+      methodQ={d.methodQ ?? ""}
     />
   );
 }

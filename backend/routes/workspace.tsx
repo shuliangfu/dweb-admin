@@ -19,7 +19,7 @@ export default function WorkspacePage(props: { data?: Data }) {
     <div class="space-y-4" data-testid="workspace">
       <h1 class="text-xl font-bold">{tr("workspace.title")}</h1>
       <p class="text-sm text-slate-500 dark:text-slate-400">{tr("workspace.intro")}</p>
-      <Card bordered title={tr("workspace.buttons")}>
+      <Card bordered class="adm-panel-card" title={tr("workspace.buttons")}>
         <div class="flex flex-wrap gap-2">
           <Button type="button" variant="primary">primary</Button>
           <Button type="button" variant="success">success</Button>

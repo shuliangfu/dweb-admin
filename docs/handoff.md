@@ -175,7 +175,7 @@ dweb-admin 对应物：
 ### 数据面板与列表页
 
 - 封装：`common/components/DataPanel.tsx`（多格式 export／import、打印、列显隐、`DataPanelChildrenCtx`）。
-- 真列表：`AdminsAdmin`、`ItemAdmin`、`MenusAdmin`（`/developer/menus`）、`RoutesAdmin`、`AssignAdmin`；`OnlineAdmin` 组件仍在，侧栏已从系统管理撤下。
+- 真列表：`AdminsAdmin`、`ItemAdmin`、`MenusAdmin`（`/developer/menus`）、`RoutesAdmin`、`AssignAdmin`；`OnlineAdmin` 路由 `/system/online` 已恢复（真 AdminSession＋kick），**侧栏仍撤下**（OBSOLETE，仅 URL／RBAC 可开）。
 - Stub：`common/stubs/catalog.ts` + `StubList`／`StubSettings`／`StubChart`／`stub-page.tsx`；无领域模型前用演示行，且 **AUTH_ONLY 已收紧**（非超管需显式路由授权）。
 
 ### i18n
@@ -234,10 +234,10 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 ### 已相对落地（截至本 handoff 撰写时，以 matrix + 仓库为准）
 
 - 壳层：Side／Top／TagView／主题／设置抽屉（主色＋`--adm-accent`＋**theme.other→`--adm-*` 可映子集**＋semantic success/info/warning/danger）——登录左饰＋锁屏背景／DS-Digital 时钟已对稿；ChatModal 为分栏壳（无 IM 后端）；**TagView keep-alive = N/A**；SideMenu **unique-opened**（`<details>` 互斥）＋`ICON_BY_KEY`／ui-view Icon（非 Vue m-icon 全套）。
-- 全页：login／lock／forget／reset／403／404／500——**部分**。
-- Home：dashboard + workspace——**部分**。
-- RBAC：admins／roles／permissions／routes／**assign（roleCodes＝允许型可跑；modal 含禁用 gap UI）**——**部分**；真 list／CRUD API。
-- System：menus 已迁 `/developer/menus`（CRUD）；online（真 AdminSession）——**部分**；**base／region／datetime 仍 stub**（字段／时钟对稿 Vue，无 Config／Region／setTime 模型）。
+- 全页：login／lock／forget／reset／403／404／500——**部分**（ErrorPage `adm-error` 背景／字色；login／lock 已有 AuthShell／adm-lock）。
+- Home：dashboard + workspace——**部分**（Card `adm-panel-card` 对稿；live KPI vs demo 不变）。
+- RBAC：admins／roles／permissions／routes／**assign（roleCodes＝允许型可跑；modal 含禁用 gap UI）**——**部分**；真 list／CRUD。续刀加深：admins 搜索 username／email／status＋详情 Descriptions（含 updatedAt）＋密码确认；roles／permissions 搜索 name／info＋详情／列表 timestamps；routes 搜索 path／method（AuthRoute 无 name）；assign gap **维持**。
+- System：menus 已迁 `/developer/menus`（CRUD）；online 路由恢复（真 AdminSession／kick，无菜单）——**部分**；**base／region／datetime 仍 stub**（字段／时钟对稿 Vue，无 Config／Region／setTime 模型）。
 - DataPanel：search／列显隐／多格式导出（CSV／HTML-as-xls／XML／TXT／JSON）＋导入解析／打印／图标工具条；children `filterTableColumns` 已接 admins／roles／menus；壳层顶栏高度对齐 Vue（`h-adm-top`）。
 - Tailwind 4：禁止 3.x 任意值 bracket 烂用（见上文「Tailwind 4 约定」）。
 - AUTH_ONLY 收紧：stub 页不再白名单放行，需超管或显式路由授权。
@@ -247,7 +247,7 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 1. **扫仓结论（2026-11-01）**：有领域模型却仍 stub 的页＝**无**。AdminUser／Auth*／Menu／AdminSession／AdminPasskey 相关 list／CRUD（含 online 踢下线、账号安全）已接真 API。
 2. **无模型 stub 保持 stub**（勿假接）：会员三页（`/user`／active／zombie）＋ CMS 四页（article／news／notice／photo）＋ developer／system 其余 stub——**无 Member／Cms* 模型**；StubList 标 `stub.skeletonHint`，route 头注释指向本文。**禁止假接 list/CRUD。**
 3. **Dashboard**：`dashboard-live-kpis`（admins 计数／可见菜单／当前角色数）为 **live**（AdminUser.count + menu tree）。会员 KPI、财务条、图表为 **demo**（`dashboard.demoBadge`；缺 Member／Finance 服务）。
-4. **Admins／Roles 列表列（2026-11-01 再对齐 Vue）**：Admins＝`#／username／email／status／lastLoginAt／createdAt／actions`（去掉列表 nickname／roles，表单仍保留；无 `login_count` 字段故用 `lastLoginAt`）。Roles／Permissions＝`#／name／description／createdAt／actions`（`ruleName` 仅表单／详情）。
+4. **Admins／Roles 列表列（2026-11-01 再对齐 Vue）**：Admins＝`#／username／email／status／lastLoginAt／createdAt／actions`（去掉列表 nickname／roles，表单仍保留；无 `login_count`／avatar／lockscreen 字段）。Roles／Permissions＝`#／name／description／createdAt／updatedAt／actions`（`ruleName` 仅表单／详情）。搜索 schemas 对齐 Vue（admins: username/email/status；items: name/info；routes: path/method）。
 5. **DataPanel**：浏览器侧 CSV／HTML-table-as-xls／XML／HTML／JSON 已接。**无 OOXML／xlsx 扩展包** → `panel.xlsxGap`。
 6. **RBAC Assign**：`roleCodes` 真 API；Vue allow／deny＋直绑路由需 **AuthAssignment**（无模型）→ gap UI，禁止假提交。 列表列已对齐 Vue（#／username／权限／操作）。
 
@@ -290,6 +290,7 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 
 | 日期 (Asia/Shanghai) | 说明 |
 |---|---|
+| 2026-11-01 | 续刀：RBAC 表单／搜索加深（admins／roles／permissions／routes）；online 路由恢复无菜单；home／error `adm-panel-card`／`adm-error`；无模型页仅 docs；勿 push |
 | 2026-11-01 | 续刀：Admins／Roles 列表列再对齐 Vue；CMS／会员确认无模型→骨架＋handoff；dashboard live 管理条 vs demo KPI 写入本文 |
 | 2026-11-01 | 初版 handoff + matrix + extension-packages；模型扫仓／online kick；TW4 约定 |
 | 2026-11-01 | API 双模板：handlers 双导出 restful+action；`backend/api-style.ts`；handoff § API；DataPanel 多格式导出／壳层视觉对齐 |

@@ -53,9 +53,29 @@ const itemSchema = {
   data: string().optional().max(500),
 };
 
-export async function listItems(type: ItemType, q: Page) {
+export type ItemListQuery = Page & {
+  /** Vue role/access search schemas: name + info (description). */
+  name?: string;
+  info?: string;
+};
+
+export async function listItems(type: ItemType, q: ItemListQuery) {
   const where: Record<string, unknown> = { type };
-  if (q.keyword) where.name = { $regex: escapeRe(q.keyword), $options: "i" };
+  const and: Record<string, unknown>[] = [];
+  const nameQ = (q.name ?? "").trim().slice(0, 64);
+  const infoQ = (q.info ?? "").trim().slice(0, 200);
+  if (nameQ) and.push({ name: { $regex: escapeRe(nameQ), $options: "i" } });
+  if (infoQ) and.push({ description: { $regex: escapeRe(infoQ), $options: "i" } });
+  if (q.keyword) {
+    and.push({
+      $or: [
+        { name: { $regex: escapeRe(q.keyword), $options: "i" } },
+        { description: { $regex: escapeRe(q.keyword), $options: "i" } },
+      ],
+    });
+  }
+  if (and.length === 1) Object.assign(where, and[0]);
+  else if (and.length > 1) where.$and = and;
   const r = await AuthItem.paginate(where as never, q.page, q.pageSize, { name: 1 });
   return {
     items: (r.data as unknown as AuthItemDocument[]).map((i) => ({
@@ -66,6 +86,7 @@ export async function listItems(type: ItemType, q: Page) {
       data: i.data ?? "",
       isSuper: !!i.isSuper,
       createdAt: i.createdAt ? new Date(i.createdAt).toISOString() : "",
+      updatedAt: i.updatedAt ? new Date(i.updatedAt).toISOString() : "",
     })),
     total: r.total,
     page: r.page,
@@ -165,6 +186,8 @@ export async function itemDetail(type: ItemType, name: string) {
       ruleName: item.ruleName ?? "",
       data: item.data ?? "",
       isSuper: !!item.isSuper,
+      createdAt: item.createdAt ? new Date(item.createdAt).toISOString() : "",
+      updatedAt: item.updatedAt ? new Date(item.updatedAt).toISOString() : "",
     },
     assigned,
     available,

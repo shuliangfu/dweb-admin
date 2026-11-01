@@ -31,12 +31,17 @@ export function RoutesAdmin(props: {
   managed: string[];
   available: string[];
   managedDetail: ManagedRouteRow[];
+  /** Vue route search: path / method (client filter; AuthRoute has no name). */
+  pathQ?: string;
+  methodQ?: string;
 }) {
   const tr = createT(props.locale);
   target.value = [...props.managed];
   const data = [...props.managed, ...props.available]
     .sort((a, b) => a.split(" ")[1].localeCompare(b.split(" ")[1]) || a.localeCompare(b))
     .map((k) => ({ key: k, title: k }));
+  const pathQ = (props.pathQ ?? "").trim().toLowerCase();
+  const methodQ = (props.methodQ ?? "").trim().toUpperCase();
 
   async function save() {
     const next = target.value;
@@ -55,13 +60,18 @@ export function RoutesAdmin(props: {
     if (toastResult(r, tr("crud.saved"), tr("crud.networkError"))) reload();
   }
 
-  const tableRows = props.managedDetail.map((r, i) => ({ ...r, idx: i + 1 }));
+  const filteredDetail = props.managedDetail.filter((r) => {
+    if (pathQ && !r.path.toLowerCase().includes(pathQ)) return false;
+    if (methodQ && r.method.toUpperCase() !== methodQ && methodQ !== "*") return false;
+    return true;
+  });
+  const tableRows = filteredDetail.map((r, i) => ({ ...r, idx: i + 1 }));
 
   return (
     <div>
       <DataPanel
         title={tr("rbac.routeTitle")}
-        tools={{ create: true, refresh: true, print: true, column: true, export: true }}
+        tools={{ create: true, search: true, refresh: true, print: true, column: true, export: true }}
         onCreate={() => {
           addText.value = "";
           addOpen.value = true;
@@ -78,6 +88,30 @@ export function RoutesAdmin(props: {
         toolbarExtra={
           <Button type="button" variant="primary" onClick={save}>{tr("rbac.routeSave")}</Button>
         }
+        searchSchemas={[
+          {
+            name: "path",
+            label: tr("rbac.routePath"),
+            placeholder: tr("rbac.routePath"),
+            defaultValue: props.pathQ ?? "",
+          },
+          {
+            name: "method",
+            label: tr("rbac.routeMethod"),
+            type: "select",
+            defaultValue: props.methodQ ?? "",
+            options: [
+              { value: "", label: tr("common.all") },
+              { value: "GET", label: "GET" },
+              { value: "POST", label: "POST" },
+              { value: "PUT", label: "PUT" },
+              { value: "PATCH", label: "PATCH" },
+              { value: "DELETE", label: "DELETE" },
+              { value: "*", label: "*" },
+            ],
+          },
+        ]}
+        searchLabels={{ open: tr("panel.search"), submit: tr("crud.search"), reset: tr("crud.reset") }}
         columns={[
           { prop: "idx", label: tr("rbac.index") },
           { prop: "path", label: tr("rbac.routePath") },

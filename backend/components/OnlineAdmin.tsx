@@ -15,7 +15,7 @@ export type OnlineRow = {
   expiresAt?: string;
 };
 
-export function OnlineAdmin(props: { locale: Locale; rows: OnlineRow[] }) {
+export function OnlineAdmin(props: { locale: Locale; rows: OnlineRow[]; keyword?: string }) {
   const tr = createT(props.locale);
   const deleting = createSignal("");
   const rows = props.rows.map((r, i) => ({ ...r, idx: i + 1 }));
@@ -42,6 +42,7 @@ export function OnlineAdmin(props: { locale: Locale; rows: OnlineRow[] }) {
             name: "keyword",
             label: tr("users.username"),
             placeholder: tr("usersForm.searchPlaceholder"),
+            defaultValue: props.keyword ?? "",
           },
         ]}
         searchLabels={{ open: tr("panel.search"), submit: tr("crud.search"), reset: tr("crud.reset") }}

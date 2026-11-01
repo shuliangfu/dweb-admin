@@ -17,6 +17,7 @@ export interface ItemRow {
   data: string;
   isSuper: boolean;
   createdAt?: string;
+  updatedAt?: string;
 }
 interface ChildEntry {
   key: string;
@@ -48,7 +49,7 @@ const fDesc = createSignal("");
 const deleting = createSignal("");
 const busy = createSignal(false);
 
-export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; rows: ItemRow[]; keyword: string }) {
+export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; rows: ItemRow[]; keyword: string; nameQ?: string; infoQ?: string }) {
   const tr = createT(props.locale);
   const base = props.kind === "role" ? "/api/rbac/roles" : "/api/rbac/permissions";
   const url = (name: string) => `${base}/${encodeURIComponent(name)}`;
@@ -134,6 +135,8 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
                   { label: tr("rbac.name"), children: d.item.name },
                   { label: tr("rbac.ruleName"), children: d.item.ruleName || "-" },
                   { label: tr("rbac.description"), children: d.item.description || "-" },
+                  { label: tr("common.createdAt"), children: fmtTs(d.item.createdAt) },
+                  { label: tr("common.updatedAt"), children: fmtTs(d.item.updatedAt) },
                   ...(d.item.isSuper ? [{ label: tr("common.status"), children: <Tag variant="warning">{tr("rbac.superRole")}</Tag> }] : []),
                 ]}
               />
@@ -243,15 +246,25 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
           { prop: "name", label: tr("rbac.name") },
           { prop: "description", label: tr("rbac.description") },
           { prop: "createdAt", label: tr("common.createdAt") },
+          { prop: "updatedAt", label: tr("common.updatedAt") },
           { prop: "actions", label: tr("common.actions") },
         ]}
         rows={props.rows.map((r, i) => ({ ...r, idx: i + 1 })) as never}
-        searchSlot={
-          <form method="get" class="m-0 flex items-center gap-2">
-            <Input name="keyword" value={props.keyword} placeholder={tr("rbac.searchPlaceholder")} class="w-48" />
-            <Button type="submit">{tr("crud.search")}</Button>
-          </form>
-        }
+        searchSchemas={[
+          {
+            name: "name",
+            label: tr("rbac.name"),
+            placeholder: tr("rbac.namePlaceholder"),
+            defaultValue: props.nameQ ?? props.keyword ?? "",
+          },
+          {
+            name: "info",
+            label: tr("rbac.description"),
+            placeholder: tr("rbac.description"),
+            defaultValue: props.infoQ ?? "",
+          },
+        ]}
+        searchLabels={{ open: tr("panel.search"), submit: tr("crud.search"), reset: tr("crud.reset") }}
       >
         {(ctx: DataPanelChildrenCtx) => (
           <Table
@@ -278,6 +291,11 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
             key: "createdAt",
             title: tr("common.createdAt"),
             render: (_v: unknown, r: ItemRow) => fmtTs(r.createdAt),
+          },
+          {
+            key: "updatedAt",
+            title: tr("common.updatedAt"),
+            render: (_v: unknown, r: ItemRow) => fmtTs(r.updatedAt),
           },
           {
             key: "actions",
