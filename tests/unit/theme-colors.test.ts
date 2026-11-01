@@ -53,19 +53,16 @@ Deno.test("dark mode chrome colours are unchanged", () => {
   assertEquals(D("--adm-brand-strip").toLowerCase(), "#0f172a");
 });
 
-Deno.test("light chrome is lighter than dark but only by a shade or two", () => {
-  for (const k of ["--adm-side", "--adm-top-bg", "--adm-brand-strip"]) {
-    assert(lum(L(k)) > lum(D(k)), `${k} light must be lighter than dark`);
-    // not "too light": stays in the slate-700..800 family (luminance < 0.1)
-    assert(lum(L(k)) < 0.1, `${k} must not be too light`);
-  }
+Deno.test("light sidebar is slate-800 (lighter than the dark-mode sidebar)", () => {
   assertEquals(L("--adm-side").toLowerCase(), "#1e293b");
-  assertEquals(L("--adm-top-bg").toLowerCase(), "#334155");
+  assert(lum(L("--adm-side")) > lum(D("--adm-side")));
 });
 
-Deno.test("light chrome keeps hierarchy: sidebar darker than navbar and logo strip", () => {
-  assert(lum(L("--adm-side")) < lum(L("--adm-top-bg")));
-  assertEquals(L("--adm-brand-strip"), L("--adm-top-bg"));
+Deno.test("light navbar is 2 shades darker and logo strip 1 shade darker than the sidebar", () => {
+  assertEquals(L("--adm-brand-strip").toLowerCase(), "#0f172a"); // slate-900 = one step below slate-800
+  assertEquals(L("--adm-top-bg").toLowerCase(), "#020617"); // slate-950 = two steps below slate-800
+  assert(lum(L("--adm-top-bg")) < lum(L("--adm-brand-strip")));
+  assert(lum(L("--adm-brand-strip")) < lum(L("--adm-side")));
 });
 
 Deno.test("light chrome text/icon contrast meets WCAG AA (4.5:1)", () => {

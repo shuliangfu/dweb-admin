@@ -395,9 +395,9 @@
   --adm-accent: var(--color-adminlte-accent);
   --adm-content: var(--color-adminlte-content);
   --adm-fg: #334155;
-  --adm-brand-strip: #334155 /* light: slate-700 (was slate-900); white on it ≈ 10:1 */;
+  --adm-brand-strip: #0f172a /* light: logo strip = 1 shade darker than sidebar (slate-900) */;
   --adm-brand-fg: #ffffff;
-  --adm-top-bg: #334155;
+  --adm-top-bg: #020617 /* light: navbar = 2 shades darker than sidebar (slate-950) */;
   --adm-top-fg: #ffffff;
   --adm-tag-bg: #f8fafc;
   --adm-tag-border: #e2e8f0;
