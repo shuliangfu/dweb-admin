@@ -10,6 +10,7 @@ type DocLike = {
   exitFullscreen?: () => Promise<void>;
   documentElement: { requestFullscreen?: () => Promise<void> };
   addEventListener: (type: string, fn: () => void) => void;
+  removeEventListener: (type: string, fn: () => void) => void;
 };
 
 const isFull = createSignal(false);

@@ -29,6 +29,7 @@ const clientOptions: ThemeOptions = {
 };
 
 const mode = createSignal<ThemeMode>("system");
+let synced = false;
 
 /** SSR document stubs exist but have no cookie string; Theme.getCookie splits it. */
 function hasCookie(): boolean {
@@ -59,9 +60,18 @@ const MENU: Array<
   { m: "system", labelKey: "topbar.system", Icon: IconCircleSplit },
 ];
 
-export function ThemeMenu(props: { locale: Locale; compact?: boolean }) {
+const isServer = (): boolean => "Deno" in globalThis;
+
+export function ThemeMenu(props: { locale: Locale; compact?: boolean; initialMode?: ThemeMode }) {
   const tr = createT(props.locale);
-  onMount(sync);
+  // Server renders the icon from the request cookie; the client starts from the same value
+  // (then reconciles on mount) so SSR and hydration paint the identical icon.
+  if (!isServer() && props.initialMode && !synced) mode.value = props.initialMode;
+  const cur = () => (isServer() ? (props.initialMode ?? "system") : mode.value);
+  onMount(() => {
+    synced = true;
+    sync();
+  });
   return (
     <Dropdown
       placement="bottomAuto"
@@ -97,8 +107,8 @@ export function ThemeMenu(props: { locale: Locale; compact?: boolean }) {
         aria-label={tr("topbar.theme")}
       >
         {() => {
-          if (mode.value === "dark") return <IconMoon size="xs" />;
-          if (mode.value === "system") return <IconCircleSplit size="xs" />;
+          if (cur() === "dark") return <IconMoon size="xs" />;
+          if (cur() === "system") return <IconCircleSplit size="xs" />;
           return <IconSun size="xs" />;
         }}
       </span>

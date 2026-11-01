@@ -5,12 +5,9 @@
  */
 import { createSignal, onCleanup, onMount } from "@dreamer/view";
 import { IconClose, Link } from "@dreamer/ui-view";
+import { parseTagsValue, serializeTags, TAGS_COOKIE, type TagEntry, tagsValueFromCookie, withTag } from "@backend/components/tag-cookie.ts";
 
-export interface TagEntry {
-  path: string;
-  title: string;
-  fixed?: boolean;
-}
+export type { TagEntry };
 
 interface CtxMenu {
   x: number;
@@ -18,80 +15,34 @@ interface CtxMenu {
   path: string;
 }
 
-const STORAGE_KEY = "dweb-admin-tags";
 const tags = createSignal<TagEntry[]>([]);
 const ctx = createSignal<CtxMenu | null>(null);
 let storageReady = false;
 
+type Doc = { cookie: string };
+const doc = (): Doc | undefined => (globalThis as unknown as { document?: Doc }).document;
+/** dweb SSR may expose a fake `document`, so detect the server by the Deno runtime instead. */
+const isServer = (): boolean => "Deno" in globalThis;
+
 function persist(list: TagEntry[]): void {
-  const ls = (globalThis as { localStorage?: Storage }).localStorage;
-  if (!ls) return;
-  try {
-    ls.setItem(STORAGE_KEY, JSON.stringify(list));
-  } catch {
-    /* quota / private mode */
-  }
+  const d = doc();
+  if (!d || isServer()) return;
+  d.cookie = `${TAGS_COOKIE}=${serializeTags(list)};path=/;max-age=31536000;SameSite=Lax`;
 }
 
-function ensureHome(list: TagEntry[], dashTitle: string): TagEntry[] {
-  const home = list.find((t) => t.path === "/");
-  if (!home) return [{ path: "/", title: dashTitle, fixed: true }, ...list];
-  if (!home.fixed || home.title !== dashTitle) {
-    return list.map((t) =>
-      t.path === "/" ? { path: "/", title: dashTitle, fixed: true } : t
-    );
-  }
-  return list;
-}
-
-function readStorage(dashTitle: string): TagEntry[] {
-  const ls = (globalThis as { localStorage?: Storage }).localStorage;
-  if (!ls) return [{ path: "/", title: dashTitle, fixed: true }];
-  try {
-    const raw = ls.getItem(STORAGE_KEY);
-    if (!raw) return [{ path: "/", title: dashTitle, fixed: true }];
-    const parsed = JSON.parse(raw) as TagEntry[];
-    if (!Array.isArray(parsed) || parsed.length === 0) {
-      return [{ path: "/", title: dashTitle, fixed: true }];
-    }
-    return ensureHome(
-      parsed.filter((t) => t && typeof t.path === "string" && typeof t.title === "string"),
-      dashTitle,
-    );
-  } catch {
-    return [{ path: "/", title: dashTitle, fixed: true }];
-  }
-}
-
+/** Client only: load from the cookie the server also rendered from (once per page lifetime). */
 function hydrate(dashTitle: string): void {
-  if (storageReady) return;
+  if (storageReady || isServer()) return;
   storageReady = true;
-  if (typeof (globalThis as { localStorage?: unknown }).localStorage === "undefined") {
-    if (tags.value.length === 0) {
-      tags.value = [{ path: "/", title: dashTitle, fixed: true }];
-    }
-    return;
-  }
-  tags.value = readStorage(dashTitle);
+  tags.value = parseTagsValue(tagsValueFromCookie(doc()!.cookie), dashTitle);
 }
 
 function upsert(path: string, title: string, dashTitle: string): void {
   hydrate(dashTitle);
-  let list = ensureHome(tags.value, dashTitle);
-  const i = list.findIndex((t) => t.path === path);
-  if (i === -1) {
-    list = [...list, { path, title: title || path }];
+  const list = withTag(tags.value, path, title, dashTitle);
+  if (JSON.stringify(list) !== JSON.stringify(tags.value)) {
     tags.value = list;
     persist(list);
-    return;
-  }
-  if (title && list[i].title !== title && !list[i].fixed) {
-    list = list.slice();
-    list[i] = { ...list[i], title };
-    tags.value = list;
-    persist(list);
-  } else if (list !== tags.value) {
-    tags.value = list;
   }
 }
 
@@ -165,7 +116,8 @@ function reloadCurrent(path: string, activePath: string): void {
 }
 
 export function TagView(props: {
-
+  /** Raw tags cookie value read by the server (so SSR renders the same strip as the client). */
+  cookie?: string;
   pathname: string;
   title: string;
   dashboardTitle: string;
@@ -178,8 +130,12 @@ export function TagView(props: {
     refresh?: string;
   };
 }) {
-  upsert(props.pathname, props.title, props.dashboardTitle);
   const active = props.pathname;
+  // Server: render from the request cookie only (module state must never leak between requests).
+  const serverList = isServer()
+    ? withTag(parseTagsValue(props.cookie, props.dashboardTitle), props.pathname, props.title, props.dashboardTitle)
+    : null;
+  if (!serverList) upsert(props.pathname, props.title, props.dashboardTitle);
 
   onMount(() => {
     const doc = (globalThis as {
@@ -199,7 +155,7 @@ export function TagView(props: {
   return (
     <div class="adm-tag-view relative flex shrink-0 flex-nowrap gap-0 overflow-x-auto" data-testid="tag-view">
       {() =>
-        tags.value.map((tag) => {
+        (serverList ?? tags.value).map((tag) => {
           const on = tag.path === active;
           return (
             <div

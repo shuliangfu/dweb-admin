@@ -16,6 +16,7 @@ export function TopHeader(props: {
   locale: Locale;
   nickname: string;
   roles: string[];
+  themeMode?: "light" | "dark" | "system";
 }) {
   const tr = createT(props.locale);
 
@@ -42,7 +43,7 @@ export function TopHeader(props: {
           <IconMessageCircle size="xs" />
         </button>
         <LangMenu locale={props.locale} />
-        <ThemeMenu locale={props.locale} />
+        <ThemeMenu locale={props.locale} initialMode={props.themeMode} />
         <FullscreenToggle
           enterLabel={tr("shell.fullscreen")}
           exitLabel={tr("shell.exitFullscreen")}

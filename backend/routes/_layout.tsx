@@ -14,6 +14,8 @@ import { SideMenu } from "@backend/components/SideMenu.tsx";
 import { SideBrand } from "@backend/components/SideBrand.tsx";
 import { TopHeader } from "@backend/components/TopHeader.tsx";
 import { TagView } from "@backend/components/TagView.tsx";
+import { themeFromCookie } from "@backend/components/theme-cookie.ts";
+import { tagsValueFromCookie } from "@backend/components/tag-cookie.ts";
 import { SecurityModal } from "@backend/components/SecurityModal.tsx";
 import { ProfileModal } from "@backend/components/ProfileModal.tsx";
 import { ChatModal } from "@backend/components/ChatModal.tsx";
@@ -33,6 +35,8 @@ interface LayoutData {
   collapsed?: boolean;
   website?: string;
   shortName?: string;
+  tagsCookie?: string;
+  themeMode?: "light" | "dark" | "system";
 }
 
 export async function load(ctx: LoadContext): Promise<LayoutData | Response> {
@@ -79,6 +83,8 @@ export async function load(ctx: LoadContext): Promise<LayoutData | Response> {
     collapsed: /(?:^|;\s*)dweb-admin-sidebar=1/.test(ctx.req.headers.get("cookie") ?? ""),
     website: brand.website,
     shortName: brand.shortName,
+    themeMode: themeFromCookie(ctx.req.headers.get("cookie")),
+    tagsCookie: tagsValueFromCookie(ctx.req.headers.get("cookie")) ?? "",
   };
 }
 
@@ -103,10 +109,12 @@ export default function Layout(props: { children?: VNode | VNode[]; data?: Layou
       <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
         <TopHeader
           locale={locale}
+          themeMode={data.themeMode}
           nickname={data.user?.nickname ?? ""}
           roles={data.user?.roleCodes ?? []}
         />
         <TagView
+          cookie={data.tagsCookie}
           pathname={pathname}
           title={pageTitle}
           dashboardTitle={tr("nav.dashboard")}

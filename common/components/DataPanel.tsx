@@ -91,6 +91,9 @@ const g = globalThis as unknown as {
   open?: (u?: string, t?: string) => PrintWin | null;
 };
 
+/** Boolean attribute that SSR renders correctly: present only when true (`checked={false}` would serialize as checked="false"). */
+const bool = (k: string, v: unknown): Record<string, true> => (v ? { [k]: true } : {});
+
 const TONE: Record<Tone, string> = {
   success: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
   warning: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
@@ -484,7 +487,7 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
         <label class="flex cursor-pointer items-center gap-2 text-sm">
           <input
             type="checkbox"
-            checked={!hidden.value[c.prop]}
+            {...bool("checked", !hidden.value[c.prop])}
             data-testid={`dp-col-${c.prop}`}
             onChange={() => {
               const next = { ...hidden.value };
@@ -555,7 +558,7 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
                 >
                   <option value="">{tr("common.all")}</option>
                   {(s.options ?? []).map((o) => (
-                    <option value={o.value} selected={draft.value[s.name] === o.value}>{o.label}</option>
+                    <option value={o.value} {...bool("selected", draft.value[s.name] === o.value)}>{o.label}</option>
                   ))}
                 </select>
               )
@@ -729,7 +732,7 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
                 <th class="w-10 border border-slate-200 px-2 py-2 text-center dark:border-slate-700">
                   <input
                     type="checkbox"
-                    checked={allSel}
+                    {...bool("checked", allSel)}
                     data-testid="dp-select-all"
                     onChange={() => (selected.value = allSel ? [] : selectableRows.map((r) => r.id))}
                   />
@@ -766,8 +769,8 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
                     <td class="border border-slate-200 px-2 py-1.5 text-center dark:border-slate-700">
                       <input
                         type="checkbox"
-                        disabled={!!r.locked}
-                        checked={sel.includes(r.id)}
+                        {...bool("disabled", !!r.locked)}
+                        {...bool("checked", sel.includes(r.id))}
                         data-testid={`dp-select-${r.id}`}
                         onChange={() => (selected.value = sel.includes(r.id) ? sel.filter((x) => x !== r.id) : [...sel, r.id])}
                       />
@@ -796,7 +799,7 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
                           size="sm"
                           variant="ghost"
                           class={`${ICON_BTN} !text-red-500`}
-                          disabled={!!r.locked}
+                          {...bool("disabled", !!r.locked)}
                           aria-label={tr("crud.delete")}
                           data-testid={`dp-delete-${r.id}`}
                           onClick={() => askDelete([r.id], rowName(r))}
@@ -850,10 +853,10 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
             onChange={(e: Event) => setQuery({ pageSize: Number((e.target as unknown as { value: string }).value), page: 1 })}
           >
             {[10, 20, 50, 100].map((s) => (
-              <option value={String(s)} selected={s === q.pageSize}>{tr("panel.perPage", { n: s })}</option>
+              <option value={String(s)} {...bool("selected", s === q.pageSize)}>{tr("panel.perPage", { n: s })}</option>
             ))}
           </select>
-          <button type="button" class={`${pbtn} border-slate-300`} disabled={q.page <= 1} data-testid="dp-prev" onClick={() => go(q.page - 1)}>
+          <button type="button" class={`${pbtn} border-slate-300`} {...bool("disabled", q.page <= 1)} data-testid="dp-prev" onClick={() => go(q.page - 1)}>
             ‹
           </button>
           {pageList(q.page, last).map((p) =>
@@ -870,7 +873,7 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
                 </button>
               )
           )}
-          <button type="button" class={`${pbtn} border-slate-300`} disabled={q.page >= last} data-testid="dp-next" onClick={() => go(q.page + 1)}>
+          <button type="button" class={`${pbtn} border-slate-300`} {...bool("disabled", q.page >= last)} data-testid="dp-next" onClick={() => go(q.page + 1)}>
             ›
           </button>
           <label class="flex items-center gap-1">
@@ -921,7 +924,7 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
               <Textarea
                 rows={4}
                 value={sig}
-                disabled={ro}
+                {...bool("disabled", ro)}
                 data-testid={`dp-fld-${f.name}`}
                 onInput={(e: Event) => (sig.value = (e.target as unknown as { value: string }).value)}
               />
@@ -930,12 +933,12 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
             control = (
               <select
                 class={`${SELECT_CLS} w-full`}
-                disabled={ro}
+                {...bool("disabled", ro)}
                 data-testid={`dp-fld-${f.name}`}
                 onChange={(e: Event) => (sig.value = (e.target as unknown as { value: string }).value)}
               >
                 {!f.required && !(f.options ?? []).some((o) => o.value === "") && <option value="">—</option>}
-                {(f.options ?? []).map((o) => <option value={o.value} selected={sig.value === o.value}>{o.label}</option>)}
+                {(f.options ?? []).map((o) => <option value={o.value} {...bool("selected", sig.value === o.value)}>{o.label}</option>)}
               </select>
             );
           } else if (type === "multiselect") {
@@ -946,7 +949,7 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
                   <label class="flex cursor-pointer items-center gap-1.5 text-sm">
                     <input
                       type="checkbox"
-                      checked={cur.includes(o.value)}
+                      {...bool("checked", cur.includes(o.value))}
                       data-testid={`dp-fld-${f.name}-${o.value}`}
                       onChange={() => {
                         const now = sig.value.split(",").filter(Boolean);
@@ -978,7 +981,7 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
               <Input
                 type={type === "number" ? "number" : type === "password" ? "password" : type === "date" ? "date" : type === "datetime" ? "datetime-local" : "text"}
                 value={sig}
-                readOnly={ro}
+                {...bool("readOnly", ro)}
                 autoComplete={type === "password" ? "new-password" : "off"}
                 placeholder={f.placeholder}
                 data-testid={`dp-fld-${f.name}`}

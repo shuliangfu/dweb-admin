@@ -161,7 +161,7 @@ export function SideMenu(props: { tree: MenuNode[]; pathname: string }) {
             <li key={node.key}>
               <details
                 class="adm-menu-group group/nav"
-                open={open}
+                {...(open ? { open: true } : {})}
                 onToggle={onGroupToggle}
               >
                 <summary
