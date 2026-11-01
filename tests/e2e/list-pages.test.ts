@@ -125,6 +125,7 @@ Deno.test({ name: "toolbar: add/search/refresh/print/export/columns form one con
             sameRow: rect.every((x) => Math.abs(x.top - rect[0].top) < 0.5),
             radius,
             dividers: btns.map((b) => getComputedStyle(b).boxShadow),
+            borders: btns.map((b) => { const c = getComputedStyle(b); return { l: parseFloat(c.borderLeftWidth), r: parseFloat(c.borderRightWidth), rc: c.borderRightColor }; }),
             ids: btns.map((b) => b.getAttribute("data-testid")),
           };
         });
@@ -135,16 +136,27 @@ Deno.test({ name: "toolbar: add/search/refresh/print/export/columns form one con
         for (const g of r.gaps) assert(g <= 0.5, `${path}: gap ${g}px between toolbar buttons (${dark ? "dark" : "light"}) — must be flush`);
         assert(r.radius[0].l > 0 && r.radius[0].r === 0, `${path}: first button rounded only on the left`);
         assert(r.radius[r.n - 1].r > 0 && r.radius[r.n - 1].l === 0, `${path}: last button rounded only on the right`);
-        // every divider is the same dark hairline (the old bug: the last gap rendered a bright line); the last button has none
-        const inner = r.dividers.slice(0, -1);
-        assert(inner.every((d) => d !== "none" && d === inner[0]), `${path}: all dividers identical (${inner.join(" | ")})`);
-        assertEquals(r.dividers[r.n - 1], "none", `${path}: no divider after the last button`);
+        // exactly ONE faint 1px divider between neighbours: the left button's right border; the right button has no left
+        // border and nothing adds a shadow/ring (the old bug drew a second, bright line)
+        for (let i = 0; i < r.n; i++) {
+          assertEquals(r.dividers[i], "none", `${path}: button ${i} must not draw an extra shadow line`);
+          if (i < r.n - 1) assertEquals(r.borders[i].r, 1, `${path}: button ${i} right border is the 1px divider`);
+          if (i > 0) assertEquals(r.borders[i].l, 0, `${path}: button ${i} has no left border (would double the divider)`);
+        }
+        assert(r.borders.slice(0, -1).every((b) => b.rc === r.borders[0].rc), `${path}: all dividers share one colour`);
         for (const x of r.radius.slice(1, -1)) assert(x.l === 0 && x.r === 0, `${path}: middle buttons are square`);
         assert(r.ids.includes("dp-refresh") && r.ids.includes("dp-export") && r.ids.includes("dp-columns"), `${path}: test ids attached ${r.ids}`);
       }
       await page.goto(BASE + "/user");
       await page.waitForSelector("[data-testid=dp-refresh]");
-      await page.locator("[data-testid=data-panel-toolbar]").screenshot({ path: `runtime/theme/toolbar-${dark ? "dark" : "light"}.png` });
+      const bb = await page.locator(".dp-tool-group").first().boundingBox();
+      const zoom = await ctx.newPage();
+      await zoom.setViewportSize({ width: 1280, height: 800 });
+      // zoomed crop (4x) for eyeballing the dividers
+      const cdp = await ctx.newCDPSession(page);
+      const shot = await cdp.send("Page.captureScreenshot", { format: "png", clip: { x: bb!.x - 6, y: bb!.y - 6, width: bb!.width + 12, height: bb!.height + 12, scale: 4 } });
+      await Deno.writeFile(`runtime/theme/toolbar-${dark ? "dark" : "light"}.png`, Uint8Array.from(atob(shot.data), (c) => c.charCodeAt(0)));
+      await zoom.close();
     } finally {
       await browser.close();
     }

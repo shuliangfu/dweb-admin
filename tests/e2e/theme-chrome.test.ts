@@ -93,3 +93,46 @@ Deno.test({ name: "theme: dark navbar == logo area == sidebar == #0f172a in the 
     await browser.close();
   }
 }});
+
+Deno.test({ name: "theme: DataPanel body is slightly darker in dark mode only, via one token, on every panel page", sanitizeOps: false, sanitizeResources: false, fn: async () => {
+  await ensureServer();
+  const pages = ["/user", "/user/active", "/user/zombie", "/cms/article", "/cms/news", "/cms/notice", "/cms/photo", "/developer/database", "/developer/feedback", "/developer/language", "/developer/system", "/system/region", "/rbac/admins", "/rbac/roles", "/rbac/permissions", "/developer/menus"];
+  for (const dark of [false, true]) {
+    const { browser, ctx } = await browserLoggedIn();
+    try {
+      if (dark) await ctx.addCookies([{ name: "dweb-admin-theme", value: "dark", url: BASE }]);
+      const page = await ctx.newPage();
+      const seen = new Set<string>();
+      for (const p of pages) {
+        await page.goto(BASE + p);
+        await page.waitForSelector("[data-testid=data-panel]");
+        const r = await page.evaluate(() => {
+          const panel = document.querySelector("[data-testid=data-panel]") as HTMLElement;
+          const head = panel.querySelector(".adm-card-header") as HTMLElement;
+          return {
+            panel: getComputedStyle(panel).backgroundColor,
+            head: getComputedStyle(head).backgroundColor,
+            token: getComputedStyle(document.documentElement).getPropertyValue("--adm-panel-body-bg").trim(),
+          };
+        });
+        seen.add(r.panel);
+        if (dark) {
+          assertEquals(r.token, "#18212f");
+          assertEquals(r.panel, "rgb(24, 33, 47)", `${p}: dark panel body`);
+          assert(r.head !== r.panel, `${p}: title bar must stay distinguishable from the body`);
+        } else {
+          assert(r.panel !== "rgb(24, 33, 47)", `${p}: light mode must not get the dark body colour`);
+        }
+      }
+      assertEquals(seen.size, 1, `one colour for every panel page (${dark ? "dark" : "light"})`);
+      if (dark) {
+        await page.goto(BASE + "/user");
+        await page.waitForSelector("[data-testid=dp-table]");
+        await page.waitForTimeout(500);
+        await page.screenshot({ path: "runtime/theme/panel-dark.png" });
+      }
+    } finally {
+      await browser.close();
+    }
+  }
+} });

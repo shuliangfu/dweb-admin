@@ -446,6 +446,8 @@
   --adm-card-title-bg: var(--color-adminlte-panel-dark);
   --adm-card-title-fg: #e2e8f0;
   --adm-card-border: #1e293b;
+  /* DataPanel body (toolbar / table / pagination) — about half a shade darker than the dark cards, one token for every list page */
+  --adm-panel-body-bg: #18212f;
   --adm-desc-key: #cbd5e1;
   --adm-desc-bg: var(--color-adminlte-panel-dark);
   --adm-desc-zebra: #020617;
@@ -567,6 +569,9 @@ button[data-variant="primary"]:hover:not(:disabled) {
   border-color: var(--adm-card-border) !important;
   border-radius: var(--adm-radius, 5px) !important;
 }
+.dark .adm-data-panel {
+  background: var(--adm-panel-body-bg) !important;
+}
 .adm-panel-card > .adm-card-header {
   background: var(--adm-card-title-bg);
   color: var(--adm-card-title-fg);
@@ -631,12 +636,14 @@ button[data-variant="primary"]:hover:not(:disabled) {
 .dp-tab-group > :not(:last-child) button {
   border-right-width: 0 !important;
 }
-/* Hairline between joined toolbar buttons (wrappers are Tooltip/Dropdown). */
-.dp-tool-group > :not(:last-child) button {
-  box-shadow: inset -1px 0 0 rgba(15, 23, 42, 0.16);
+/* ONE faint 1px divider between joined toolbar buttons: the left button's own right border (button border colour,
+   faint in both themes). The next button drops its left border and there is no extra shadow/ring, so a divider is never doubled. */
+.dp-tool-group > :not(:first-child) button {
+  border-left-width: 0 !important;
 }
-.dark .dp-tool-group > :not(:last-child) button {
-  box-shadow: inset -1px 0 0 rgba(148, 163, 184, 0.55);
+.dp-tool-group > :not(:last-child) button {
+  border-right-width: 1px !important;
+  box-shadow: none !important;
 }
 
 /* Vue el-descriptions zebra / key-value (StubSettings + detail panes) */

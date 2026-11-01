@@ -1077,7 +1077,7 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
       <Card
         bordered
         size="sm"
-        class="adm-panel-card"
+        class="adm-panel-card adm-data-panel"
         headerClass="adm-card-header"
         title={
           <span class="inline-flex min-w-0 items-center gap-2">

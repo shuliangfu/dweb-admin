@@ -12,7 +12,12 @@ import { assert, assertEquals, assertMatch, assertNotMatch } from "@std/assert";
 import { Buffer } from "node:buffer";
 import { BASE, browserLoggedIn, cdpShot, ensureServer, stopServer } from "../helpers.ts";
 
-const PAGES = ["/rbac/admins", "/rbac/roles", "/developer/menus", "/system/online"];
+const PAGES = [
+  "/", "/rbac/admins", "/rbac/roles", "/rbac/permissions", "/rbac/assign", "/rbac/routes", "/developer/menus", "/system/online",
+  // the 12 catalog list pages
+  "/user", "/user/active", "/user/zombie", "/cms/article", "/cms/news", "/cms/notice", "/cms/photo",
+  "/developer/database", "/developer/feedback", "/developer/language", "/developer/system", "/system/region",
+];
 const OPTS = { sanitizeOps: false, sanitizeResources: false };
 
 /** Count differing pixels between two PNGs inside the browser (no native image deps needed). */
