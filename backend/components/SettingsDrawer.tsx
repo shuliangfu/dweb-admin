@@ -58,6 +58,8 @@ export function applyPrimaryColor(hex: string): void {
     if (root) {
       root.style.setProperty("--dweb-primary", hex);
       root.style.setProperty("--color-primary", hex);
+      root.style.setProperty("--adm-accent", hex);
+      root.style.setProperty("--adm-tag-on-fg", hex);
     }
     (globalThis as { localStorage?: Storage }).localStorage?.setItem(PRIMARY_KEY, hex);
   } catch { /* ignore */ }
