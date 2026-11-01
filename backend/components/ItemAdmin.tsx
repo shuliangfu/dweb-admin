@@ -126,6 +126,7 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
           {m === "view" && d
             ? (
               <Descriptions
+                class="adm-desc-chrome"
                 bordered
                 column={1}
                 size="sm"

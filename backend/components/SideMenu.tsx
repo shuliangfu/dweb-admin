@@ -137,9 +137,9 @@ function onGroupToggle(e: Event): void {
 }
 
 const topBase =
-  "adm-top-item flex w-full min-w-0 items-center gap-2.5 px-4 py-3 text-sm no-underline transition-colors";
+  "adm-top-item flex w-full min-w-0 items-center gap-2.5 px-4 text-sm no-underline transition-colors";
 const subBase =
-  "adm-sub-item flex w-full min-w-0 items-center gap-2 py-2 pl-9 pr-3 text-menu no-underline transition-colors";
+  "adm-sub-item flex w-full min-w-0 items-center gap-2 pl-9 pr-3 text-menu no-underline transition-colors";
 
 export function SideMenu(props: { tree: MenuNode[]; pathname: string }) {
   return (

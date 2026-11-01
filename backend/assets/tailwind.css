@@ -152,11 +152,13 @@
 :root {
   --adm-side: #222d32;
   --adm-sub: #2c3b41;
+  --adm-sub-hover: #2c3b41;
   --adm-active-bg: #1e282c;
   --adm-text: #b8c7ce;
   --adm-text-hover: #ffffff;
   --adm-accent: #3c8dbc;
   --adm-content: #ecf0f5;
+  --adm-fg: #606266; /* Vue --el-text-color-regular */
   --adm-brand-strip: #1a2226;
   --adm-brand-fg: #ffffff;
   --adm-top-bg: #ffffff;
@@ -164,16 +166,32 @@
   --adm-tag-bg: #f5f7fa;
   --adm-tag-border: #e4e7ed;
   --adm-tag-item-border: #dcdfe6;
+  --adm-tag-fg: #606266; /* Vue tag normal → text-regular */
   --adm-tag-on-fg: var(--adm-accent, #3c8dbc);
   --adm-tag-on-bg: color-mix(in srgb, var(--adm-accent, #3c8dbc) 12%, white);
+  --adm-card-title-bg: #d9edf7;
+  --adm-card-title-fg: #367fa9;
+  --adm-card-border: #bce8f1;
+  --adm-desc-key: #606266;
+  --adm-desc-bg: #ffffff;
+  --adm-desc-zebra: #fafafa;
+  --adm-desc-value: #303133;
+  --adm-desc-line: #ebeef5;
+  --adm-dialog-title: #303133;
+  --adm-dialog-line: #ebeef5;
+  --adm-menu-item-h: 45px;
+  --adm-menu-sub-h: 30px;
+  --adm-radius: 5px;
 }
 .dark {
   --adm-side: #11181b;
   --adm-sub: #182226;
+  --adm-sub-hover: #182226;
   --adm-active-bg: #0b1113;
   --adm-text: #9fb0b8;
   --adm-accent: #3c8dbc;
   --adm-content: #0f172a;
+  --adm-fg: #b7b7b7;
   --adm-brand-strip: #0b1113;
   --adm-brand-fg: #b7b7b7;
   --adm-top-bg: #1e2937;
@@ -181,10 +199,27 @@
   --adm-tag-bg: #0f172a;
   --adm-tag-border: #334155;
   --adm-tag-item-border: #475569;
+  --adm-tag-fg: #b7b7b7;
   --adm-tag-on-fg: #7dd3fc;
   --adm-tag-on-bg: #0c4a6e;
+  --adm-card-title-bg: #141414;
+  --adm-card-title-fg: #b7b7b7;
+  --adm-card-border: #363637;
+  --adm-desc-key: #a6a6a6;
+  --adm-desc-bg: #141414;
+  --adm-desc-zebra: #1d1d1d;
+  --adm-desc-value: #a6a6a6;
+  --adm-desc-line: #363637;
+  --adm-dialog-title: #a6a6a6;
+  --adm-dialog-line: #363637;
+  --adm-menu-item-h: 45px;
+  --adm-menu-sub-h: 30px;
+  --adm-radius: 5px;
 }
-.adm-content { background: var(--adm-content); }
+.adm-content {
+  background: var(--adm-content);
+  color: var(--adm-fg);
+}
 .adm-side { background: var(--adm-side); color: var(--adm-text); }
 .adm-side-brand {
   background: var(--adm-brand-strip);
@@ -194,13 +229,29 @@
 .adm-side-brand:hover { color: var(--adm-brand-fg, #fff); }
 .adm-menu a, .adm-menu summary { color: var(--adm-text); }
 .adm-menu { margin-top: 15px; } /* Vue Side .menu margin-top: 15px */
-.adm-menu .adm-top-item { border-left: 3px solid transparent; }
+.adm-menu .adm-top-item {
+  border-left: 3px solid transparent;
+  height: var(--adm-menu-item-h, 45px);
+  box-sizing: border-box;
+}
 .adm-menu .adm-top-item:hover { color: var(--adm-text-hover); background: var(--adm-active-bg); }
 .adm-menu .adm-top-item.adm-on,
-.adm-menu details[open] > summary { color: #fff; background: var(--adm-active-bg); border-left-color: var(--adm-accent); }
+.adm-menu details[open] > summary {
+  color: #fff;
+  background: var(--adm-active-bg);
+  border-left-color: var(--adm-accent);
+  height: var(--adm-menu-item-h, 45px);
+}
 .adm-menu .adm-sublist { background: var(--adm-sub); }
-.adm-menu .adm-sub-item { color: var(--adm-text); }
-.adm-menu .adm-sub-item:hover { color: #fff; }
+.adm-menu .adm-sub-item {
+  color: var(--adm-text);
+  height: var(--adm-menu-sub-h, 30px);
+  box-sizing: border-box;
+}
+.adm-menu .adm-sub-item:hover {
+  color: var(--adm-text-hover);
+  background: var(--adm-sub-hover);
+}
 .adm-menu .adm-sub-item.adm-on { color: #fff; font-weight: 500; }
 .adm-menu .adm-sub-item.adm-on svg { color: #fff; }
 .adm-menu [role="img"], .adm-menu svg { color: inherit !important; }
@@ -209,6 +260,55 @@
 
 .adm-content-card {
   border-top-color: var(--dweb-primary, var(--adm-accent, #3c8dbc));
+}
+
+/* Vue CardView header tokens */
+.adm-panel-card {
+  border-color: var(--adm-card-border) !important;
+  border-radius: var(--adm-radius, 5px) !important;
+}
+.adm-panel-card > .adm-card-header {
+  background: var(--adm-card-title-bg);
+  color: var(--adm-card-title-fg);
+  border-bottom-color: var(--adm-card-border);
+}
+.adm-panel-card > .adm-card-header .font-semibold,
+.adm-panel-card > .adm-card-header {
+  color: var(--adm-card-title-fg);
+}
+
+/* Vue el-descriptions zebra / key-value (StubSettings + detail panes) */
+.adm-desc-chrome.descriptions > div.grid {
+  border-color: var(--adm-desc-line) !important;
+  border-radius: var(--adm-radius, 5px) !important;
+}
+.adm-desc-chrome.descriptions > div.grid > div {
+  border-color: var(--adm-desc-line) !important;
+}
+.adm-desc-chrome.descriptions > div.grid > div > div:first-child {
+  color: var(--adm-desc-key) !important;
+  background-color: var(--adm-desc-bg) !important;
+}
+.adm-desc-chrome.descriptions > div.grid > div > div:last-child {
+  color: var(--adm-desc-value) !important;
+  background-color: var(--adm-desc-bg) !important;
+}
+.adm-desc-chrome.descriptions > div.grid > div:nth-child(odd) > div {
+  background-color: var(--adm-desc-zebra) !important;
+}
+
+/* ui-view Modal chrome — title / line / radius (role=dialog panel) */
+.adm-shell [role="dialog"] > div.relative {
+  border-radius: var(--adm-radius, 5px) !important;
+}
+.adm-shell [role="dialog"] > div.relative > div.shrink-0:first-of-type {
+  border-bottom-color: var(--adm-dialog-line) !important;
+}
+.adm-shell [role="dialog"] > div.relative > div.shrink-0:first-of-type h2 {
+  color: var(--adm-dialog-title) !important;
+}
+.adm-shell [role="dialog"] > div.relative > div.shrink-0:last-of-type {
+  border-top-color: var(--adm-dialog-line);
 }
 .adm-top-header {
   background: var(--adm-top-bg);
@@ -250,7 +350,7 @@
   border: 1px solid var(--adm-tag-item-border);
   border-radius: 3px 3px 0 0;
   font-size: 12px;
-  color: var(--adm-top-fg);
+  color: var(--adm-tag-fg, var(--adm-fg));
   background: transparent;
   cursor: default;
 }

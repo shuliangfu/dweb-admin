@@ -253,8 +253,9 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 
 7. **Menus**（`/developer/menus`）：模型仅有 key／parentKey／title／path／icon／sort／status — **无** Vue `component`／`show`；列表用 icon＋status→是否显示，上级显示标题；搜索 keyword／path；component 不造字段。
 8. **Routes**：保留 Transfer 纳管；另附 managed 表（path／method／source／createdAt）；AuthRoute **无** name 字段故不造。
-9. **Settings theme.other**：已映 `--adm-side/sub/active-bg/text/text-hover/brand-strip/brand-fg/top-*/tag-*/content`；**未映** Vue 弹窗／卡片斑马／菜单项高度／圆角／`--el-text-color-regular`／二级独立 hover（无对应壳变量）→ 勿假造 CSS 变量。
-10. **SideMenu m-icon**：仅 ui-view Icon 名＋`ICON_BY_KEY`；无独立 m-icon 字体包。
+9. **Settings theme.other（续）**：已补 `--adm-sub-hover`、`--adm-fg`（←`--el-text-color-regular`）、`--adm-tag-fg`、card title／border、desc key／bg／zebra／value／line、dialog title／line、`--adm-menu-item-h`／`--adm-menu-sub-h`／`--adm-radius`；Settings 抽屉 ColorRow＋SizeRow 可调。接消费：SideMenu 高／二级 hover、Tag 未激活字色、`.adm-panel-card`／`.adm-desc-chrome`、`.adm-shell [role=dialog]`。
+10. **仍弱／残余**：`--el-tag-view-bottom-border` 与 tag-border 合并未拆；Vue 顶栏默认蓝底（`--el-top-bg-color:#3c8dbc`）dweb 亮色仍白顶（有意）；Modal 圆角靠壳 CSS 覆盖 ui-view `rounded-xl`（ui-view 内仍有 bracket class，本仓不改依赖）；Descriptions 斑马依赖 `column=1` 行序；勿假造 Member／Cms／AuthAssignment／Config／Region。
+11. **SideMenu m-icon**：仅 ui-view Icon 名＋`ICON_BY_KEY`；无独立 m-icon 字体包。
 
 ### 工作区提示
 
@@ -295,5 +296,6 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 | 2026-11-01 | API 改 `apiMode:"action"`：hello→`index.ts`、去掉 REST 别名、动态一动作一文件；handoff 记明 kind:api 根 `/` 不回落 index；壳层 lock/login/TagView 打磨 |
 | 2026-11-01 | Menus 列对齐（icon／visible／parent 标题）；Assign 列表精简＋gap 维持；Routes Transfer＋managed 表；Settings 宽 400／TagView active 底边／SideMenu margin 15px |
 | 2026-11-01 | Settings 接 Vue theme.other／semantic 可映 token；SideMenu unique-opened＋ICON_BY_KEY；system base／region／datetime stub 对稿；`/developer/menus` 搜索 path；勿 push |
+| 2026-11-01 | 壳层 CSS：sub-hover／menu 高／radius／fg／card／desc 斑马／dialog title；Settings SizeRow；handoff 更新；勿 push |
 | 2026-11-01 | 弱项：login 左饰＋lock 背景／DS-Digital；member／CMS stub 列／搜索对稿 Vue；handoff 记 Assign／OOXML／TagView keep-alive N/A |
 | 2026-11-01 | 第③环收口：锁 `@dreamer/dweb@^3.7.6`（传递 `@dreamer/server@1.2.2`）；`dev:api` 验通 `GET /`／`/index`／`/users`／`/users/index` 均 200（根 `/` 回落已通）；JSR 已发 server 1.2.2、dweb 3.7.6；本地 commit，勿 push |

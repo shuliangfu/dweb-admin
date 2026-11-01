@@ -18,6 +18,8 @@ export function StubSettings(props: { locale: Locale; page: StubPage }) {
     <Card
       bordered
       size="sm"
+      class="adm-panel-card"
+      headerClass="adm-card-header"
       title={props.page.title[loc] ?? props.page.title["en-US"]}
       extra={
         <div class="flex flex-wrap gap-2">
@@ -36,7 +38,7 @@ export function StubSettings(props: { locale: Locale; page: StubPage }) {
       bodyClass="pt-3"
     >
       <p class="mb-3 text-xs text-slate-500 dark:text-slate-400">{tr("stub.settingsHint")} · {tr("stub.authNote")}</p>
-      <Descriptions bordered size="sm" column={1} items={items} />
+      <Descriptions class="adm-desc-chrome" bordered size="sm" column={1} items={items} />
     </Card>
     </div>
   );

@@ -706,7 +706,8 @@ export function DataPanel<T extends Record<string, unknown> = Record<string, unk
     <Card
       bordered
       size="sm"
-      class={props.class}
+      class={`adm-panel-card ${props.class ?? ""}`.trim()}
+      headerClass="adm-card-header"
       title={titleNode}
       extra={toolbar}
       bodyClass="px-0 pt-2"
