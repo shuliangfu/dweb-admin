@@ -195,22 +195,22 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 - 壳层：Side／Top／TagView／主题／设置抽屉（主色）——**部分**对齐，Chat 仍 stub；TagView keep-alive 不适用 SSR 整页跳转模型。
 - 全页：login／lock／forget／reset／403／404／500——**部分**。
 - Home：dashboard + workspace——**部分**。
-- RBAC：admins／roles／permissions／routes／**assign（roleCodes Transfer 可跑）**——**部分**；真 list API。
+- RBAC：admins／roles／permissions／routes／**assign（roleCodes＝允许型可跑；modal 含禁用 gap UI）**——**部分**；真 list API。
 - System：menus、online（真 AdminSession）——**部分**；其余多为 stub。
-- DataPanel：search schemas、列显隐、CSV 导出、导入／打印骨架；自定义 children 列过滤能力在推进中。
+- DataPanel：search／列显隐／CSV 导出＋`parseCsv`→`onImportRows`／打印；children `filterTableColumns` 已接 admins／roles／menus。
 - AUTH_ONLY 收紧：stub 页不再白名单放行，需超管或显式路由授权。
 
 ### 未完／仍弱（优先队列，细节以 matrix §12 为准）
 
-1. **领域 stub → 真模型／API**（会员、CMS、财务、系统设置存储等）；现有 Mongo 模型主要是 AdminUser／Auth*／Menu／Session／Passkey——**无模型的页保持 stub，有模型却仍 demo 的优先接真 list**。
-2. **DataPanel 深化**：children 自定义 Table 时列开关必须藏列；CSV 稳住；Excel／其它等有包再接；导入 CSV→回调或保留回调位。
-3. **Assign 对齐 Vue**：allow／deny 或用户直绑路由——**当前模型／API 不支持**；只允许最小可扩展 UI＋文档缺口，**禁止假接**。
+1. **领域 stub → 真模型／API**（会员、CMS、财务、系统设置存储等）；现有 Mongo 模型主要是 AdminUser／Auth*／Menu／Session／Passkey——**无模型的页保持 stub**；有模型的 list 已接真 API。
+2. **DataPanel**：Excel／XML／HTML 等有真实依赖再接；行级表单／与 Vue CardPanel store 驱动进一步对齐。
+3. **Assign**：若产品要 Vue 全量 allow／deny＋用户直绑路由，须先加 AuthAssignment 类模型／API，再接已留的 gap 面板——**禁止假接**。
 4. 壳层／全页视觉与交互继续对稿；Chat、部分 Top 能力仍弱。
 5. 对照表随每刀更新。
 
-### 进行中工作区提示（接手时先看 `git status`）
+### 工作区提示
 
-撰写时本地可能仍有未提交改动（例如 `DataPanel.tsx` 深化、`AdminsAdmin`／`ItemAdmin`／`MenusAdmin` 的 `filterTableColumns` 包装）。**以当时 `git status`／diff 为准**，勿假定已全部 commit。
+接手时先看 `git status`／最近 commit；DataPanel children 过滤与 Assign gap UI 已提交则勿重复劳动。
 
 ---
 
