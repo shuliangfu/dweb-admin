@@ -35,7 +35,7 @@ export function StubSettings(props: { locale: Locale; page: StubPage }) {
       }
       bodyClass="pt-3"
     >
-      <p class="mb-3 text-xs text-slate-500 dark:text-slate-400">{tr("stub.settingsHint")}</p>
+      <p class="mb-3 text-xs text-slate-500 dark:text-slate-400">{tr("stub.settingsHint")} · {tr("stub.authNote")}</p>
       <Descriptions bordered size="sm" column={1} items={items} />
     </Card>
     </div>

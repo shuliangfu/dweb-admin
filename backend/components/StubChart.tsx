@@ -23,7 +23,7 @@ export function StubChart(props: { locale: Locale; page: StubPage }) {
       bodyClass="pt-3"
     >
       <div class="flex min-h-[280px] flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-slate-300 p-8 text-center dark:border-slate-600">
-        <p class="m-0 text-sm text-slate-500 dark:text-slate-400">{tr("stub.chartHint")}</p>
+        <p class="m-0 text-sm text-slate-500 dark:text-slate-400">{tr("stub.chartHint")} · {tr("stub.authNote")}</p>
         <Button type="button" variant="primary" onClick={() => message.info(tr("stub.soon"))}>
           {tr("stub.soon")}
         </Button>

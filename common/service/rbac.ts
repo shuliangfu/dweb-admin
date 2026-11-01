@@ -35,15 +35,13 @@ const PUBLIC_PREFIX = ["/assets/", "/_client", "/__hmr", "/api/i18n/", "/api/aut
 /** Own-account endpoints: any logged-in user (password, 2FA, passkeys). */
 const AUTH_ONLY_PREFIX = [
   "/api/account/",
-  /** Stub module pages: any logged-in user until fine-grained RBAC lands. */
-  "/user/",
-  "/cms/",
-  "/finance/",
-  "/count/",
-  "/developer/",
 ];
 
 /** Logged-in users may always access these (no role binding required). */
+/** Logged-in users may always access these (no role binding required).
+ * Stub module pages (user/cms/finance/count/developer + most /system/*) are NOT
+ * listed here — they require a super role or an explicit route grant.
+ */
 const AUTH_ONLY_EXACT = new Set([
   "/",
   "/workspace",
@@ -52,18 +50,6 @@ const AUTH_ONLY_EXACT = new Set([
   "/api/auth/me",
   "/api/auth/unlock",
   "/api/menus/mine",
-  "/system/admin-log",
-  "/system/express",
-  "/system/level",
-  "/system/locale",
-  "/system/region",
-  "/system/base",
-  "/system/bonus",
-  "/system/datetime",
-  "/system/finance",
-  "/system/transfer",
-  "/system/wallet",
-  "/user",
 ]);
 
 /** Normalize a request path: collapse slashes, drop trailing slash. */
