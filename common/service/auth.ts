@@ -101,10 +101,23 @@ function toAuthUser(doc: AdminUserDocument, isSuper: boolean): AuthUser {
   };
 }
 
+export type SessionClientMeta = { ip?: string; userAgent?: string };
+
+/** Best-effort client IP + UA from a Request (proxy-aware). */
+export function clientMeta(request: Request): SessionClientMeta {
+  const xf = request.headers.get("x-forwarded-for");
+  const ipRaw = (xf?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "").trim();
+  const ip = ipRaw ? ipRaw.slice(0, 128) : undefined;
+  const ua = (request.headers.get("user-agent") || "").trim();
+  const userAgent = ua ? ua.slice(0, 512) : undefined;
+  return { ip, userAgent };
+}
+
 /** Create a session row + cookie for an already authenticated user. */
 export async function startSession(
   doc: AdminUserDocument,
   remember: boolean,
+  meta?: SessionClientMeta,
 ): Promise<{ user: AuthUser; cookie: string; token: string }> {
   const seconds = remember ? REMEMBER_SECONDS : maxAge();
   const token = randomToken();
@@ -113,6 +126,8 @@ export async function startSession(
     username: doc.username,
     tokenHash: await sha256(token),
     expiresAt: new Date(Date.now() + seconds * 1000),
+    ...(meta?.ip ? { ip: meta.ip } : {}),
+    ...(meta?.userAgent ? { userAgent: meta.userAgent } : {}),
   });
   await AdminUser.updateById(doc._id!, { lastLoginAt: new Date() });
   const user = toAuthUser(doc, await hasSuperRole(doc.roleCodes ?? []));
@@ -127,6 +142,7 @@ export async function login(
   username: string,
   password: string,
   remember = false,
+  meta?: SessionClientMeta,
 ): Promise<LoginResult | null> {
   const name = username.trim();
   if (!name || !password || locked(name)) return null;
@@ -145,7 +161,7 @@ export async function login(
       challengeToken: await createChallenge({ kind: "2fa", userId: doc._id!, remember }),
     };
   }
-  return { status: "ok", ...(await startSession(doc, remember)) };
+  return { status: "ok", ...(await startSession(doc, remember, meta)) };
 }
 
 /** Delete the server-side session for this request. */

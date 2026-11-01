@@ -5,7 +5,7 @@
  * Public path (see common/service/rbac.ts).
  */
 import type { ApiContext } from "@dreamer/dweb";
-import { login } from "@common/service/auth.ts";
+import { clientMeta, login } from "@common/service/auth.ts";
 import { challengeCookie } from "@common/service/challenge.ts";
 import { isFormRequest, jsonResponse, readBody } from "@common/utils/http.ts";
 
@@ -18,6 +18,7 @@ export async function POST(ctx: ApiContext) {
     String(body.username ?? ""),
     String(body.password ?? ""),
     truthy(body.remember),
+    clientMeta(ctx.req),
   );
   if (!result) {
     return form

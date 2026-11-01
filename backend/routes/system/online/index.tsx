@@ -15,6 +15,8 @@ export async function load(ctx: LoadContext) {
     _id: unknown;
     userId: string;
     username: string;
+    ip?: string;
+    userAgent?: string;
     expiresAt?: Date;
     createdAt?: Date;
     updatedAt?: Date;
@@ -24,8 +26,8 @@ export async function load(ctx: LoadContext) {
     id: String(s._id),
     username: s.username || "—",
     nickname: s.username || "—",
-    ip: "—",
-    userAgent: "—",
+    ip: s.ip || "—",
+    userAgent: s.userAgent || "—",
     updatedAt: s.updatedAt ? new Date(s.updatedAt).toISOString() : "—",
     expiresAt: s.expiresAt ? new Date(s.expiresAt).toISOString() : "—",
   }));

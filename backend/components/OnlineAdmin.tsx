@@ -48,6 +48,14 @@ export function OnlineAdmin(props: { locale: Locale; rows: OnlineRow[] }) {
           label: tr("common.status"),
           render: () => <Tag size="xs" variant="success">{tr("online.active")}</Tag>,
         },
+        { prop: "ip", label: tr("online.ip") },
+        {
+          prop: "userAgent",
+          label: tr("online.ua"),
+          render: (_v: unknown, r: OnlineRow) => (
+            <span class="block max-w-72 truncate text-xs" title={r.userAgent}>{r.userAgent}</span>
+          ),
+        },
         { prop: "updatedAt", label: tr("online.updatedAt") },
         { prop: "expiresAt", label: tr("online.expiresAt") },
       ]}

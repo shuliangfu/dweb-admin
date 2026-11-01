@@ -7,7 +7,7 @@ import { isFormRequest, jsonResponse, readBody } from "@common/utils/http.ts";
 export async function POST(ctx: ApiContext) {
   const form = isFormRequest(ctx.req);
   const body = await readBody(ctx);
-  const result = await completeTwoFactor(readChallengeToken(ctx.req), String(body.code ?? ""));
+  const result = await completeTwoFactor(readChallengeToken(ctx.req), String(body.code ?? ""), ctx.req);
   if (!result) {
     return form
       ? new Response(null, { status: 302, headers: { Location: "/login?step=2fa&e=1" } })

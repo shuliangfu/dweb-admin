@@ -8,6 +8,10 @@ export interface AdminSessionDocument {
   userId: string;
   username: string;
   tokenHash: string;
+  /** Client IP at login (best-effort from X-Forwarded-For / X-Real-IP). */
+  ip?: string;
+  /** User-Agent at login (truncated). */
+  userAgent?: string;
   expiresAt: Date;
   createdAt?: Date;
   updatedAt?: Date;

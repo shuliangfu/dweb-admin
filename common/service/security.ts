@@ -25,7 +25,7 @@ import {
   type AdminUserDocument,
 } from "@common/model/mod.ts";
 import { hashPassword, sha256, verifyPassword } from "@common/service/password.ts";
-import { startSession } from "@common/service/auth.ts";
+import { clientMeta, startSession } from "@common/service/auth.ts";
 import { consumeChallenge, createChallenge, peekChallenge } from "@common/service/challenge.ts";
 import { getEnv } from "@common/utils/env.ts";
 import { parseBody } from "@common/utils/validate.ts";
@@ -131,7 +131,11 @@ export async function totpDisable(userId: string, code: string): Promise<Ok | Fa
 const totpFails = new Map<string, { count: number; reset: number }>();
 
 /** Login step 2: verify the TOTP code against the challenge, then open the session. */
-export async function completeTwoFactor(challengeToken: string, code: string) {
+export async function completeTwoFactor(
+  challengeToken: string,
+  code: string,
+  request?: Request,
+) {
   const ch = await peekChallenge(challengeToken, "2fa");
   if (!ch?.userId) return null;
   const uid = String(ch.userId);
@@ -146,7 +150,7 @@ export async function completeTwoFactor(challengeToken: string, code: string) {
   }
   totpFails.delete(uid);
   await consumeChallenge(challengeToken, "2fa");
-  return await startSession(user, !!ch.remember);
+  return await startSession(user, !!ch.remember, request ? clientMeta(request) : undefined);
 }
 
 // ------------------------------------------------------------------- passkeys
@@ -356,7 +360,7 @@ export async function passkeyLoginVerify(
       counter: v.authenticationInfo.newCounter,
       lastUsedAt: new Date(),
     });
-    return await startSession(user, remember);
+    return await startSession(user, remember, clientMeta(request));
   } catch (e) {
     console.error("[passkey] login verify failed:", e instanceof Error ? e.message : e);
     return null;
