@@ -84,6 +84,10 @@ export default {
     ua: "UA",
     updatedAt: "Last activity",
     expiresAt: "Expires",
+    kick: "Kick",
+    kickTitle: "Kick session",
+    kickAsk: "Force-end the session for {name}? They must sign in again.",
+    kicked: "Session ended",
   },
   assign: {
     info: "{n} administrator(s)",
@@ -354,6 +358,7 @@ export default {
     menuExists: "Menu key already exists",
     lastSuperAdmin: "Cannot delete/disable/demote the last super admin",
     cannotDeleteSelf: "You cannot delete your own account",
+    cannotKickSelf: "You cannot kick your own current session",
     roleInUse: "Role is still assigned to users",
     hasChildren: "Menu still has children; delete them first",
     itemExists: "Name already exists",

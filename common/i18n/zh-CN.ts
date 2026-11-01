@@ -84,6 +84,10 @@ export default {
     ua: "UA",
     updatedAt: "最近活动",
     expiresAt: "会话过期",
+    kick: "踢下线",
+    kickTitle: "踢下线",
+    kickAsk: "确认强制结束 {name} 的会话？对方需重新登录。",
+    kicked: "已踢下线",
   },
   assign: {
     info: "共 {n} 名管理员",
@@ -354,6 +358,7 @@ export default {
     menuExists: "菜单标识已存在",
     lastSuperAdmin: "不能删除/停用/降权最后一个超级管理员",
     cannotDeleteSelf: "不能删除当前登录账号",
+    cannotKickSelf: "不能踢自己的当前会话",
     roleInUse: "该角色仍有用户在使用，无法删除",
     hasChildren: "该菜单下还有子菜单，请先删除子菜单",
     itemExists: "名称已存在",

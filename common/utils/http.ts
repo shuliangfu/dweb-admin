@@ -45,6 +45,7 @@ const ERROR_STATUS: Record<string, number> = {
   menuExists: 409,
   lastSuperAdmin: 409,
   cannotDeleteSelf: 409,
+  cannotKickSelf: 409,
   roleInUse: 409,
   hasChildren: 409,
   onlyTwoLevels: 409,

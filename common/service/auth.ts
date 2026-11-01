@@ -164,6 +164,28 @@ export async function login(
   return { status: "ok", ...(await startSession(doc, remember, meta)) };
 }
 
+export type RevokeResult = { ok: true } | { ok: false; error: "notFound" | "cannotKickSelf" };
+
+/**
+ * Force-expire another admin session by id (online list kick).
+ * Refuses to revoke the caller's own current cookie session.
+ */
+export async function revokeSessionById(
+  sessionId: string,
+  request: Request,
+): Promise<RevokeResult> {
+  const id = sessionId.trim();
+  if (!id) return { ok: false, error: "notFound" };
+  const row = await AdminSession.findById(id) as AdminSessionDocument | null;
+  if (!row) return { ok: false, error: "notFound" };
+  const raw = readToken(request);
+  if (raw && row.tokenHash === await sha256(raw)) {
+    return { ok: false, error: "cannotKickSelf" };
+  }
+  await AdminSession.deleteById(id);
+  return { ok: true };
+}
+
 /** Delete the server-side session for this request. */
 export async function logout(request: Request): Promise<void> {
   const raw = readToken(request);
