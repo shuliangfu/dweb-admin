@@ -19,6 +19,9 @@ runtime/
 # docker.sh export 写出的镜像包
 backups/
 
+# upgrade.ts 的状态、锁和日志（本地，不提交）
+.data/
+
 # 环境
 .env
 .env.local

@@ -1,0 +1,25 @@
+#!/bin/sh
+# Git post-merge：pull / merge 成功后自动升级。
+# 安装：在项目根目录执行 deno run -A upgrade.ts --install-hook
+# 复制到同构架项目后，把 upgrade.ts 和本文件放在项目根，再执行一次安装命令。
+# 使用 dev / prod compose 时取消下一行注释：
+# UPGRADE_ENV=dev
+# export UPGRADE_ENV
+
+set -u
+export PATH="${HOME}/.deno/bin:/opt/homebrew/bin:/usr/local/bin:${PATH:-/usr/bin:/bin}"
+
+ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+cd "$ROOT" || exit 0
+
+if [ ! -f "$ROOT/upgrade.ts" ]; then
+  echo "[upgrade] 未找到 upgrade.ts，跳过" >&2
+  exit 0
+fi
+
+if ! command -v deno >/dev/null 2>&1; then
+  echo "[upgrade] 未找到 deno，跳过自动升级" >&2
+  exit 0
+fi
+
+exec deno run -A "$ROOT/upgrade.ts" --hook
