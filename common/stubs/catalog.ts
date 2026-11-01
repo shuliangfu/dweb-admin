@@ -1,4 +1,5 @@
-/** Stub page catalog — Vue-aligned skeletons until real models land. */
+/** Stub page catalog — Vue-aligned skeletons until real models land.
+ * Member(3) + CMS(4) have NO domain models in common/model — keep StubList; see docs/handoff.md. */
 export type StubKind = "list" | "settings" | "chart";
 export type StubCol = { prop: string; label: { "zh-CN": string; "en-US": string } };
 export type StubSearch = { name: string; label: { "zh-CN": string; "en-US": string }; placeholder?: { "zh-CN": string; "en-US": string } };

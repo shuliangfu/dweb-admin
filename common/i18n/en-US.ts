@@ -129,6 +129,7 @@ export default {
     excel: "Excel",
   },
   stub: {
+    skeletonHint: "Skeleton only — no domain model for {key}; see docs/handoff.md",
     demoInfo: "{n} demo row(s) — domain model pending; needs super role or an explicit route grant",
     settingsHint: "Read-only settings preview; save API not wired yet.",
     chartHint: "Chart/tree placeholder until data services land.",

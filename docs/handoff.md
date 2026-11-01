@@ -245,10 +245,11 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 ### 未完／仍弱（优先队列，细节以 matrix §12 为准）
 
 1. **扫仓结论（2026-11-01）**：有领域模型却仍 stub 的页＝**无**。AdminUser／Auth*／Menu／AdminSession／AdminPasskey 相关 list／CRUD（含 online 踢下线、账号安全）已接真 API。
-2. **无模型 stub 保持 stub**（勿假接）：会员（三项）／CMS／developer 备份反馈语言系统日志／system 设置与 admin-log 等——需先新增领域模型再接线。
-3. **DataPanel**：浏览器侧 CSV／HTML-table-as-xls／XML／HTML／JSON 已接（对齐 Vue `excel.js`）。**dreamer-jsr 无 OOXML／xlsx 扩展包**（已扫 utils 等）→ 勿另起炉灶；原生 `.xlsx` 仍标 `panel.xlsxGap`，等有官方包再接。
-4. **RBAC Assign**：角色分配（`roleCodes`）真 API 已通；Vue 条目级 allow／deny＋用户直绑路由需 **AuthAssignment**（本仓无此模型）——`AssignAdmin` gap 面板＋i18n `assign.gap*` 已标明，**禁止假提交**。
-5. **会员／CMS**：无领域模型 → 保持 stub；列／搜索已按 Vue CardPanel 对稿加深（`searchFields`），仍演示行。
+2. **无模型 stub 保持 stub**（勿假接）：会员三页（`/user`／active／zombie）＋ CMS 四页（article／news／notice／photo）＋ developer／system 其余 stub——**无 Member／Cms* 模型**；StubList 标 `stub.skeletonHint`，route 头注释指向本文。**禁止假接 list/CRUD。**
+3. **Dashboard**：`dashboard-live-kpis`（admins 计数／可见菜单／当前角色数）为 **live**（AdminUser.count + menu tree）。会员 KPI、财务条、图表为 **demo**（`dashboard.demoBadge`；缺 Member／Finance 服务）。
+4. **Admins／Roles 列表列（2026-11-01 再对齐 Vue）**：Admins＝`#／username／email／status／lastLoginAt／createdAt／actions`（去掉列表 nickname／roles，表单仍保留；无 `login_count` 字段故用 `lastLoginAt`）。Roles／Permissions＝`#／name／description／createdAt／actions`（`ruleName` 仅表单／详情）。
+5. **DataPanel**：浏览器侧 CSV／HTML-table-as-xls／XML／HTML／JSON 已接。**无 OOXML／xlsx 扩展包** → `panel.xlsxGap`。
+6. **RBAC Assign**：`roleCodes` 真 API；Vue allow／deny＋直绑路由需 **AuthAssignment**（无模型）→ gap UI，禁止假提交。
 
 ### 工作区提示
 
@@ -283,6 +284,7 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 
 | 日期 (Asia/Shanghai) | 说明 |
 |---|---|
+| 2026-11-01 | 续刀：Admins／Roles 列表列再对齐 Vue；CMS／会员确认无模型→骨架＋handoff；dashboard live 管理条 vs demo KPI 写入本文 |
 | 2026-11-01 | 初版 handoff + matrix + extension-packages；模型扫仓／online kick；TW4 约定 |
 | 2026-11-01 | API 双模板：handlers 双导出 restful+action；`backend/api-style.ts`；handoff § API；DataPanel 多格式导出／壳层视觉对齐 |
 | 2026-11-01 | API 改 `apiMode:"action"`：hello→`index.ts`、去掉 REST 别名、动态一动作一文件；handoff 记明 kind:api 根 `/` 不回落 index；壳层 lock/login/TagView 打磨 |

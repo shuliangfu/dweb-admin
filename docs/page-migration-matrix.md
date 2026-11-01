@@ -2,7 +2,7 @@
 
 > **API (2026-11-01):** apps use `apiMode: "action"` (see `docs/handoff.md`). On dweb 3.7.5, kind:api bare `/` does **not** auto-run `index` — use `/index`.
 
-Generated: 2026-11-01 (Asia/Shanghai) · updated same day (handoff + assign gap UI + DataPanel children/CSV)
+Generated: 2026-11-01 (Asia/Shanghai) · updated: admins/roles Vue columns; CMS/member skeleton handoff; dashboard live vs demo
 
 ## Path note (confirmed)
 
@@ -93,7 +93,7 @@ Blocking relation: **TagView + TopHeader breadcrumb** are pure shell; list `Data
 
 | Vue route | Vue file | dweb-admin | Status |
 |---|---|---|---|
-| `/dashboard` | `home/dashboard.vue` | `backend/routes/index.tsx` (`/`) | **部分** — KPI + ChartLine/Bar/Doughnut via ui-view; demo series |
+| `/dashboard` | `home/dashboard.vue` | `backend/routes/index.tsx` (`/`) | **部分** — live admin strip (AdminUser/menus/roles); member/finance/charts DEMO (handoff) |
 | `/workspace` | `home/workplace.vue` | `backend/routes/workspace.tsx` | **部分** — button playground stub |
 
 ---
@@ -130,9 +130,9 @@ Keep only three catalog stubs (DataPanel demo); no domain models yet:
 
 | Vue file | Title | dweb-admin | Status |
 |---|---|---|---|
-| `user/index.vue` | 会员列表 | `/user` | **部分** — demo DataPanel |
-| `user/active.vue` | 活跃会员 | `/user/active` | **部分** — demo DataPanel |
-| `user/zombie.vue` | 僵尸会员 | `/user/zombie` | **部分** — demo DataPanel |
+| `user/index.vue` | 会员列表 | `/user` | **部分** — skeleton StubList（无 Member 模型；handoff） |
+| `user/active.vue` | 活跃会员 | `/user/active` | **部分** — skeleton StubList（无 Member 模型；handoff） |
+| `user/zombie.vue` | 僵尸会员 | `/user/zombie` | **部分** — skeleton StubList（无 Member 模型；handoff） |
 
 Removed from dweb-admin (no route/menu/stub): new / black / locked / online / log / receipt / upgrade-log / location / path-invite / path-position.
 
@@ -140,7 +140,7 @@ Removed from dweb-admin (no route/menu/stub): new / black / locked / online / lo
 
 ## 7. CMS
 
-All **部分** stubs (DataPanel demo): `/cms/article|news|notice|photo`. Removed: qa / survey (no menu/route/stub).
+All **部分** skeleton stubs (no Cms* models; StubList + handoff): `/cms/article|news|notice|photo`. Removed: qa / survey.
 
 ---
 
@@ -183,7 +183,8 @@ Vue list entry pages: **64** view files (modules excluded). Dynamic sidebar rout
 2. Next real work needs **new models** (member, CMS, system settings store, admin audit log) or Vue-parity polish on existing live pages (DataPanel Excel/XML once deps land; TagView keep-alive N/A on SSR).
 3. Shell: ChatModal is layout-only (no IM backend); keep honest empty states.
 4. If product needs Vue allow/deny + user-direct routes: add AuthAssignment-class model + API first, then wire the reserved Assign gap panel (do not fake).
-5. Kept member(3) / CMS stub columns + searchFields aligned to Vue CardPanel (still demo rows; no domain models).
+5. Kept member(3) / CMS as skeleton StubList (Vue columns/search; stub.skeletonHint; no domain models — do not fake APIs).
+6. Admins/Roles list columns re-aligned to Vue (2026-11-01); dashboard live admin strip vs demo member/finance KPIs documented in handoff.
 5. Done recently: Tailwind 4 arbitrary-size cleanup; session IP/UA; online kick (`DELETE /api/sessions/:id`); ChatModal split shell; assign gap UI; DataPanel CSV import + `filterTableColumns`; `docs/handoff.md`.
 
 ### Hard constraints reminder

@@ -1,6 +1,7 @@
 /**
- * Stub: /user — Vue user/… (会员列表 / Members).
- * Demo data only; replace when domain models exist.
+ * Skeleton: user — Vue 会员列表 / Members.
+ * No `Member` model in common/model — keep StubList (Vue-shaped columns/search).
+ * Do not fake list/CRUD APIs. Wire when a domain model lands; see docs/handoff.md.
  */
 import { stubLoad, StubPageView } from "@backend/components/stub-page.tsx";
 

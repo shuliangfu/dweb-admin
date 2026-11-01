@@ -1,6 +1,7 @@
 /**
- * Stub: /cms/photo — Vue cms/… (相册列表 / Albums).
- * Demo data only; replace when domain models exist.
+ * Skeleton: cms/photo — Vue 图集列表 / Photos.
+ * No `CmsPhoto` model in common/model — keep StubList (Vue-shaped columns/search).
+ * Do not fake list/CRUD APIs. Wire when a domain model lands; see docs/handoff.md.
  */
 import { stubLoad, StubPageView } from "@backend/components/stub-page.tsx";
 

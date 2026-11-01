@@ -1,6 +1,7 @@
 /**
- * Stub: /cms/news — Vue cms/… (新闻列表 / News).
- * Demo data only; replace when domain models exist.
+ * Skeleton: cms/news — Vue 新闻列表 / News.
+ * No `CmsNews` model in common/model — keep StubList (Vue-shaped columns/search).
+ * Do not fake list/CRUD APIs. Wire when a domain model lands; see docs/handoff.md.
  */
 import { stubLoad, StubPageView } from "@backend/components/stub-page.tsx";
 

@@ -1,4 +1,6 @@
-/** Admin (user) management. Create / edit happen in a Modal (never a separate page). */
+/** Admin (user) management. Create / edit happen in a Modal (never a separate page).
+ * List columns follow Vue admin/index.vue: # / username / email / status / lastLogin / created / actions
+ * (nickname + roles stay on the edit form; Vue login_count → lastLoginAt — no counter field). */
 import { createSignal } from "@dreamer/view";
 import { Button, FormItem, Input, Modal, MultiSelect, Switch, Table, Tag } from "@dreamer/ui-view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
@@ -108,10 +110,9 @@ export function AdminsAdmin(props: {
         columns={[
           { prop: "idx", label: tr("rbac.index") },
           { prop: "username", label: tr("users.username") },
-          { prop: "nickname", label: tr("users.nickname") },
           { prop: "email", label: tr("usersForm.email") },
-          { prop: "roles", label: tr("users.roles") },
           { prop: "status", label: tr("common.status") },
+          // Vue login_count — AdminUser has no counter; surface real lastLoginAt instead.
           { prop: "lastLoginAt", label: tr("users.lastLogin") },
           { prop: "createdAt", label: tr("common.createdAt") },
           { prop: "actions", label: tr("common.actions") },
@@ -119,7 +120,6 @@ export function AdminsAdmin(props: {
         rows={props.rows.map((r, i) => ({
           ...r,
           idx: i + 1,
-          roles: r.roleCodes.join(", "),
         })) as never}
         searchSlot={
           <form method="get" class="m-0 flex items-center gap-2">
@@ -140,17 +140,7 @@ export function AdminsAdmin(props: {
                   columns={ctx.filterTableColumns(([
           { key: "idx", title: tr("rbac.index"), dataIndex: "idx", width: 60 },
           { key: "username", title: tr("users.username"), dataIndex: "username" },
-          { key: "nickname", title: tr("users.nickname"), dataIndex: "nickname" },
           { key: "email", title: tr("usersForm.email"), dataIndex: "email" },
-          {
-            key: "roles",
-            title: tr("users.roles"),
-            render: (_v: unknown, r: UserRow) => (
-              <span class="flex flex-wrap gap-1">
-                {r.roleCodes.map((c) => <Tag size="xs" variant="primary">{c}</Tag>)}
-              </span>
-            ),
-          },
           {
             key: "status",
             title: tr("common.status"),

@@ -64,7 +64,7 @@ export function StubList(props: { locale: Locale; page: StubPage }) {
   return (
     <DataPanel
       title={props.page.title[loc] ?? props.page.title["en-US"]}
-      info={`${tr("stub.demoInfo", { n: rows.length })} · ${tr("stub.authNote")}`}
+      info={`${tr("stub.skeletonHint", { key: props.page.key })} · ${tr("stub.demoInfo", { n: rows.length })} · ${tr("stub.authNote")}`}
       tools={{ create: true, refresh: true, export: true, import: true, print: true, column: true, search: true }}
       onCreate={() => message.info(tr("stub.soon"))}
       onRefresh={reload}

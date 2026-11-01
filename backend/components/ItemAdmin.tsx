@@ -1,6 +1,6 @@
 /**
  * Role / Permission admin (Yii2 RBAC style). One component serves both pages.
- *  - list table: #, name, rule name, description, actions (view / edit / delete); toolbar: add, refresh
+ *  - list table: #, name, description, createdAt, actions (Vue role/access; ruleName stays in form/detail)
  *  - detail modal: basic info on top, Transfer (assignable ⇄ assigned, grouped Roles/Permissions/Routes) below
  *  - create / edit forms are Modals as well
  */
@@ -240,7 +240,6 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
         columns={[
           { prop: "idx", label: tr("rbac.index") },
           { prop: "name", label: tr("rbac.name") },
-          { prop: "ruleName", label: tr("rbac.ruleName") },
           { prop: "description", label: tr("rbac.description") },
           { prop: "createdAt", label: tr("common.createdAt") },
           { prop: "actions", label: tr("common.actions") },
@@ -273,7 +272,6 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
               </span>
             ),
           },
-          { key: "ruleName", title: tr("rbac.ruleName"), dataIndex: "ruleName" },
           { key: "description", title: tr("rbac.description"), dataIndex: "description" },
           {
             key: "createdAt",

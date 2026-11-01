@@ -1,6 +1,7 @@
 /**
- * Dashboard (/) — Vue home/dashboard.vue shape: member KPI cards, finance strip,
- * charts via @dreamer/ui-view Chart*. Admin/menu counts are live; member/finance = demo.
+ * Dashboard (/) - Vue home/dashboard.vue shape.
+ * LIVE: dashboard-live-kpis - AdminUser.count, visible menus, current roleCodes.length.
+ * DEMO (no Member/Finance models; docs/handoff.md): member KPIs, finance strip, charts.
  */
 import { Card, ChartBar, ChartDoughnut, ChartLine, IconUsers } from "@dreamer/ui-view";
 import type { LoadContext } from "@dreamer/dweb";

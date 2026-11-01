@@ -129,6 +129,7 @@ export default {
     excel: "Excel",
   },
   stub: {
+    skeletonHint: "仅骨架 — 尚无 {key} 领域模型；见 docs/handoff.md",
     demoInfo: "演示数据 {n} 条（待接领域模型；需超级角色或显式路由授权）",
     settingsHint: "配置只读示意；保存接口尚未接入。",
     chartHint: "图表／关系树占位，待数据服务接入。",
