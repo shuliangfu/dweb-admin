@@ -89,3 +89,93 @@ Deno.test({ name: "member segments: active / zombie pages only list their own st
   }
   await api.post("/api/res/remove", { res: "user.index", ids });
 }});
+
+/**
+ * Regression: the toolbar (add / search / refresh / print / [import] / export / columns) is ONE joined
+ * button group — buttons are direct siblings, flush, only the outer corners are rounded.
+ * (It broke when every button was wrapped in a <span> to carry data-testid.)
+ */
+Deno.test({ name: "toolbar: add/search/refresh/print/export/columns form one connected button group on every list + admin page", ...OPTS, fn: async () => {
+  await ensureServer();
+  const pages = ["/rbac/admins", "/rbac/roles", "/rbac/permissions", "/developer/menus", ...LIST_PAGES.map(([p]) => p)];
+  for (const dark of [false, true]) {
+    const { browser, ctx } = await browserLoggedIn();
+    try {
+      if (dark) await ctx.addCookies([{ name: "dweb-admin-theme", value: "dark", url: BASE }]);
+      const page = await ctx.newPage();
+      for (const path of pages) {
+        await page.goto(BASE + path);
+        await page.waitForSelector("[data-testid=dp-table]");
+        await page.waitForSelector("[data-testid=dp-refresh]"); // ids are attached after mount
+        const r = await page.evaluate(() => {
+          const root = document.querySelector("[data-dp-tools]")!;
+          const group = root.querySelector(".dp-tool-group") as HTMLElement;
+          const btns = [...root.querySelectorAll("button")] as HTMLElement[];
+          const rect = btns.map((b) => b.getBoundingClientRect());
+          const radius = btns.map((b) => {
+            const c = getComputedStyle(b);
+            return { l: parseFloat(c.borderTopLeftRadius) || 0, r: parseFloat(c.borderTopRightRadius) || 0 };
+          });
+          return {
+            n: btns.length,
+            isToolGroup: !!group && group.getAttribute("role") === "group" && btns.every((b) => group.contains(b)),
+            wrappers: [...group.children].every((c) => c === (c as HTMLElement) && c.querySelectorAll("button").length === 1),
+            noWrapSpan: btns.every((b) => !b.parentElement?.hasAttribute("data-testid")),
+            gaps: rect.slice(1).map((x, i) => Math.round((x.left - rect[i].right) * 10) / 10),
+            sameRow: rect.every((x) => Math.abs(x.top - rect[0].top) < 0.5),
+            radius,
+            dividers: btns.map((b) => getComputedStyle(b).boxShadow),
+            ids: btns.map((b) => b.getAttribute("data-testid")),
+          };
+        });
+        assert(r.n >= 5, `${path}: ${r.n} toolbar buttons`);
+        assert(r.isToolGroup && r.wrappers, `${path}: one .dp-tool-group with one button per slot`);
+        assert(r.noWrapSpan, `${path}: buttons must not be wrapped`);
+        assert(r.sameRow, `${path}: one row`);
+        for (const g of r.gaps) assert(g <= 0.5, `${path}: gap ${g}px between toolbar buttons (${dark ? "dark" : "light"}) — must be flush`);
+        assert(r.radius[0].l > 0 && r.radius[0].r === 0, `${path}: first button rounded only on the left`);
+        assert(r.radius[r.n - 1].r > 0 && r.radius[r.n - 1].l === 0, `${path}: last button rounded only on the right`);
+        // every divider is the same dark hairline (the old bug: the last gap rendered a bright line); the last button has none
+        const inner = r.dividers.slice(0, -1);
+        assert(inner.every((d) => d !== "none" && d === inner[0]), `${path}: all dividers identical (${inner.join(" | ")})`);
+        assertEquals(r.dividers[r.n - 1], "none", `${path}: no divider after the last button`);
+        for (const x of r.radius.slice(1, -1)) assert(x.l === 0 && x.r === 0, `${path}: middle buttons are square`);
+        assert(r.ids.includes("dp-refresh") && r.ids.includes("dp-export") && r.ids.includes("dp-columns"), `${path}: test ids attached ${r.ids}`);
+      }
+      await page.goto(BASE + "/user");
+      await page.waitForSelector("[data-testid=dp-refresh]");
+      await page.locator("[data-testid=data-panel-toolbar]").screenshot({ path: `runtime/theme/toolbar-${dark ? "dark" : "light"}.png` });
+    } finally {
+      await browser.close();
+    }
+  }
+} });
+
+/** The search form expands directly below the toolbar and above the table; clicking the button again collapses it. */
+Deno.test({ name: "search form: opens between toolbar and table on every list + admin page, second click collapses it", ...OPTS, fn: async () => {
+  await ensureServer();
+  const pages = ["/rbac/admins", "/rbac/roles", "/rbac/permissions", "/developer/menus", ...LIST_PAGES.map(([p]) => p)];
+  const { browser, ctx } = await browserLoggedIn();
+  try {
+    const page = await ctx.newPage();
+    for (const path of pages) {
+      await page.goto(BASE + path);
+      await page.waitForSelector("[data-testid=dp-search-toggle]");
+      assertEquals(await page.locator("[data-testid=dp-search]").count(), 0, `${path}: closed by default`);
+      await page.click("[data-testid=dp-search-toggle]");
+      await page.waitForSelector("[data-testid=dp-search]");
+      const y = await page.evaluate(() => {
+        const top = (s: string) => document.querySelector(s)!.getBoundingClientRect();
+        return { tool: top("[data-testid=data-panel-toolbar]"), search: top("[data-testid=dp-search]"), table: top("[data-testid=dp-table]") };
+      });
+      assert(y.search.top >= y.tool.bottom - 0.5, `${path}: search below the toolbar`);
+      assert(y.search.bottom <= y.table.top + 0.5, `${path}: search above the table (search ${y.search.bottom} / table ${y.table.top})`);
+      assert(Math.abs(y.search.top - y.tool.bottom) < 2, `${path}: search directly under the toolbar`);
+      if (path === "/user") await page.screenshot({ path: "runtime/theme/search-open.png" });
+      await page.click("[data-testid=dp-search-toggle]");
+      await page.waitForSelector("[data-testid=dp-search]", { state: "detached" });
+    }
+  } finally {
+    await browser.close();
+  }
+} });

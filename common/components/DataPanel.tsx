@@ -32,6 +32,7 @@ import {
   Input,
   Modal,
   Textarea,
+  Tooltip,
   message,
 } from "@dreamer/ui-view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
@@ -474,10 +475,42 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
   }
 
   // ---- toolbar
-  const toolBtn = (label: string, onClick: () => void, icon: unknown, testid: string) => (
-    <Btn type="button" size="sm" aria-label={label} onClick={onClick} data-testid={testid}>
-      {icon}
-    </Btn>
+  // Same order as the buttons rendered in the group below.
+  const toolIds = () => [
+    ...(meta.caps.create || props.onCreate ? [["dp-create", tr("panel.create")]] : []),
+    ...(meta.search.length > 0 ? [["dp-search-toggle", tr("panel.search")]] : []),
+    ["dp-refresh", tr("panel.refresh")],
+    ["dp-print", tr("panel.print")],
+    ...(meta.caps.import || props.onImportRows ? [["dp-import", tr("panel.import")]] : []),
+    ["dp-export", tr("panel.export")],
+    ["dp-columns", tr("panel.column")],
+  ];
+  const tagToolbar = (): boolean => {
+    const root = g.document?.querySelector?.("[data-dp-tools]");
+    if (!root) return false;
+    const btns = root.querySelectorAll("button");
+    const ids = toolIds();
+    if (btns.length < ids.length) return false;
+    ids.forEach(([id, label], i) => {
+      const b = btns[i];
+      b.setAttribute("data-testid", id);
+      b.setAttribute("aria-label", label);
+      b.setAttribute("title", label);
+    });
+    return true;
+  };
+  onMount(() => {
+    // the DOM is inserted right after mount (and replaced once on hydration): retry briefly
+    for (const ms of [0, 30, 120, 400, 1000]) setTimeout(tagToolbar, ms);
+  });
+  // Same structure as the last good version (2c041c4): ButtonGroup.dp-tool-group > Tooltip/Dropdown wrappers > Button.
+  // Never add our own wrapper around these buttons — test ids / labels are applied after mount (tagToolbar).
+  const toolBtn = (label: string, onClick: () => void, icon: unknown, _testid: string) => (
+    <Tooltip content={label} placement="top">
+      <Button type="button" size="sm" class="px-2.5" onClick={onClick}>
+        {icon}
+      </Button>
+    </Tooltip>
   );
 
   const exportMenu = (
@@ -527,7 +560,8 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
   const toolbar = (
     <div class="flex w-full flex-wrap items-center justify-end gap-2 border-b border-slate-200 px-3 py-2 dark:border-slate-700" data-testid="data-panel-toolbar">
       {props.toolbarExtra}
-      <ButtonGroup attached>
+      <div class="contents" data-dp-tools>
+      <ButtonGroup attached class="dp-tool-group">
         {(meta.caps.create || props.onCreate) && toolBtn(tr("panel.create"), doCreate, <IconPlus size="sm" />, "dp-create")}
         {meta.search.length > 0 &&
           toolBtn(tr("panel.search"), () => (showSearch.value = !showSearch.value), <IconSearch size="sm" />, "dp-search-toggle")}
@@ -535,16 +569,17 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
         {toolBtn(tr("panel.print"), printTable, <IconPrinter size="sm" />, "dp-print")}
         {(meta.caps.import || props.onImportRows) && toolBtn(tr("panel.import"), pickImport, <IconUpload size="sm" />, "dp-import")}
         <Dropdown overlay={exportMenu} placement="bottomRight" trigger="click">
-          <Btn type="button" size="sm" class="px-2.5" aria-label={tr("panel.export")} data-testid="dp-export">
+          <Button type="button" size="sm" class="px-2.5">
             <IconDownload size="sm" />
-          </Btn>
+          </Button>
         </Dropdown>
         <Dropdown overlay={columnMenu()} placement="bottomRight" trigger="click">
-          <Btn type="button" size="sm" class="px-2.5" aria-label={tr("panel.column")} data-testid="dp-columns">
+          <Button type="button" size="sm" class="px-2.5">
             <IconColumns size="sm" />
-          </Btn>
+          </Button>
         </Dropdown>
       </ButtonGroup>
+      </div>
     </div>
   );
 
@@ -1055,8 +1090,9 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
         data-testid="data-panel"
       >
         {toolbar}
-        {searchBar}
-        {batchBar}
+        {/* fixed slots: a reactive child inserted after static siblings would land at the bottom of the card */}
+        <div data-testid="dp-search-slot">{searchBar}</div>
+        <div data-testid="dp-batch-slot">{batchBar}</div>
         <div class="px-2.5 py-2.5">{table}</div>
         {pagination}
       </Card>
