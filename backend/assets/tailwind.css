@@ -386,18 +386,18 @@
 
 /* ------------------------------------------------------------------ admin chrome (senvis backend palette) */
 :root {
-  --adm-side: var(--color-adminlte-sidebar);
-  --adm-sub: var(--color-adminlte-sidebar);
-  --adm-sub-hover: #1e293b;
+  --adm-side: #1e293b /* light: slate-800 (was slate-950); contrast vs #cbd5e1 ≈ 10:1 */;
+  --adm-sub: #1e293b;
+  --adm-sub-hover: #334155;
   --adm-active-bg: transparent;
   --adm-text: #cbd5e1;
   --adm-text-hover: #ffffff;
   --adm-accent: var(--color-adminlte-accent);
   --adm-content: var(--color-adminlte-content);
   --adm-fg: #334155;
-  --adm-brand-strip: var(--color-adminlte-brand);
+  --adm-brand-strip: #334155 /* light: slate-700 (was slate-900); white on it ≈ 10:1 */;
   --adm-brand-fg: #ffffff;
-  --adm-top-bg: var(--color-adminlte-header);
+  --adm-top-bg: #334155;
   --adm-top-fg: #ffffff;
   --adm-tag-bg: #f8fafc;
   --adm-tag-border: #e2e8f0;
@@ -418,7 +418,7 @@
   --adm-menu-item-h: 45px;
   --adm-menu-sub-h: 30px;
   --adm-radius: 5px;
-  --adm-split: #1e293b;
+  --adm-split: #334155;
 }
 .dark {
   --adm-side: var(--color-adminlte-sidebar-dark);
