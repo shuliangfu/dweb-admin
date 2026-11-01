@@ -8,10 +8,10 @@ export function SideBrand(props: { name: string; short: string }) {
     <Link
       href="/"
       data-testid="side-brand"
-      class="adm-side-brand flex h-14 shrink-0 items-center justify-center gap-2 px-3 no-underline"
+      class="adm-side-brand flex h-adm-top shrink-0 items-center justify-center gap-2 px-3 no-underline"
       title={props.name}
     >
-      <img src="/assets/favicon.svg" alt="" class="h-8 w-8 shrink-0" width="32" height="32" />
+      <img src="/assets/favicon.svg" alt="" class="h-10 w-10 shrink-0" width="40" height="40" />
       <span class="adm-label truncate text-base font-bold tracking-tight">{props.name}</span>
       <span class="adm-short hidden text-base font-bold">{props.short.slice(0, 1).toUpperCase()}</span>
     </Link>

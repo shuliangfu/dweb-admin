@@ -66,10 +66,12 @@ export function StubList(props: { locale: Locale; page: StubPage }) {
         soon: tr("stub.soon"),
         resetColumns: tr("panel.resetColumns"),
         csv: "CSV",
-        excel: "Excel",
-        xml: "XML",
-        html: "HTML",
+        excel: tr("panel.excel"),
+        json: tr("panel.json"),
+        xml: tr("panel.xml"),
+        html: tr("panel.html"),
         unsupportedFormat: tr("panel.unsupportedFormat"),
+        xlsxGap: tr("panel.xlsxGap"),
       }}
       onImportRows={(rows) => {
         message.info(tr("stub.importParsed", { n: rows.length }));

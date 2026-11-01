@@ -8,7 +8,7 @@ import { createSignal } from "@dreamer/view";
 import { Button, Descriptions, FormItem, Input, Modal, Table, Tag, Transfer } from "@dreamer/ui-view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { api, ConfirmDelete, reload, toastResult } from "@backend/components/crud-kit.tsx";
-import { DataPanel } from "@common/components/DataPanel.tsx";
+import { DataPanel, type DataPanelChildrenCtx } from "@common/components/DataPanel.tsx";
 
 export interface ItemRow {
   name: string;
@@ -246,7 +246,7 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
           </form>
         }
       >
-        {(ctx) => (
+        {(ctx: DataPanelChildrenCtx) => (
           <Table
                   bordered
                   hoverable

@@ -113,8 +113,9 @@ export default function Layout(props: { children?: VNode | VNode[]; data?: Layou
             closeAll: tr("shell.closeAll"),
           }}
         />
-        <main class="adm-content min-h-0 min-w-0 flex-1 overflow-y-auto p-3 md:p-4">
-          <div class="adm-content-card rounded-xs border-t-3 bg-white p-5 shadow-xs dark:bg-slate-800">
+        <main class="adm-content min-h-0 min-w-0 flex-1 overflow-y-auto p-2.5">
+          {/* Vue el-main: 10px pad, no outer card — pages/DataPanel supply Card */}
+          <div class="adm-content-inner min-h-full">
             {props.children}
           </div>
         </main>

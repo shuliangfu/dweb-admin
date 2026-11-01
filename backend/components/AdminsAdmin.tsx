@@ -3,7 +3,7 @@ import { createSignal } from "@dreamer/view";
 import { Button, FormItem, Input, Modal, MultiSelect, Switch, Table, Tag } from "@dreamer/ui-view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { api, ConfirmDelete, reload, toastResult } from "@backend/components/crud-kit.tsx";
-import { DataPanel } from "@common/components/DataPanel.tsx";
+import { DataPanel, type DataPanelChildrenCtx } from "@common/components/DataPanel.tsx";
 
 export interface UserRow {
   id: string;
@@ -118,7 +118,7 @@ export function AdminsAdmin(props: {
           </form>
         }
       >
-        {(ctx) => (
+        {(ctx: DataPanelChildrenCtx) => (
           <Table
                   bordered
                   hoverable

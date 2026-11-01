@@ -134,6 +134,8 @@
   --spacing-chat-pane: 36%;
   --spacing-lock-top: 18vh;
   --spacing-lock-gap: 12vh;
+  /* Vue Layout header-t / Side title strip ≈ 60px */
+  --spacing-adm-top: 3.75rem;
 
   --text-menu: 0.8125rem; /* 13px — side submenu */
   --text-menu--line-height: 1.25rem;
@@ -182,6 +184,7 @@
 }
 .adm-side-brand:hover { color: #fff; }
 .adm-menu a, .adm-menu summary { color: var(--adm-text); }
+.adm-menu { margin-top: 0.875rem; } /* Vue Side .menu margin-top ≈ 14–15px */
 .adm-menu .adm-top-item { border-left: 3px solid transparent; }
 .adm-menu .adm-top-item:hover { color: var(--adm-text-hover); background: var(--adm-active-bg); }
 .adm-menu .adm-top-item.adm-on,
@@ -213,7 +216,7 @@
 
 /* TagView — Vue header-x strip */
 .adm-tag-view {
-  padding: 5px 8px 0;
+  padding: 5px 2px 0;
   border: 1px solid var(--adm-tag-border);
   border-left: none;
   border-right: none;
@@ -230,7 +233,10 @@
   min-width: 40px;
   max-width: 160px;
   margin-left: 2px;
-  padding: 6px 8px;
+  margin-right: 8px;
+  padding: 6px 4px;
+  height: 30px;
+  box-sizing: border-box;
   border: 1px solid var(--adm-tag-item-border);
   border-radius: 3px 3px 0 0;
   font-size: 12px;

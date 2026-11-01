@@ -3,7 +3,7 @@ import { createSignal } from "@dreamer/view";
 import { Button, FormItem, Input, Modal, Select, Switch, Table, Tag } from "@dreamer/ui-view";
 import { createT, type Locale, pickLocalized } from "@common/i18n/mod.ts";
 import { api, ConfirmDelete, reload, toastResult } from "@backend/components/crud-kit.tsx";
-import { DataPanel } from "@common/components/DataPanel.tsx";
+import { DataPanel, type DataPanelChildrenCtx } from "@common/components/DataPanel.tsx";
 
 export interface MenuRow {
   key: string;
@@ -113,7 +113,7 @@ export function MenusAdmin(props: { locale: Locale; rows: MenuRow[] }) {
           title: typeof r.title === "object" ? (r.title["zh-CN"] ?? r.key) : r.title,
         })) as never}
       >
-        {(ctx) => (
+        {(ctx: DataPanelChildrenCtx) => (
           <Table
                   bordered
                   hoverable

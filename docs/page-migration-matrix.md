@@ -34,7 +34,7 @@ dweb-admin today:
 |---|---|---|
 | Page-level CRUD admins | `backend/components/*Admin.tsx`, `crud-kit.tsx` | **部分** — per-page UI, not a reusable CardPanel |
 | ui-view Table/Card/List/Pagination/Modal | via `@dreamer/ui-view` | **已有** (library) |
-| Callable `DataPanel` / `CardPanel` in `common/components/` | `common/components/DataPanel.tsx` | **部分** — search/column/CSV export+import(`parseCsv`→`onImportRows`)/print; `children` ctx.`filterTableColumns` hides cols; Excel/XML/HTML unavailable without pkgs; wired on model lists + stubs |
+| Callable `DataPanel` / `CardPanel` in `common/components/` | `common/components/DataPanel.tsx` | **部分** — search/column/multi-format export (CSV/HTML-as-xls/XML/TXT/JSON)+import/print/icon toolbar; `filterTableColumns`; true OOXML Excel lib still optional; wired on model lists + stubs |
 
 **Target:** `common/components/DataPanel.tsx` (name TBD) composed from `@dreamer/ui-view` only; all list pages consume it.
 
