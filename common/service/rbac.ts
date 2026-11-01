@@ -37,6 +37,10 @@ const PUBLIC_PREFIX = ["/assets/", "/_client", "/__hmr", "/api/i18n/", "/api/aut
 /** Own-account endpoints: any logged-in user (password, 2FA, passkeys). */
 const AUTH_ONLY_PREFIX = [
   "/api/account/",
+  // Generic resource API: any logged-in user passes the guard; each handler then checks the
+  // resource grant itself (backend/api-res.ts).
+  "/api/res/",
+  "/api/dashboard/",
 ];
 
 /** Logged-in users may always access these (no role binding required). */
@@ -206,6 +210,16 @@ export async function canAccess(
   pathname: string,
 ): Promise<boolean> {
   if (isAuthOnlyPath(pathname)) return true;
+  const grants = resolveGrants(await loadGraph(), roleCodes);
+  return grants.isSuper || ruleAllows(grants.rules, method, pathname);
+}
+
+/** Like canAccess but without the logged-in-user shortcuts (handlers that enforce their own grants). */
+export async function canAccessStrict(
+  roleCodes: string[],
+  method: string,
+  pathname: string,
+): Promise<boolean> {
   const grants = resolveGrants(await loadGraph(), roleCodes);
   return grants.isSuper || ruleAllows(grants.rules, method, pathname);
 }

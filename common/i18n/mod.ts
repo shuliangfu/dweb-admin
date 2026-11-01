@@ -8,6 +8,20 @@
 import { createI18n, type I18n, type TranslationData } from "@dreamer/i18n";
 import zhCN from "./zh-CN.ts";
 import enUS from "./en-US.ts";
+import moreZh from "./more-zh.ts";
+import moreEn from "./more-en.ts";
+
+/** Deep merge: later wins, objects merge key by key. */
+function merge(a: Record<string, unknown>, b: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = { ...a };
+  for (const [k, v] of Object.entries(b)) {
+    const cur = out[k];
+    out[k] = v && typeof v === "object" && cur && typeof cur === "object"
+      ? merge(cur as Record<string, unknown>, v as Record<string, unknown>)
+      : v;
+  }
+  return out;
+}
 
 export const LOCALES = ["zh-CN", "en-US"] as const;
 export type Locale = (typeof LOCALES)[number];
@@ -21,8 +35,8 @@ export const LOCALE_LABELS: Record<Locale, string> = {
 };
 
 const dictionaries: Record<Locale, TranslationData> = {
-  "zh-CN": zhCN as unknown as TranslationData,
-  "en-US": enUS as unknown as TranslationData,
+  "zh-CN": merge(zhCN, moreZh) as unknown as TranslationData,
+  "en-US": merge(enUS, moreEn) as unknown as TranslationData,
 };
 
 const instances = new Map<Locale, I18n>();
