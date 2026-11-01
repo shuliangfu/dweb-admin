@@ -216,21 +216,21 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 
 ### 已相对落地（截至本 handoff 撰写时，以 matrix + 仓库为准）
 
-- 壳层：Side／Top／TagView／主题／设置抽屉（主色）——**部分**对齐，Chat 仍 stub；TagView keep-alive 不适用 SSR 整页跳转模型。
+- 壳层：Side／Top／TagView／主题／设置抽屉（主色＋`--adm-accent`）——**部分**对齐；ChatModal 为分栏壳（无 IM 后端）；TagView keep-alive 不适用 SSR。
 - 全页：login／lock／forget／reset／403／404／500——**部分**。
 - Home：dashboard + workspace——**部分**。
-- RBAC：admins／roles／permissions／routes／**assign（roleCodes＝允许型可跑；modal 含禁用 gap UI）**——**部分**；真 list API。
-- System：menus、online（真 AdminSession）——**部分**；其余多为 stub。
+- RBAC：admins／roles／permissions／routes／**assign（roleCodes＝允许型可跑；modal 含禁用 gap UI）**——**部分**；真 list／CRUD API。
+- System：menus（CRUD）、online（真 AdminSession＋IP／UA＋踢下线）——**部分**；其余多为 stub。
 - DataPanel：search／列显隐／CSV 导出＋`parseCsv`→`onImportRows`／打印；children `filterTableColumns` 已接 admins／roles／menus。
+- Tailwind 4：禁止 3.x 任意值 bracket 烂用（见上文「Tailwind 4 约定」）。
 - AUTH_ONLY 收紧：stub 页不再白名单放行，需超管或显式路由授权。
 
 ### 未完／仍弱（优先队列，细节以 matrix §12 为准）
 
-1. **领域 stub → 真模型／API**（会员、CMS、财务、系统设置存储等）；现有 Mongo 模型主要是 AdminUser／Auth*／Menu／Session／Passkey——**无模型的页保持 stub**；有模型的 list 已接真 API。
-2. **DataPanel**：Excel／XML／HTML 等有真实依赖再接；行级表单／与 Vue CardPanel store 驱动进一步对齐。
-3. **Assign**：若产品要 Vue 全量 allow／deny＋用户直绑路由，须先加 AuthAssignment 类模型／API，再接已留的 gap 面板——**禁止假接**。
-4. 壳层／全页视觉与交互继续对稿；Chat、部分 Top 能力仍弱。
-5. 对照表随每刀更新。
+1. **扫仓结论（2026-11-01）**：有领域模型却仍 stub 的页＝**无**。AdminUser／Auth*／Menu／AdminSession／AdminPasskey 相关 list／CRUD（含 online 踢下线、账号安全）已接真 API。
+2. **无模型 stub 保持 stub**（勿假接）：会员／CMS／财务／统计／developer 备份反馈语言系统日志／system 设置与 admin-log 等——需先新增领域模型再接线。
+3. **DataPanel**：Excel／XML／HTML 等有真实依赖再接；行级表单／与 Vue CardPanel store 驱动进一步对齐。
+4. **RBAC 模型缺口**：Vue allow／deny＋用户直绑路由需 AuthAssignment 类模型后才能真接 Assign gap 面板。
 
 ### 工作区提示
 
@@ -262,6 +262,8 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 ---
 
 ## 9. 修订记录
+
+- 2026-11-01（Asia/Shanghai）：模型背书扫仓——无剩余「有模型仍 stub」页；online 踢下线；matrix／本 handoff 进度同步（Chat／session IP·UA／TW4）。
 
 - 2026-11-01（Asia/Shanghai）：补「Tailwind 4 约定／禁 3.x 任意值」；全仓将 rem／px／%／vh 方括号尺寸迁到刻度工具类或 `@theme` 命名 token。
 

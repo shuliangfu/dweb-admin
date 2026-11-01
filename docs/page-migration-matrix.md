@@ -56,7 +56,7 @@ el-main → router-view
 | App HTML shell | `index.html` + Vue app | title, root mount | `backend/routes/_app.tsx` | **部分** | OK structurally; branding/title still “Dweb Admin” |
 | Layout frame | `src/components/Layout/Layout.vue` | side + dual headers + main; mobile drawer | `backend/routes/_layout.tsx` | **部分** | Vue grid + mobile drawer; lock/chat/settings wired into chrome (minimal). Theme primary presets + ColorPicker in SettingsDrawer |
 | Sidebar / 左侧菜单 | `Layout/Side/Side.vue` + `Side/Item.vue` | logo「浮生若梦」, collapse, `el-menu` from `routeStore.routes` | `SideBrand.tsx` + `SideMenu.tsx` + menu DB | **部分** | Logo strip + key→icon map + collapse icon centering; DB menu retained; not full Vue m-icon set |
-| Top bar / 顶部栏 | `Layout/TopHeader/TopHeader.vue` (+ `modules/Profile.vue`, `UpdatePassword.vue`, `UpdateProfile.vue`) | collapse control, breadcrumb, avatar menu (profile/password/lock/logout), chat, language, theme, fullscreen, settings drawer | `TopHeader.tsx` + Lang/Theme/User + FullscreenToggle + ChatModal + SettingsDrawer | **部分** | Breadcrumb toggle, lock entry, chat stub, settings drawer (breadcrumb switch); primary color presets + ColorPicker in settings |
+| Top bar / 顶部栏 | `Layout/TopHeader/TopHeader.vue` (+ `modules/Profile.vue`, `UpdatePassword.vue`, `UpdateProfile.vue`) | collapse control, breadcrumb, avatar menu (profile/password/lock/logout), chat, language, theme, fullscreen, settings drawer | `TopHeader.tsx` + Lang/Theme/User + FullscreenToggle + ChatModal + SettingsDrawer | **部分** | Breadcrumb toggle, lock entry, chat shell (split panes, no IM backend), settings drawer (breadcrumb switch); primary color presets + ColorPicker in settings |
 | Second header / Tag tabs | `Layout/SecondHeader/SecondHeader.vue` → `TagView/*` | multi-tab visited pages | `backend/components/TagView.tsx` | **部分** | Tabs + localStorage + close/context actions; keep-alive page cache not applicable (SSR/view) |
 | Mobile side drawer | `Layout.vue` `el-drawer` | drawer when mobile | `_layout.tsx` backdrop + `SidebarToggle` | **部分** | Full-height drawer + backdrop aligned with Vue aside drawer |
 | Login / no-chrome | `views/fullpage/*` rendered outside Layout | fullpage | `_layout.tsx` skips `/login`, `/password/*`, `/error/*` | **已有** | forget/reset + error pages use AuthShell/ErrorPage |
@@ -121,7 +121,7 @@ Blocking relation: **TagView + TopHeader breadcrumb** are pure shell; list `Data
 | `system/finance/index.vue` | 财务设置 | `/system/finance` stub Descriptions | **部分** — settings preview |
 | `system/level/index.vue` | 会员级别列表 | `/system/level` stub DataPanel | **部分** — demo rows |
 | `system/locale/index.vue` | 本地化管理 | `/system/locale` stub DataPanel | **部分** — demo rows |
-| `system/online/index.vue` | 在线管理员 | `/system/online` → `OnlineAdmin.tsx` (DataPanel + real AdminSession) | **部分** — live sessions; IP/UA N/A; search/export/print/column |
+| `system/online/index.vue` | 在线管理员 | `/system/online` → `OnlineAdmin.tsx` (DataPanel + real AdminSession) | **部分** — live sessions + IP/UA; kick via `DELETE /api/sessions/:id`; search/export/print/column |
 | `system/region/index.vue` | 地区列表 | `/system/region` stub DataPanel | **部分** — demo rows |
 | `system/transfer/index.vue` | 转账设置 | `/system/transfer` stub Descriptions | **部分** — settings preview |
 | `system/wallet/index.vue` | 钱包设置 | `/system/wallet` stub Descriptions | **部分** — settings preview |
@@ -184,11 +184,11 @@ All **部分** stubs (DataPanel demo): `/count/bonus|invest|point|recharge|withd
 
 | Area | Vue pages (excl. modules) | dweb 已有/部分 | 缺 |
 |---|---:|---:|---:|
-| Shell pieces (layout/side/top/second/tag) | 5+ | 5 部分 | TagView keep-alive N/A; chat still stub |
+| Shell pieces (layout/side/top/second/tag) | 5+ | 5 部分 | TagView keep-alive N/A; chat = layout-only shell (no IM) |
 | Fullpage + error | 7 | 7 部分 (login/lock/forget/reset/403/404/500) | 0 (parity pending) |
 | Home | 2 | 2 部分 (dashboard charts + workspace stub) | 0 |
 | Admin/RBAC | 5 | 5 部分 (incl. `/rbac/assign`) | 0 (allow/deny model still absent; gap UI only) |
-| System + developer menu | 13 | 13 部分 (menus/online + 11 stubs) | 0 (model/API pending) |
+| System + developer menu | 13 | 13 部分 (menus/online+kick + 11 stubs) | 0 (no domain models for remaining stubs) |
 | User | 13 | 13 部分 (stubs) | 0 (model/API pending) |
 | CMS | 6 | 6 部分 (stubs) | 0 (model/API pending) |
 | Finance | 9 | 9 部分 (stubs incl. bonus/log + wallet add-sub/log) | 0 (model/API pending) |
@@ -202,11 +202,11 @@ Vue list entry pages: **64** view files (modules excluded). Dynamic sidebar rout
 
 ## 12. Suggested implementation order (next knives)
 
-1. Replace stubs with real models/APIs (system settings store, member, CMS, finance). No remaining *model-backed* demo lists — AdminUser/Auth*/Menu/Session already live.
-2. DataPanel: Excel/XML/HTML only after adding real deps; row-level forms / CardPanel store parity.
-3. If product needs Vue allow/deny + user-direct routes: add AuthAssignment-class model + API first, then wire the reserved Assign gap panel (do not fake).
-4. Done recently: `/rbac/assign` roleCodes + gap UI; DataPanel CSV import parse + children `filterTableColumns` on admins/roles/menus; theme primary; AUTH_ONLY tighten; `docs/handoff.md`.
-5. Handoff for successors: `docs/handoff.md` (Chinese).
+1. **Model-backed scan (2026-11-01):** Mongo models in-tree are only `AdminUser` / `Auth*` / `Menu` / `AdminSession` / `AdminPasskey` (+ challenges). Every list that can use those models is already live (admins, assign, roles, permissions, routes, menus, online+kick, account security/passkeys). **No remaining model-backed stub pages.** `/system/admin-log` and all user/CMS/finance/count/developer leaves stay stubs until new domain models exist — do not fake APIs.
+2. Next real work needs **new models** (member, CMS, finance, system settings store, admin audit log) or Vue-parity polish on existing live pages (DataPanel Excel/XML once deps land; TagView keep-alive N/A on SSR).
+3. Shell: ChatModal is layout-only (no IM backend); keep honest empty states.
+4. If product needs Vue allow/deny + user-direct routes: add AuthAssignment-class model + API first, then wire the reserved Assign gap panel (do not fake).
+5. Done recently: Tailwind 4 arbitrary-size cleanup; session IP/UA; online kick (`DELETE /api/sessions/:id`); ChatModal split shell; assign gap UI; DataPanel CSV import + `filterTableColumns`; `docs/handoff.md`.
 
 ### Hard constraints reminder
 
