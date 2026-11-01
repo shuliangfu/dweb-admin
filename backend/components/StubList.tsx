@@ -1,5 +1,6 @@
 /**
- * Generic DataPanel list stub — demo rows until domain models exist.
+ * Generic DataPanel list stub — Vue CardPanel-shaped columns/search until domain models exist.
+ * Demo rows only; create/import toast "soon" — no fake API writes.
  */
 import { Tag, message } from "@dreamer/ui-view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
@@ -12,10 +13,18 @@ function demoRows(page: StubPage, n = 3): Record<string, unknown>[] {
     const row: Record<string, unknown> = { id: String(i + 1), idx: i + 1 };
     for (const c of page.columns) {
       if (c.prop === "status") row[c.prop] = i % 2 === 0 ? "active" : "pending";
-      else if (c.prop.endsWith("At") || c.prop === "createdAt" || c.prop === "updatedAt") {
+      else if (c.prop === "visits" || c.prop === "images") row[c.prop] = (i + 1) * 10;
+      else if (
+        c.prop.endsWith("At") || c.prop === "createdAt" || c.prop === "updatedAt" ||
+        c.prop === "created_at" || c.prop === "updated_at"
+      ) {
         row[c.prop] = "2026-11-01 10:00:00";
       } else if (c.prop === "amount" || c.prop === "balance" || c.prop === "total") {
         row[c.prop] = ((i + 1) * 100).toFixed(2);
+      } else if (c.prop === "email") {
+        row[c.prop] = `user${i + 1}@example.com`;
+      } else if (c.prop === "mobile") {
+        row[c.prop] = `1380000000${i}`;
       } else {
         row[c.prop] = `${c.label["en-US"]} #${i + 1}`;
       }
@@ -42,6 +51,16 @@ export function StubList(props: { locale: Locale; page: StubPage }) {
         : undefined,
     })),
   ];
+  const searchSchemas = (props.page.searchFields?.length
+    ? props.page.searchFields.map((f) => ({
+      name: f.name,
+      label: f.label[loc] ?? f.label["en-US"],
+      placeholder: f.placeholder?.[loc] ?? f.placeholder?.["en-US"] ??
+        (f.label[loc] ?? f.label["en-US"]),
+      defaultValue: "",
+    }))
+    : [{ name: "keyword", placeholder: tr("crud.search"), defaultValue: "" }]);
+
   return (
     <DataPanel
       title={props.page.title[loc] ?? props.page.title["en-US"]}
@@ -53,9 +72,7 @@ export function StubList(props: { locale: Locale; page: StubPage }) {
       rows={rows as never}
       rowKey="id"
       emptyText={tr("common.empty")}
-      searchSchemas={[
-        { name: "keyword", placeholder: tr("crud.search"), defaultValue: "" },
-      ]}
+      searchSchemas={searchSchemas}
       searchLabels={{ open: tr("panel.search"), submit: tr("crud.search"), reset: tr("crud.reset") }}
       toolLabels={{
         export: tr("panel.export"),
@@ -76,6 +93,7 @@ export function StubList(props: { locale: Locale; page: StubPage }) {
       onImportRows={(rows) => {
         message.info(tr("stub.importParsed", { n: rows.length }));
       }}
+      exportFilename={props.page.key.replace(/\./g, "-")}
     />
   );
 }

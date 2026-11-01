@@ -1,6 +1,7 @@
 /** Stub page catalog — Vue-aligned skeletons until real models land. */
 export type StubKind = "list" | "settings" | "chart";
 export type StubCol = { prop: string; label: { "zh-CN": string; "en-US": string } };
+export type StubSearch = { name: string; label: { "zh-CN": string; "en-US": string }; placeholder?: { "zh-CN": string; "en-US": string } };
 export type StubSetting = { label: { "zh-CN": string; "en-US": string }; value: string };
 export type StubPage = {
   key: string;
@@ -9,6 +10,8 @@ export type StubPage = {
   title: { "zh-CN": string; "en-US": string };
   kind: StubKind;
   columns: StubCol[];
+  /** Vue CardPanel search.schemas — demo UI only until models exist. */
+  searchFields?: StubSearch[];
   settings: StubSetting[];
   icon: string;
   sort: number;
@@ -236,11 +239,22 @@ export const STUB_PAGES: StubPage[] = [
     title: { "zh-CN": "会员列表", "en-US": "Members" },
     kind: "list",
     columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
+      { prop: "username", label: { "zh-CN": "用户名", "en-US": "Username" } },
       { prop: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" } },
       { prop: "level", label: { "zh-CN": "级别", "en-US": "Level" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "注册时间", "en-US": "Registered" } }
+      { prop: "email", label: { "zh-CN": "邮箱", "en-US": "Email" } },
+      { prop: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" } },
+      { prop: "status", label: { "zh-CN": "用户状态", "en-US": "Status" } },
+      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
+    ],
+    searchFields: [
+      { name: "username", label: { "zh-CN": "用户名", "en-US": "Username" }, placeholder: { "zh-CN": "请输入用户名查询", "en-US": "Search Username" } },
+      { name: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" }, placeholder: { "zh-CN": "请输入昵称查询", "en-US": "Search Nickname" } },
+      { name: "email", label: { "zh-CN": "邮箱", "en-US": "Email" }, placeholder: { "zh-CN": "请输入邮箱查询", "en-US": "Search Email" } },
+      { name: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" }, placeholder: { "zh-CN": "请输入手机号查询", "en-US": "Search Mobile" } },
+      { name: "status", label: { "zh-CN": "用户状态", "en-US": "Status" }, placeholder: { "zh-CN": "请输入用户状态查询", "en-US": "Search Status" } },
+      { name: "start", label: { "zh-CN": "开始时间", "en-US": "Start" }, placeholder: { "zh-CN": "请输入开始时间查询", "en-US": "Search Start" } },
+      { name: "end", label: { "zh-CN": "结束时间", "en-US": "End" }, placeholder: { "zh-CN": "请输入结束时间查询", "en-US": "Search End" } }
     ],
     settings: [
 
@@ -256,11 +270,22 @@ export const STUB_PAGES: StubPage[] = [
     title: { "zh-CN": "新增会员", "en-US": "New members" },
     kind: "list",
     columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
+      { prop: "username", label: { "zh-CN": "用户名", "en-US": "Username" } },
       { prop: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" } },
       { prop: "level", label: { "zh-CN": "级别", "en-US": "Level" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "注册时间", "en-US": "Registered" } }
+      { prop: "email", label: { "zh-CN": "邮箱", "en-US": "Email" } },
+      { prop: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" } },
+      { prop: "status", label: { "zh-CN": "用户状态", "en-US": "Status" } },
+      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
+    ],
+    searchFields: [
+      { name: "username", label: { "zh-CN": "用户名", "en-US": "Username" }, placeholder: { "zh-CN": "请输入用户名查询", "en-US": "Search Username" } },
+      { name: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" }, placeholder: { "zh-CN": "请输入昵称查询", "en-US": "Search Nickname" } },
+      { name: "email", label: { "zh-CN": "邮箱", "en-US": "Email" }, placeholder: { "zh-CN": "请输入邮箱查询", "en-US": "Search Email" } },
+      { name: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" }, placeholder: { "zh-CN": "请输入手机号查询", "en-US": "Search Mobile" } },
+      { name: "status", label: { "zh-CN": "用户状态", "en-US": "Status" }, placeholder: { "zh-CN": "请输入用户状态查询", "en-US": "Search Status" } },
+      { name: "start", label: { "zh-CN": "开始时间", "en-US": "Start" }, placeholder: { "zh-CN": "请输入开始时间查询", "en-US": "Search Start" } },
+      { name: "end", label: { "zh-CN": "结束时间", "en-US": "End" }, placeholder: { "zh-CN": "请输入结束时间查询", "en-US": "Search End" } }
     ],
     settings: [
 
@@ -276,11 +301,22 @@ export const STUB_PAGES: StubPage[] = [
     title: { "zh-CN": "活跃会员", "en-US": "Active members" },
     kind: "list",
     columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
+      { prop: "username", label: { "zh-CN": "用户名", "en-US": "Username" } },
       { prop: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" } },
       { prop: "level", label: { "zh-CN": "级别", "en-US": "Level" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "注册时间", "en-US": "Registered" } }
+      { prop: "email", label: { "zh-CN": "邮箱", "en-US": "Email" } },
+      { prop: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" } },
+      { prop: "status", label: { "zh-CN": "用户状态", "en-US": "Status" } },
+      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
+    ],
+    searchFields: [
+      { name: "username", label: { "zh-CN": "用户名", "en-US": "Username" }, placeholder: { "zh-CN": "请输入用户名查询", "en-US": "Search Username" } },
+      { name: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" }, placeholder: { "zh-CN": "请输入昵称查询", "en-US": "Search Nickname" } },
+      { name: "email", label: { "zh-CN": "邮箱", "en-US": "Email" }, placeholder: { "zh-CN": "请输入邮箱查询", "en-US": "Search Email" } },
+      { name: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" }, placeholder: { "zh-CN": "请输入手机号查询", "en-US": "Search Mobile" } },
+      { name: "status", label: { "zh-CN": "用户状态", "en-US": "Status" }, placeholder: { "zh-CN": "请输入用户状态查询", "en-US": "Search Status" } },
+      { name: "start", label: { "zh-CN": "开始时间", "en-US": "Start" }, placeholder: { "zh-CN": "请输入开始时间查询", "en-US": "Search Start" } },
+      { name: "end", label: { "zh-CN": "结束时间", "en-US": "End" }, placeholder: { "zh-CN": "请输入结束时间查询", "en-US": "Search End" } }
     ],
     settings: [
 
@@ -296,11 +332,22 @@ export const STUB_PAGES: StubPage[] = [
     title: { "zh-CN": "黑名单会员", "en-US": "Blacklist" },
     kind: "list",
     columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
+      { prop: "username", label: { "zh-CN": "用户名", "en-US": "Username" } },
       { prop: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" } },
       { prop: "level", label: { "zh-CN": "级别", "en-US": "Level" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "注册时间", "en-US": "Registered" } }
+      { prop: "email", label: { "zh-CN": "邮箱", "en-US": "Email" } },
+      { prop: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" } },
+      { prop: "status", label: { "zh-CN": "用户状态", "en-US": "Status" } },
+      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
+    ],
+    searchFields: [
+      { name: "username", label: { "zh-CN": "用户名", "en-US": "Username" }, placeholder: { "zh-CN": "请输入用户名查询", "en-US": "Search Username" } },
+      { name: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" }, placeholder: { "zh-CN": "请输入昵称查询", "en-US": "Search Nickname" } },
+      { name: "email", label: { "zh-CN": "邮箱", "en-US": "Email" }, placeholder: { "zh-CN": "请输入邮箱查询", "en-US": "Search Email" } },
+      { name: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" }, placeholder: { "zh-CN": "请输入手机号查询", "en-US": "Search Mobile" } },
+      { name: "status", label: { "zh-CN": "用户状态", "en-US": "Status" }, placeholder: { "zh-CN": "请输入用户状态查询", "en-US": "Search Status" } },
+      { name: "start", label: { "zh-CN": "开始时间", "en-US": "Start" }, placeholder: { "zh-CN": "请输入开始时间查询", "en-US": "Search Start" } },
+      { name: "end", label: { "zh-CN": "结束时间", "en-US": "End" }, placeholder: { "zh-CN": "请输入结束时间查询", "en-US": "Search End" } }
     ],
     settings: [
 
@@ -316,11 +363,22 @@ export const STUB_PAGES: StubPage[] = [
     title: { "zh-CN": "锁定会员", "en-US": "Locked members" },
     kind: "list",
     columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
+      { prop: "username", label: { "zh-CN": "用户名", "en-US": "Username" } },
       { prop: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" } },
       { prop: "level", label: { "zh-CN": "级别", "en-US": "Level" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "注册时间", "en-US": "Registered" } }
+      { prop: "email", label: { "zh-CN": "邮箱", "en-US": "Email" } },
+      { prop: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" } },
+      { prop: "status", label: { "zh-CN": "用户状态", "en-US": "Status" } },
+      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
+    ],
+    searchFields: [
+      { name: "username", label: { "zh-CN": "用户名", "en-US": "Username" }, placeholder: { "zh-CN": "请输入用户名查询", "en-US": "Search Username" } },
+      { name: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" }, placeholder: { "zh-CN": "请输入昵称查询", "en-US": "Search Nickname" } },
+      { name: "email", label: { "zh-CN": "邮箱", "en-US": "Email" }, placeholder: { "zh-CN": "请输入邮箱查询", "en-US": "Search Email" } },
+      { name: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" }, placeholder: { "zh-CN": "请输入手机号查询", "en-US": "Search Mobile" } },
+      { name: "status", label: { "zh-CN": "用户状态", "en-US": "Status" }, placeholder: { "zh-CN": "请输入用户状态查询", "en-US": "Search Status" } },
+      { name: "start", label: { "zh-CN": "开始时间", "en-US": "Start" }, placeholder: { "zh-CN": "请输入开始时间查询", "en-US": "Search Start" } },
+      { name: "end", label: { "zh-CN": "结束时间", "en-US": "End" }, placeholder: { "zh-CN": "请输入结束时间查询", "en-US": "Search End" } }
     ],
     settings: [
 
@@ -336,11 +394,22 @@ export const STUB_PAGES: StubPage[] = [
     title: { "zh-CN": "僵尸会员", "en-US": "Zombie members" },
     kind: "list",
     columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
+      { prop: "username", label: { "zh-CN": "用户名", "en-US": "Username" } },
       { prop: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" } },
       { prop: "level", label: { "zh-CN": "级别", "en-US": "Level" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "注册时间", "en-US": "Registered" } }
+      { prop: "email", label: { "zh-CN": "邮箱", "en-US": "Email" } },
+      { prop: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" } },
+      { prop: "status", label: { "zh-CN": "用户状态", "en-US": "Status" } },
+      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
+    ],
+    searchFields: [
+      { name: "username", label: { "zh-CN": "用户名", "en-US": "Username" }, placeholder: { "zh-CN": "请输入用户名查询", "en-US": "Search Username" } },
+      { name: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" }, placeholder: { "zh-CN": "请输入昵称查询", "en-US": "Search Nickname" } },
+      { name: "email", label: { "zh-CN": "邮箱", "en-US": "Email" }, placeholder: { "zh-CN": "请输入邮箱查询", "en-US": "Search Email" } },
+      { name: "mobile", label: { "zh-CN": "手机号", "en-US": "Mobile" }, placeholder: { "zh-CN": "请输入手机号查询", "en-US": "Search Mobile" } },
+      { name: "status", label: { "zh-CN": "用户状态", "en-US": "Status" }, placeholder: { "zh-CN": "请输入用户状态查询", "en-US": "Search Status" } },
+      { name: "start", label: { "zh-CN": "开始时间", "en-US": "Start" }, placeholder: { "zh-CN": "请输入开始时间查询", "en-US": "Search Start" } },
+      { name: "end", label: { "zh-CN": "结束时间", "en-US": "End" }, placeholder: { "zh-CN": "请输入结束时间查询", "en-US": "Search End" } }
     ],
     settings: [
 
@@ -356,11 +425,16 @@ export const STUB_PAGES: StubPage[] = [
     title: { "zh-CN": "在线会员", "en-US": "Online members" },
     kind: "list",
     columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
-      { prop: "nickname", label: { "zh-CN": "昵称", "en-US": "Nickname" } },
-      { prop: "level", label: { "zh-CN": "级别", "en-US": "Level" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "createdAt", label: { "zh-CN": "注册时间", "en-US": "Registered" } }
+      { prop: "username", label: { "zh-CN": "用户名", "en-US": "Username" } },
+      { prop: "title", label: { "zh-CN": "页面", "en-US": "Page" } },
+      { prop: "browser", label: { "zh-CN": "浏览器", "en-US": "Browser" } },
+      { prop: "device", label: { "zh-CN": "设备", "en-US": "Device" } },
+      { prop: "language", label: { "zh-CN": "语言", "en-US": "Language" } },
+      { prop: "updatedAt", label: { "zh-CN": "时间", "en-US": "Time" } }
+    ],
+    searchFields: [
+      { name: "username", label: { "zh-CN": "会员", "en-US": "Member" }, placeholder: { "zh-CN": "请输入会员查询", "en-US": "Search Member" } },
+      { name: "title", label: { "zh-CN": "页面", "en-US": "Page" }, placeholder: { "zh-CN": "请输入页面查询", "en-US": "Search Page" } }
     ],
     settings: [
 
@@ -376,11 +450,21 @@ export const STUB_PAGES: StubPage[] = [
     title: { "zh-CN": "会员日志列表", "en-US": "Member logs" },
     kind: "list",
     columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
-      { prop: "title", label: { "zh-CN": "操作", "en-US": "Action" } },
-      { prop: "path", label: { "zh-CN": "路径", "en-US": "Path" } },
-      { prop: "ip", label: { "zh-CN": "IP", "en-US": "IP" } },
-      { prop: "createdAt", label: { "zh-CN": "时间", "en-US": "Time" } }
+      { prop: "user", label: { "zh-CN": "用户", "en-US": "User" } },
+      { prop: "title", label: { "zh-CN": "访问页面", "en-US": "Page" } },
+      { prop: "path", label: { "zh-CN": "访问路径", "en-US": "Path" } },
+      { prop: "method", label: { "zh-CN": "请求方法", "en-US": "Method" } },
+      { prop: "success", label: { "zh-CN": "请求结果", "en-US": "Result" } },
+      { prop: "createdAt", label: { "zh-CN": "操作时间", "en-US": "Operated" } }
+    ],
+    searchFields: [
+      { name: "user", label: { "zh-CN": "用户", "en-US": "User" }, placeholder: { "zh-CN": "请输入用户查询", "en-US": "Search User" } },
+      { name: "title", label: { "zh-CN": "访问页面", "en-US": "Page" }, placeholder: { "zh-CN": "请输入访问页面查询", "en-US": "Search Page" } },
+      { name: "path", label: { "zh-CN": "访问路径", "en-US": "Path" }, placeholder: { "zh-CN": "请输入访问路径查询", "en-US": "Search Path" } },
+      { name: "method", label: { "zh-CN": "请求方法", "en-US": "Method" }, placeholder: { "zh-CN": "请输入请求方法查询", "en-US": "Search Method" } },
+      { name: "success", label: { "zh-CN": "请求结果", "en-US": "Result" }, placeholder: { "zh-CN": "请输入请求结果查询", "en-US": "Search Result" } },
+      { name: "start", label: { "zh-CN": "开始时间", "en-US": "Start" }, placeholder: { "zh-CN": "请输入开始时间查询", "en-US": "Search Start" } },
+      { name: "end", label: { "zh-CN": "结束时间", "en-US": "End" }, placeholder: { "zh-CN": "请输入结束时间查询", "en-US": "Search End" } }
     ],
     settings: [
 
@@ -416,11 +500,17 @@ export const STUB_PAGES: StubPage[] = [
     title: { "zh-CN": "升级记录列表", "en-US": "Upgrade logs" },
     kind: "list",
     columns: [
-      { prop: "username", label: { "zh-CN": "账号", "en-US": "Username" } },
-      { prop: "from", label: { "zh-CN": "原级别", "en-US": "From" } },
-      { prop: "to", label: { "zh-CN": "新级别", "en-US": "To" } },
-      { prop: "amount", label: { "zh-CN": "金额", "en-US": "Amount" } },
-      { prop: "createdAt", label: { "zh-CN": "时间", "en-US": "Time" } }
+      { prop: "username", label: { "zh-CN": "用户名", "en-US": "Username" } },
+      { prop: "oldLevel", label: { "zh-CN": "旧级别", "en-US": "Old level" } },
+      { prop: "newLevel", label: { "zh-CN": "新级别", "en-US": "New level" } },
+      { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
+    ],
+    searchFields: [
+      { name: "username", label: { "zh-CN": "用户名", "en-US": "Username" }, placeholder: { "zh-CN": "请输入用户名查询", "en-US": "Search Username" } },
+      { name: "old_level", label: { "zh-CN": "旧级别", "en-US": "Old level" }, placeholder: { "zh-CN": "请输入旧级别查询", "en-US": "Search Old level" } },
+      { name: "new_level", label: { "zh-CN": "新级别", "en-US": "New level" }, placeholder: { "zh-CN": "请输入新级别查询", "en-US": "Search New level" } },
+      { name: "start", label: { "zh-CN": "开始时间", "en-US": "Start" }, placeholder: { "zh-CN": "请输入开始时间查询", "en-US": "Search Start" } },
+      { name: "end", label: { "zh-CN": "结束时间", "en-US": "End" }, placeholder: { "zh-CN": "请输入结束时间查询", "en-US": "Search End" } }
     ],
     settings: [
 
@@ -484,10 +574,19 @@ export const STUB_PAGES: StubPage[] = [
     title: { "zh-CN": "文章列表", "en-US": "Articles" },
     kind: "list",
     columns: [
+      { prop: "category", label: { "zh-CN": "分类", "en-US": "Category" } },
       { prop: "title", label: { "zh-CN": "标题", "en-US": "Title" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "author", label: { "zh-CN": "作者", "en-US": "Author" } },
+      { prop: "source", label: { "zh-CN": "来源", "en-US": "Source" } },
+      { prop: "visits", label: { "zh-CN": "阅读量", "en-US": "Views" } },
       { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
+    ],
+    searchFields: [
+      { name: "category", label: { "zh-CN": "分类", "en-US": "Category" }, placeholder: { "zh-CN": "请输入分类查询", "en-US": "Search Category" } },
+      { name: "title", label: { "zh-CN": "标题", "en-US": "Title" }, placeholder: { "zh-CN": "请输入标题查询", "en-US": "Search Title" } },
+      { name: "source", label: { "zh-CN": "来源", "en-US": "Source" }, placeholder: { "zh-CN": "请输入来源查询", "en-US": "Search Source" } },
+      { name: "visits", label: { "zh-CN": "阅读量", "en-US": "Views" }, placeholder: { "zh-CN": "请输入阅读量查询", "en-US": "Search Views" } },
+      { name: "start", label: { "zh-CN": "开始时间", "en-US": "Start" }, placeholder: { "zh-CN": "请输入开始时间查询", "en-US": "Search Start" } },
+      { name: "end", label: { "zh-CN": "结束时间", "en-US": "End" }, placeholder: { "zh-CN": "请输入结束时间查询", "en-US": "Search End" } }
     ],
     settings: [
 
@@ -503,10 +602,15 @@ export const STUB_PAGES: StubPage[] = [
     title: { "zh-CN": "新闻列表", "en-US": "News" },
     kind: "list",
     columns: [
-      { prop: "title", label: { "zh-CN": "标题", "en-US": "Title" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "author", label: { "zh-CN": "作者", "en-US": "Author" } },
+      { prop: "title", label: { "zh-CN": "文章标题", "en-US": "Article title" } },
+      { prop: "visits", label: { "zh-CN": "阅读量", "en-US": "Views" } },
       { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
+    ],
+    searchFields: [
+      { name: "title", label: { "zh-CN": "文章标题", "en-US": "Article title" }, placeholder: { "zh-CN": "请输入文章标题查询", "en-US": "Search Article title" } },
+      { name: "content", label: { "zh-CN": "文章内容", "en-US": "Body" }, placeholder: { "zh-CN": "请输入文章内容查询", "en-US": "Search Body" } },
+      { name: "visits", label: { "zh-CN": "阅读量", "en-US": "Views" }, placeholder: { "zh-CN": "请输入阅读量查询", "en-US": "Search Views" } },
+      { name: "created_at", label: { "zh-CN": "创建时间", "en-US": "Created" }, placeholder: { "zh-CN": "请输入创建时间查询", "en-US": "Search Created" } }
     ],
     settings: [
 
@@ -522,10 +626,15 @@ export const STUB_PAGES: StubPage[] = [
     title: { "zh-CN": "公告列表", "en-US": "Notices" },
     kind: "list",
     columns: [
-      { prop: "title", label: { "zh-CN": "标题", "en-US": "Title" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "author", label: { "zh-CN": "作者", "en-US": "Author" } },
+      { prop: "title", label: { "zh-CN": "公告标题", "en-US": "Notice title" } },
+      { prop: "visits", label: { "zh-CN": "阅读量", "en-US": "Views" } },
       { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
+    ],
+    searchFields: [
+      { name: "title", label: { "zh-CN": "公告标题", "en-US": "Notice title" }, placeholder: { "zh-CN": "请输入公告标题查询", "en-US": "Search Notice title" } },
+      { name: "content", label: { "zh-CN": "公告内容", "en-US": "Notice body" }, placeholder: { "zh-CN": "请输入公告内容查询", "en-US": "Search Notice body" } },
+      { name: "visits", label: { "zh-CN": "阅读量", "en-US": "Views" }, placeholder: { "zh-CN": "请输入阅读量查询", "en-US": "Search Views" } },
+      { name: "created_at", label: { "zh-CN": "创建时间", "en-US": "Created" }, placeholder: { "zh-CN": "请输入创建时间查询", "en-US": "Search Created" } }
     ],
     settings: [
 
@@ -541,10 +650,18 @@ export const STUB_PAGES: StubPage[] = [
     title: { "zh-CN": "相册列表", "en-US": "Albums" },
     kind: "list",
     columns: [
-      { prop: "title", label: { "zh-CN": "标题", "en-US": "Title" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "author", label: { "zh-CN": "作者", "en-US": "Author" } },
+      { prop: "category", label: { "zh-CN": "相册分类", "en-US": "Album category" } },
+      { prop: "title", label: { "zh-CN": "相册标题", "en-US": "Album title" } },
+      { prop: "images", label: { "zh-CN": "相册图片", "en-US": "Images" } },
+      { prop: "visits", label: { "zh-CN": "查看量", "en-US": "Views" } },
       { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
+    ],
+    searchFields: [
+      { name: "category", label: { "zh-CN": "相册分类", "en-US": "Album category" }, placeholder: { "zh-CN": "请输入相册分类查询", "en-US": "Search Album category" } },
+      { name: "title", label: { "zh-CN": "相册标题", "en-US": "Album title" }, placeholder: { "zh-CN": "请输入相册标题查询", "en-US": "Search Album title" } },
+      { name: "images", label: { "zh-CN": "相册图片", "en-US": "Images" }, placeholder: { "zh-CN": "请输入相册图片查询", "en-US": "Search Images" } },
+      { name: "visits", label: { "zh-CN": "查看量", "en-US": "Views" }, placeholder: { "zh-CN": "请输入查看量查询", "en-US": "Search Views" } },
+      { name: "created_at", label: { "zh-CN": "创建时间", "en-US": "Created" }, placeholder: { "zh-CN": "请输入创建时间查询", "en-US": "Search Created" } }
     ],
     settings: [
 
@@ -560,10 +677,18 @@ export const STUB_PAGES: StubPage[] = [
     title: { "zh-CN": "问答列表", "en-US": "Q&A" },
     kind: "list",
     columns: [
-      { prop: "title", label: { "zh-CN": "标题", "en-US": "Title" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "author", label: { "zh-CN": "作者", "en-US": "Author" } },
+      { prop: "question", label: { "zh-CN": "问题", "en-US": "Question" } },
+      { prop: "answers", label: { "zh-CN": "答案", "en-US": "Answers" } },
+      { prop: "right", label: { "zh-CN": "正确答案", "en-US": "Correct" } },
+      { prop: "status", label: { "zh-CN": "是否启用", "en-US": "Enabled" } },
       { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
+    ],
+    searchFields: [
+      { name: "question", label: { "zh-CN": "问题", "en-US": "Question" }, placeholder: { "zh-CN": "请输入问题查询", "en-US": "Search Question" } },
+      { name: "answers", label: { "zh-CN": "答案", "en-US": "Answers" }, placeholder: { "zh-CN": "请输入答案查询", "en-US": "Search Answers" } },
+      { name: "right", label: { "zh-CN": "正确答案", "en-US": "Correct" }, placeholder: { "zh-CN": "请输入正确答案查询", "en-US": "Search Correct" } },
+      { name: "status", label: { "zh-CN": "是否启用", "en-US": "Enabled" }, placeholder: { "zh-CN": "请输入是否启用查询", "en-US": "Search Enabled" } },
+      { name: "created_at", label: { "zh-CN": "创建时间", "en-US": "Created" }, placeholder: { "zh-CN": "请输入创建时间查询", "en-US": "Search Created" } }
     ],
     settings: [
 
@@ -579,10 +704,14 @@ export const STUB_PAGES: StubPage[] = [
     title: { "zh-CN": "问卷调查列表", "en-US": "Surveys" },
     kind: "list",
     columns: [
-      { prop: "title", label: { "zh-CN": "标题", "en-US": "Title" } },
-      { prop: "status", label: { "zh-CN": "状态", "en-US": "Status" } },
-      { prop: "author", label: { "zh-CN": "作者", "en-US": "Author" } },
+      { prop: "question", label: { "zh-CN": "问题", "en-US": "Question" } },
+      { prop: "status", label: { "zh-CN": "是否启用", "en-US": "Enabled" } },
       { prop: "createdAt", label: { "zh-CN": "创建时间", "en-US": "Created" } }
+    ],
+    searchFields: [
+      { name: "question", label: { "zh-CN": "问题", "en-US": "Question" }, placeholder: { "zh-CN": "请输入问题查询", "en-US": "Search Question" } },
+      { name: "status", label: { "zh-CN": "是否启用", "en-US": "Enabled" }, placeholder: { "zh-CN": "请输入是否启用查询", "en-US": "Search Enabled" } },
+      { name: "created_at", label: { "zh-CN": "创建时间", "en-US": "Created" }, placeholder: { "zh-CN": "请输入创建时间查询", "en-US": "Search Created" } }
     ],
     settings: [
 

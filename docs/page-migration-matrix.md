@@ -36,7 +36,7 @@ dweb-admin today:
 |---|---|---|
 | Page-level CRUD admins | `backend/components/*Admin.tsx`, `crud-kit.tsx` | **部分** — per-page UI, not a reusable CardPanel |
 | ui-view Table/Card/List/Pagination/Modal | via `@dreamer/ui-view` | **已有** (library) |
-| Callable `DataPanel` / `CardPanel` in `common/components/` | `common/components/DataPanel.tsx` | **部分** — search/column/multi-format export (CSV/HTML-as-xls/XML/TXT/JSON)+import/print/icon toolbar; `filterTableColumns`; true OOXML Excel lib still optional; wired on model lists + stubs |
+| Callable `DataPanel` / `CardPanel` in `common/components/` | `common/components/DataPanel.tsx` | **部分** — search/column/multi-format export (CSV/HTML-as-xls/XML/TXT/JSON)+import/print/icon toolbar; `filterTableColumns`; no dreamer-jsr OOXML/xlsx pkg — HTML-as-xls only; wired on model lists + stubs |
 
 **Target:** `common/components/DataPanel.tsx` (name TBD) composed from `@dreamer/ui-view` only; all list pages consume it.
 
@@ -208,6 +208,7 @@ Vue list entry pages: **64** view files (modules excluded). Dynamic sidebar rout
 2. Next real work needs **new models** (member, CMS, finance, system settings store, admin audit log) or Vue-parity polish on existing live pages (DataPanel Excel/XML once deps land; TagView keep-alive N/A on SSR).
 3. Shell: ChatModal is layout-only (no IM backend); keep honest empty states.
 4. If product needs Vue allow/deny + user-direct routes: add AuthAssignment-class model + API first, then wire the reserved Assign gap panel (do not fake).
+5. member / CMS stub columns + searchFields aligned to Vue CardPanel (still demo rows; no domain models).
 5. Done recently: Tailwind 4 arbitrary-size cleanup; session IP/UA; online kick (`DELETE /api/sessions/:id`); ChatModal split shell; assign gap UI; DataPanel CSV import + `filterTableColumns`; `docs/handoff.md`.
 
 ### Hard constraints reminder

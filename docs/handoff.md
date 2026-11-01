@@ -233,7 +233,7 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 
 ### 已相对落地（截至本 handoff 撰写时，以 matrix + 仓库为准）
 
-- 壳层：Side／Top／TagView／主题／设置抽屉（主色＋`--adm-accent`）——**部分**对齐；ChatModal 为分栏壳（无 IM 后端）；TagView keep-alive 不适用 SSR。
+- 壳层：Side／Top／TagView／主题／设置抽屉（主色＋`--adm-accent`）——登录左饰＋锁屏背景／DS-Digital 时钟已对稿；ChatModal 为分栏壳（无 IM 后端）；**TagView keep-alive = N/A**（dweb SSR 全页导航，无 Vue `<keep-alive>` 等价；标签仅记路径，不缓存页面实例）。
 - 全页：login／lock／forget／reset／403／404／500——**部分**。
 - Home：dashboard + workspace——**部分**。
 - RBAC：admins／roles／permissions／routes／**assign（roleCodes＝允许型可跑；modal 含禁用 gap UI）**——**部分**；真 list／CRUD API。
@@ -246,8 +246,9 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 
 1. **扫仓结论（2026-11-01）**：有领域模型却仍 stub 的页＝**无**。AdminUser／Auth*／Menu／AdminSession／AdminPasskey 相关 list／CRUD（含 online 踢下线、账号安全）已接真 API。
 2. **无模型 stub 保持 stub**（勿假接）：会员／CMS／财务／统计／developer 备份反馈语言系统日志／system 设置与 admin-log 等——需先新增领域模型再接线。
-3. **DataPanel**：浏览器侧 HTML-table-as-xls／XML／TXT／JSON 已接（对齐 Vue excel.js 思路，非 OOXML）；真 Excel 库／行级表单／与 Vue CardPanel store 驱动仍弱。
-4. **RBAC 模型缺口**：Vue allow／deny＋用户直绑路由需 AuthAssignment 类模型后才能真接 Assign gap 面板。
+3. **DataPanel**：浏览器侧 CSV／HTML-table-as-xls／XML／HTML／JSON 已接（对齐 Vue `excel.js`）。**dreamer-jsr 无 OOXML／xlsx 扩展包**（已扫 utils 等）→ 勿另起炉灶；原生 `.xlsx` 仍标 `panel.xlsxGap`，等有官方包再接。
+4. **RBAC Assign**：角色分配（`roleCodes`）真 API 已通；Vue 条目级 allow／deny＋用户直绑路由需 **AuthAssignment**（本仓无此模型）——`AssignAdmin` gap 面板＋i18n `assign.gap*` 已标明，**禁止假提交**。
+5. **会员／CMS**：无领域模型 → 保持 stub；列／搜索已按 Vue CardPanel 对稿加深（`searchFields`），仍演示行。
 
 ### 工作区提示
 
@@ -285,3 +286,4 @@ deno task dev                          # 或 deno task dev:backend → backend/m
 | 2026-11-01 | 初版 handoff + matrix + extension-packages；模型扫仓／online kick；TW4 约定 |
 | 2026-11-01 | API 双模板：handlers 双导出 restful+action；`backend/api-style.ts`；handoff § API；DataPanel 多格式导出／壳层视觉对齐 |
 | 2026-11-01 | API 改 `apiMode:"action"`：hello→`index.ts`、去掉 REST 别名、动态一动作一文件；handoff 记明 kind:api 根 `/` 不回落 index；壳层 lock/login/TagView 打磨 |
+| 2026-11-01 | 弱项：login 左饰＋lock 背景／DS-Digital；member／CMS stub 列／搜索对稿 Vue；handoff 记 Assign／OOXML／TagView keep-alive N/A |
