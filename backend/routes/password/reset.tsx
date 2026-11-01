@@ -38,7 +38,7 @@ export default function ResetPasswordPage(props: { data?: Data }) {
   }
 
   return (
-    <AuthShell locale={locale} title={tr("passwordFlow.resetTitle")} subtitle={tr("passwordFlow.resetHint")}>
+    <AuthShell showLeftArt={false} locale={locale} title={tr("passwordFlow.resetTitle")} subtitle={tr("passwordFlow.resetHint")}>
       {() =>
         done.value
           ? (

@@ -137,6 +137,12 @@
   --spacing-lock-input: 9.375rem; /* Vue lock input ≈ 150px */
   /* Vue Layout header-t / Side title strip ≈ 60px */
   --spacing-adm-top: 3.75rem;
+  --spacing-login-art: 31.25rem; /* Vue login.svg ≈ 500px */
+  --spacing-login-form: 21.875rem; /* Vue .form width ≈ 350px */
+  --color-login-left: #363e54;
+  --text-lock-clock: 5.125rem; /* Vue .date-time ≈ 82px */
+  --text-lock-clock--line-height: 1;
+  --font-digital: "calculatorregular", ui-monospace, monospace;
 
   --text-menu: 0.8125rem; /* 13px — side submenu */
   --text-menu--line-height: 1.25rem;
@@ -334,4 +340,29 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+/* DS-Digital (shareware; see fonts/digital/DIGITAL.text) — Vue lock clock */
+@font-face {
+  font-family: calculatorregular;
+  src: url("/assets/fonts/digital/DS-DIGI.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: calculatorregular;
+  src: url("/assets/fonts/digital/DS-DIGIB.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+.adm-login-left { background-color: var(--color-login-left, #363e54); }
+.adm-login-desc { margin-top: -1.25rem; }
+.adm-lock {
+  background: #0f172a url("/assets/images/bg/6.webp") center center / 100% 100% no-repeat;
+}
+.adm-lock-date,
+.adm-lock-time {
+  font-family: var(--font-digital);
 }

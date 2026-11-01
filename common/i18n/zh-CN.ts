@@ -19,6 +19,7 @@ export default {
   },
   login: {
     title: "登录后台",
+    welcomeSystem: "欢迎使用本系统",
     subtitle: "请使用管理员账号登录",
     username: "账号",
     password: "密码",

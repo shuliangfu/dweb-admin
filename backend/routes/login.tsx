@@ -5,7 +5,7 @@
  *    fingerprint login enabled (GET /api/auth/login-options, global switch)
  *  - step=2fa: Google Authenticator code (POST /api/auth/twofactor). Only reachable with a
  *    valid 2FA challenge cookie, i.e. after the password was accepted for an account with 2FA on.
- * Shell: AuthShell (lang/theme + Toast/Message) — Vue left-illustration panel skipped (no asset).
+ * Shell: AuthShell with Vue left illustration (/assets/images/login.svg) on md+.
  */
 import { createSignal } from "@dreamer/view";
 import { Alert, Button, Checkbox, FormItem, IconFingerprint, Input } from "@dreamer/ui-view";
@@ -72,7 +72,7 @@ export default function LoginPage(props: { data?: Data } & Data) {
   const subtitle = tr(step === "2fa" ? "login.twofaHint" : "login.subtitle");
 
   return (
-    <AuthShell locale={locale} title={title} subtitle={subtitle}>
+    <AuthShell locale={locale} title={title} subtitle={subtitle} showLeftArt>
       {step === "2fa"
         ? (
           <form method="post" action="/api/auth/twofactor">

@@ -19,6 +19,7 @@ export default {
   },
   login: {
     title: "Sign in",
+    welcomeSystem: "Welcome to the system",
     subtitle: "Use your administrator account",
     username: "Username",
     password: "Password",

@@ -42,7 +42,7 @@ export default function ForgetPasswordPage(props: { data?: Data }) {
   }
 
   return (
-    <AuthShell locale={locale} title={tr("passwordFlow.forgetTitle")} subtitle={tr("passwordFlow.forgetHint")}>
+    <AuthShell showLeftArt={false} locale={locale} title={tr("passwordFlow.forgetTitle")} subtitle={tr("passwordFlow.forgetHint")}>
       {() =>
         sent.value
           ? (
