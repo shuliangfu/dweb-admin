@@ -5,7 +5,7 @@
  */
 import { createSignal, onMount } from "@dreamer/view";
 import { getTheme, type ThemeMode, type ThemeOptions } from "@dreamer/theme";
-import { Dropdown, IconCircleSplit, IconMoon, IconSun } from "@dreamer/ui-view";
+import { Dropdown, IconCheck, IconCircleSplit, IconMoon, IconSun } from "@dreamer/ui-view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import {
   closeMenus,
@@ -85,13 +85,11 @@ export function ThemeMenu(props: { locale: Locale; compact?: boolean; initialMod
             return (
               <button
                 type="button"
-                class={() =>
-                  mode.value === it.m
-                    ? `${itemCls} bg-primary-500/15 text-primary-700 dark:text-primary-300`
-                    : itemCls}
+                class={itemCls}
                 data-theme-mode={it.m}
                 onClick={() => choose(it.m)}
               >
+                <span class="inline-flex w-4 justify-center">{() => cur() === it.m ? <IconCheck size="xs" /> : null}</span>
                 <ItemIcon size="xs" />
                 {tr(it.labelKey)}
               </button>
