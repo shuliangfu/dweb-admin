@@ -105,9 +105,9 @@ Deno.test({ name: "theme: DataPanel body is slightly darker in dark mode only, v
       const seen = new Set<string>();
       for (const p of pages) {
         await page.goto(BASE + p);
-        await page.waitForSelector("[data-testid=data-panel]");
+        await page.waitForSelector(".adm-data-panel");
         const r = await page.evaluate(() => {
-          const panel = document.querySelector("[data-testid=data-panel]") as HTMLElement;
+          const panel = document.querySelector(".adm-data-panel") as HTMLElement;
           const head = panel.querySelector(".adm-card-header") as HTMLElement;
           return {
             panel: getComputedStyle(panel).backgroundColor,

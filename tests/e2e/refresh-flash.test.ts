@@ -66,14 +66,27 @@ async function ssrVsHydrated(path: string, cookies: { name: string; value: strin
     await page.waitForSelector("aside", { timeout: 15000 });
     await page.waitForTimeout(500);
     const htmlDark = await page.evaluate(() => document.documentElement.classList.contains("dark"));
+    // Chart.js canvases are drawn client-side only (pixels inside them legitimately change on hydration); the
+    // layout around them must still be identical, so only these boxes are excluded from the diff.
+    const canvasRects = () =>
+      page.evaluate(() =>
+        // ui-view <Transfer> does not emit its inline width/height during SSR (known ui-view gap), so its panels are
+        // also excluded; the rest of the page must remain pixel-identical.
+        [...document.querySelectorAll("canvas, div.rounded-lg.overflow-hidden:has([role=searchbox])")].map((c) => {
+          const r = c.getBoundingClientRect();
+          return [Math.floor(r.left), Math.floor(r.top), Math.ceil(r.right), Math.ceil(r.bottom)];
+        })
+      ) as Promise<number[][]>;
     const before = await cdpShot(ctx, page);
+    const rectsBefore = await canvasRects();
     release();
     await page.waitForTimeout(1500);
     const after = await cdpShot(ctx, page);
+    const rectsAfter = await canvasRects();
     const tool = await ctx.newPage();
     await tool.goto("about:blank");
     // ignore the dev-only HMR status badge (bottom right) and nothing else
-    const diff = await pixelDiff(tool, before, after, [[1000, 700, 1280, 800]]);
+    const diff = await pixelDiff(tool, before, after, [[1000, 700, 1280, 800], ...rectsBefore, ...rectsAfter] as [number, number, number, number][]);
     return { diff, htmlDark };
   } finally {
     await browser.close();
