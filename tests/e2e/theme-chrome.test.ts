@@ -136,3 +136,36 @@ Deno.test({ name: "theme: DataPanel body is slightly darker in dark mode only, v
     }
   }
 } });
+
+/** Top-bar theme menu marks the current mode with a check (like the language menu) and moves it when switching. */
+Deno.test({ name: "theme menu: the current mode is marked with a check and it follows the selection", sanitizeOps: false, sanitizeResources: false, fn: async () => {
+  await ensureServer();
+  const { browser, ctx } = await browserLoggedIn();
+  try {
+    await ctx.addCookies([{ name: "dweb-admin-theme", value: "light", url: BASE }]);
+    const page = await ctx.newPage();
+    await page.goto(BASE + "/");
+    await page.waitForSelector("[data-testid=theme-menu]");
+    await page.waitForTimeout(600);
+    const checks = async () => {
+      await page.click("[data-testid=theme-menu]");
+      await page.waitForSelector("[data-testid=theme-options]");
+      return await page.evaluate(() =>
+        Object.fromEntries([...document.querySelectorAll("[data-theme-mode]")].map((b) => [
+          b.getAttribute("data-theme-mode"),
+          b.querySelectorAll(":scope > span:first-child svg").length,
+        ]))
+      ) as Record<string, number>;
+    };
+    assertEquals(await checks(), { light: 1, dark: 0, system: 0 });
+    await page.click("[data-theme-mode=dark]");
+    await page.waitForFunction(() => document.documentElement.classList.contains("dark"));
+    await page.waitForTimeout(300);
+    assertEquals(await checks(), { light: 0, dark: 1, system: 0 });
+    await page.click("[data-theme-mode=system]");
+    await page.waitForTimeout(300);
+    assertEquals(await checks(), { light: 0, dark: 0, system: 1 });
+  } finally {
+    await browser.close();
+  }
+} });

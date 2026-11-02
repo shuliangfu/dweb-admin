@@ -195,8 +195,10 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
   const hidden = createSignal<Record<string, boolean>>(
     Object.fromEntries(meta.columns.filter((c) => c.hidden).map((c) => [c.prop, true])),
   );
-  const showSearch = createSignal(Object.keys(initial.query.filters).some((k) => !(meta.fixed && k in meta.fixed)));
-  const draft = createSignal<Record<string, string>>({ ...initial.query.filters });
+  // search form lives in a Modal (opened from the toolbar); one signal per field so typing never re-renders the inputs
+  const searchOpen = createSignal(false);
+  const sfields: Record<string, ReturnType<typeof createSignal<string>>> = {};
+  for (const sdef of meta.search) sfields[sdef.name] = createSignal(initial.query.filters[sdef.name] ?? "");
   const jump = createSignal("");
   let seq = 0;
 
@@ -564,7 +566,7 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
       <ButtonGroup attached class="dp-tool-group">
         {(meta.caps.create || props.onCreate) && toolBtn(tr("panel.create"), doCreate, <IconPlus size="sm" />, "dp-create")}
         {meta.search.length > 0 &&
-          toolBtn(tr("panel.search"), () => (showSearch.value = !showSearch.value), <IconSearch size="sm" />, "dp-search-toggle")}
+          toolBtn(tr("panel.search"), openSearch, <IconSearch size="sm" />, "dp-search-toggle")}
         {toolBtn(tr("panel.refresh"), () => void load(false), <IconRefresh size="sm" />, "dp-refresh")}
         {toolBtn(tr("panel.print"), printTable, <IconPrinter size="sm" />, "dp-print")}
         {(meta.caps.import || props.onImportRows) && toolBtn(tr("panel.import"), pickImport, <IconUpload size="sm" />, "dp-import")}
@@ -583,60 +585,70 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
     </div>
   );
 
-  // ---- search form
-  const searchBar = () => {
-    if (!showSearch.value || meta.search.length === 0) return null;
-    const submit = (e?: Event) => {
-      e?.preventDefault();
-      const filters: Record<string, string> = {};
-      for (const [k, v] of Object.entries(draft.value)) if (v.trim()) filters[k] = v.trim();
-      setQuery({ filters: { ...filters, ...(meta.fixed ?? {}) }, page: 1 });
-    };
-    return (
-      <form class="flex flex-wrap items-end gap-3 border-b border-slate-200 px-4 py-3 dark:border-slate-700" data-testid="dp-search" onSubmit={submit}>
-        {meta.search.map((s) => (
-          <label class="flex flex-col gap-1 text-sm">
-            <span>{s.label}</span>
-            {s.type === "select"
+  // ---- search form (Modal): submit searches, reset clears
+  function openSearch(): void {
+    for (const sdef of meta.search) sfields[sdef.name].value = query.value.filters[sdef.name] ?? "";
+    searchOpen.value = true;
+  }
+  function applySearch(): void {
+    const filters: Record<string, string> = {};
+    for (const sdef of meta.search) {
+      const v = sfields[sdef.name].value.trim();
+      if (v) filters[sdef.name] = v;
+    }
+    searchOpen.value = false;
+    setQuery({ filters: { ...filters, ...(meta.fixed ?? {}) }, page: 1 });
+  }
+  function resetSearch(): void {
+    for (const sdef of meta.search) sfields[sdef.name].value = "";
+    setQuery({ filters: { ...(meta.fixed ?? {}) }, page: 1 });
+  }
+  const searchBody = () => (
+    <form
+      class="grid gap-3"
+      data-testid="dp-search"
+      onSubmit={(e: Event) => {
+        e.preventDefault();
+        applySearch();
+      }}
+    >
+      {meta.search.map((sdef) => {
+        const sig = sfields[sdef.name];
+        return (
+          <FormItem label={sdef.label}>
+            {sdef.type === "select"
               ? (
                 <select
-                  name={s.name}
-                  class={SELECT_CLS}
-                  data-testid={`dp-f-${s.name}`}
-                  onChange={(e: Event) => (draft.value = { ...draft.value, [s.name]: (e.target as unknown as { value: string }).value })}
+                  name={sdef.name}
+                  class={`${SELECT_CLS} w-full`}
+                  data-testid={`dp-f-${sdef.name}`}
+                  onChange={(e: Event) => (sig.value = (e.target as unknown as { value: string }).value)}
                 >
                   <option value="">{tr("common.all")}</option>
-                  {(s.options ?? []).map((o) => (
-                    <option value={o.value} {...bool("selected", draft.value[s.name] === o.value)}>{o.label}</option>
+                  {(sdef.options ?? []).map((o) => (
+                    <option value={o.value} {...bool("selected", sig.value === o.value)}>{o.label}</option>
                   ))}
                 </select>
               )
               : (
-                <Input
-                  name={s.name}
-                  type={s.type === "date" ? "date" : "text"}
-                  value={draft.value[s.name] ?? ""}
-                  data-testid={`dp-f-${s.name}`}
-                  onInput={(e: Event) => (draft.value = { ...draft.value, [s.name]: (e.target as unknown as { value: string }).value })}
-                />
+                <div class="w-full" data-testid={`dp-f-${sdef.name}`}>
+                  <Input
+                    name={sdef.name}
+                    type={sdef.type === "date" ? "date" : "text"}
+                    value={sig}
+                    onInput={(e: Event) => (sig.value = (e.target as unknown as { value: string }).value)}
+                  />
+                </div>
               )}
-          </label>
-        ))}
-        <Btn type="submit" variant="primary" size="sm" data-testid="dp-search-submit">{tr("crud.search")}</Btn>
-        <Btn
-          type="button"
-          size="sm"
-          data-testid="dp-search-reset"
-          onClick={() => {
-            draft.value = {};
-            setQuery({ filters: { ...(meta.fixed ?? {}) }, page: 1 });
-          }}
-        >
-          {tr("crud.reset")}
-        </Btn>
-      </form>
-    );
-  };
+          </FormItem>
+        );
+      })}
+      <div class="mt-2 flex justify-end gap-2">
+        <Btn type="button" data-testid="dp-search-reset" onClick={resetSearch}>{tr("crud.reset")}</Btn>
+        <Btn type="submit" variant="primary" data-testid="dp-search-submit">{tr("crud.search")}</Btn>
+      </div>
+    </form>
+  );
 
   // ---- batch bar
   const batchBar = () => {
@@ -644,7 +656,7 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
     if (!ids.length) return null;
     const sv = meta.statusValues ?? [];
     return (
-      <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 bg-sky-50 px-4 py-2 text-sm dark:border-slate-700 dark:bg-slate-800" data-testid="dp-batch-bar">
+      <div class="flex flex-wrap items-center gap-2 border-t border-slate-200 bg-sky-50 px-4 py-2 text-sm dark:border-slate-700 dark:bg-slate-800" data-testid="dp-batch-bar">
         <span data-testid="dp-selected-count">{tr("panel.selected", { n: ids.length })}</span>
         {meta.caps.batchStatus && sv.map((s) => (
           <Btn type="button" size="sm" data-testid={`dp-batch-status-${s.value}`} onClick={() => askStatus(ids, s.value, s.label)}>
@@ -1090,10 +1102,10 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
         data-testid="data-panel"
       >
         {toolbar}
-        {/* fixed slots: a reactive child inserted after static siblings would land at the bottom of the card */}
-        <div data-testid="dp-search-slot">{searchBar}</div>
-        <div data-testid="dp-batch-slot">{batchBar}</div>
+        {/* fixed slot: a reactive child inserted after static siblings would land at the bottom of the card.
+            The bulk bar sits BELOW the table so selecting rows never pushes the table down. */}
         <div class="px-2.5 py-2.5">{table}</div>
+        <div data-testid="dp-batch-slot">{batchBar}</div>
         {pagination}
       </Card>
 
@@ -1107,6 +1119,15 @@ export function DataPanel(props: DataPanelProps): JSXRenderable {
         destroyOnClose
         onClose={() => (formOpen.value = false)}
         children={formBody}
+      />
+      <Modal
+        open={searchOpen}
+        title={() => tr("panel.search") + " · " + meta.title}
+        width="md"
+        keyboard
+        destroyOnClose
+        onClose={() => (searchOpen.value = false)}
+        children={searchBody}
       />
       <Modal
         open={() => viewRow.value !== null}

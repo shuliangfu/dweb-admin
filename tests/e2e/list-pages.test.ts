@@ -163,8 +163,8 @@ Deno.test({ name: "toolbar: add/search/refresh/print/export/columns form one con
   }
 } });
 
-/** The search form expands directly below the toolbar and above the table; clicking the button again collapses it. */
-Deno.test({ name: "search form: opens between toolbar and table on every list + admin page, second click collapses it", ...OPTS, fn: async () => {
+/** The search button opens a Modal search form (never an inline block that pushes the table); Esc / close dismisses it. */
+Deno.test({ name: "search form: toolbar button opens a Modal on every list + admin page and never moves the table", ...OPTS, fn: async () => {
   await ensureServer();
   const pages = ["/rbac/admins", "/rbac/roles", "/rbac/permissions", "/developer/menus", ...LIST_PAGES.map(([p]) => p)];
   const { browser, ctx } = await browserLoggedIn();
@@ -173,21 +173,95 @@ Deno.test({ name: "search form: opens between toolbar and table on every list + 
     for (const path of pages) {
       await page.goto(BASE + path);
       await page.waitForSelector("[data-testid=dp-search-toggle]");
-      assertEquals(await page.locator("[data-testid=dp-search]").count(), 0, `${path}: closed by default`);
+      assertEquals(await page.locator("[data-testid=dp-search]").count(), 0, `${path}: no inline search form`);
+      const before = await page.evaluate(() => document.querySelector("[data-testid=dp-table]")!.getBoundingClientRect().top);
       await page.click("[data-testid=dp-search-toggle]");
-      await page.waitForSelector("[data-testid=dp-search]");
-      const y = await page.evaluate(() => {
-        const top = (s: string) => document.querySelector(s)!.getBoundingClientRect();
-        return { tool: top("[data-testid=data-panel-toolbar]"), search: top("[data-testid=dp-search]"), table: top("[data-testid=dp-table]") };
-      });
-      assert(y.search.top >= y.tool.bottom - 0.5, `${path}: search below the toolbar`);
-      assert(y.search.bottom <= y.table.top + 0.5, `${path}: search above the table (search ${y.search.bottom} / table ${y.table.top})`);
-      assert(Math.abs(y.search.top - y.tool.bottom) < 2, `${path}: search directly under the toolbar`);
+      await page.waitForSelector("[role=dialog] [data-testid=dp-search]");
+      assert(await page.locator("[role=dialog] [data-testid=dp-search-submit]").count() === 1, `${path}: submit button in the Modal`);
+      assert(await page.locator("[role=dialog] [data-testid=dp-search-reset]").count() === 1, `${path}: reset button in the Modal`);
+      const after = await page.evaluate(() => document.querySelector("[data-testid=dp-table]")!.getBoundingClientRect().top);
+      assertEquals(after, before, `${path}: opening the search Modal does not move the table`);
       if (path === "/user") await page.screenshot({ path: "runtime/theme/search-open.png" });
-      await page.click("[data-testid=dp-search-toggle]");
+      await page.keyboard.press("Escape");
       await page.waitForSelector("[data-testid=dp-search]", { state: "detached" });
     }
   } finally {
     await browser.close();
+  }
+} });
+
+/** Submit searches (server side), the Modal closes and re-opens with the value; Reset clears the filter. */
+Deno.test({ name: "search form Modal: submit filters the list, reset clears it", ...OPTS, fn: async () => {
+  await ensureServer();
+  const api = await adminApi();
+  const name = `q_${rand()}`;
+  const r = await api.post("/api/res/create", { res: "user.index", username: name, email: `${name}@example.com` });
+  assertEquals(r.status, 201, JSON.stringify(r.data));
+  const { browser, ctx } = await browserLoggedIn();
+  try {
+    const page = await ctx.newPage();
+    await page.goto(BASE + "/user");
+    await page.waitForSelector("[data-testid=dp-table]");
+    await page.waitForSelector("[data-testid=dp-search-toggle]");
+    await page.waitForTimeout(400);
+    const totalAll = Number((await page.locator("[data-testid=dp-total-count]").innerText()).replace(/\D/g, ""));
+    assert(totalAll > 1, "more than one member exists");
+    await page.click("[data-testid=dp-search-toggle]");
+    await page.fill("[data-testid=dp-f-username] input", name);
+    await page.click("[data-testid=dp-search-submit]");
+    await page.waitForSelector("[data-testid=dp-search]", { state: "detached" });
+    await page.waitForSelector(`[data-testid=dp-table] >> text=${name}`);
+    await page.waitForFunction(() => document.querySelectorAll("[data-testid^=dp-row-]").length === 1);
+    assertEquals(await page.locator("[data-testid^=dp-row-]").count(), 1, "only the matching row remains");
+    // the Modal re-opens with the active filter
+    await page.click("[data-testid=dp-search-toggle]");
+    assertEquals(await page.inputValue("[data-testid=dp-f-username] input"), name);
+    await page.click("[data-testid=dp-search-reset]");
+    await page.waitForFunction((n: number) => {
+      const t = document.querySelector("[data-testid=dp-total-count]")!.textContent ?? "";
+      return Number(t.replace(/\D/g, "")) === n;
+    }, totalAll);
+    assertEquals(await page.inputValue("[data-testid=dp-f-username] input"), "", "reset clears the field");
+    await page.keyboard.press("Escape");
+  } finally {
+    await browser.close();
+    const found = await api.get(`/api/res?res=user.index&username=${name}`);
+    if (found.data.rows?.[0]) await api.post("/api/res/remove", { res: "user.index", ids: [found.data.rows[0].id] });
+  }
+} });
+
+/** The bulk bar is BELOW the table: selecting rows must not push the table down. */
+Deno.test({ name: "bulk bar: appears below the table and selecting rows does not move the table", ...OPTS, fn: async () => {
+  await ensureServer();
+  const api = await adminApi();
+  const name = `b_${rand()}`;
+  const r = await api.post("/api/res/create", { res: "user.index", username: name, email: `${name}@example.com` });
+  assertEquals(r.status, 201, JSON.stringify(r.data));
+  const { browser, ctx } = await browserLoggedIn();
+  try {
+    const page = await ctx.newPage();
+    await page.goto(BASE + "/user");
+    await page.waitForSelector("[data-testid=dp-table]");
+    await page.waitForTimeout(400);
+    assertEquals(await page.locator("[data-testid=dp-batch-bar]").count(), 0, "no bulk bar without a selection");
+    const top = () => page.evaluate(() => document.querySelector("[data-testid=dp-table]")!.getBoundingClientRect().top);
+    const before = await top();
+    await page.click("[data-testid=dp-select-all]");
+    await page.waitForSelector("[data-testid=dp-batch-bar]");
+    const y = await page.evaluate(() => {
+      const rect = (s: string) => document.querySelector(s)!.getBoundingClientRect();
+      return { table: rect("[data-testid=dp-table]"), bar: rect("[data-testid=dp-batch-bar]"), pag: rect("[data-testid=dp-pagination]") };
+    });
+    assertEquals(await top(), before, "table did not move when the bulk bar appeared");
+    assert(y.bar.top >= y.table.bottom - 0.5, `bulk bar below the table (bar ${y.bar.top} / table bottom ${y.table.bottom})`);
+    assert(y.pag.top >= y.bar.bottom - 0.5, "pagination is below the bulk bar");
+    await page.screenshot({ path: "runtime/theme/bulk-bar.png" });
+    await page.click("[data-testid=dp-batch-clear]");
+    await page.waitForSelector("[data-testid=dp-batch-bar]", { state: "detached" });
+    assertEquals(await top(), before, "table still in place after clearing");
+  } finally {
+    await browser.close();
+    const found = await api.get(`/api/res?res=user.index&username=${name}`);
+    if (found.data.rows?.[0]) await api.post("/api/res/remove", { res: "user.index", ids: [found.data.rows[0].id] });
   }
 } });
