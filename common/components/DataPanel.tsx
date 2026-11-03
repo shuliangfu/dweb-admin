@@ -16,25 +16,25 @@ import {
   Descriptions,
   Dropdown,
   FormItem,
-  IconChevronDown,
-  IconChevronUp,
-  IconColumns,
-  IconDownload,
-  IconEdit,
-  IconEye,
-  IconList,
-  IconPlus,
-  IconPrinter,
-  IconRefresh,
-  IconSearch,
-  IconTrash,
-  IconUpload,
   Input,
   Modal,
   Textarea,
   Tooltip,
   message,
 } from "@dreamer/ui-view";
+import { IconChevronDown } from "@dreamer/ui-view/icons/ChevronDown.tsx";
+import { IconChevronUp } from "@dreamer/ui-view/icons/ChevronUp.tsx";
+import { IconColumns } from "@dreamer/ui-view/icons/Columns.tsx";
+import { IconDownload } from "@dreamer/ui-view/icons/Download.tsx";
+import { IconEdit } from "@dreamer/ui-view/icons/Edit.tsx";
+import { IconEye } from "@dreamer/ui-view/icons/Eye.tsx";
+import { IconList } from "@dreamer/ui-view/icons/List.tsx";
+import { IconPlus } from "@dreamer/ui-view/icons/Plus.tsx";
+import { IconPrinter } from "@dreamer/ui-view/icons/Printer.tsx";
+import { IconRefresh } from "@dreamer/ui-view/icons/Refresh.tsx";
+import { IconSearch } from "@dreamer/ui-view/icons/Search.tsx";
+import { IconTrash } from "@dreamer/ui-view/icons/Trash.tsx";
+import { IconUpload } from "@dreamer/ui-view/icons/Upload.tsx";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { api } from "@common/utils/client-api.ts";
 import { displayValue, fmtDateTime, fmtMoney } from "@common/resources/display.ts";

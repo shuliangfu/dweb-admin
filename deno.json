@@ -48,7 +48,8 @@
     "@dreamer/humancheck": "jsr:@dreamer/humancheck@^1.1.0",
     "@simplewebauthn/server": "npm:@simplewebauthn/server@^13.1.1",
     "exceljs": "npm:exceljs@4.4.0",
-    "playwright": "npm:playwright@1.59.1"
+    "playwright": "npm:playwright@1.59.1",
+    "@dreamer/ui-view/icons/": "../ui-view/src/shared/basic/icons/"
   },
   "minimumDependencyAge": 0,
   "nodeModulesDir": "auto",

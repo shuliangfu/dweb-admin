@@ -4,7 +4,8 @@
  * Context menu uses native contextmenu (Vue uses el-dropdown trigger=contextmenu).
  */
 import { createSignal, onCleanup, onMount } from "@dreamer/view";
-import { IconClose, Link } from "@dreamer/ui-view";
+import { Link } from "@dreamer/ui-view";
+import { IconClose } from "@dreamer/ui-view/icons/Close.tsx";
 import { parseTagsValue, serializeTags, TAGS_COOKIE, type TagEntry, tagsValueFromCookie, withTag } from "@backend/components/tag-cookie.ts";
 
 export type { TagEntry };

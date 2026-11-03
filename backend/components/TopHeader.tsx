@@ -1,7 +1,8 @@
 /**
  * Top chrome row — collapse toggle | user / chat / lang / theme / fullscreen / settings.
  */
-import { IconMessageCircle, IconSettings } from "@dreamer/ui-view";
+import { IconMessageCircle } from "@dreamer/ui-view/icons/MessageCircle.tsx";
+import { IconSettings } from "@dreamer/ui-view/icons/Settings.tsx";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { SidebarToggle } from "@backend/components/SidebarToggle.tsx";
 import { LangMenu } from "@backend/components/LangMenu.tsx";

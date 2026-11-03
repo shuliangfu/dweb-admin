@@ -2,7 +2,12 @@
  * Avatar dropdown. Trigger = one user icon (no name, no arrow). Panel, top to bottom:
  * name + role (display only) · Update profile · Security settings · Log out.
  */
-import { Dropdown, IconLock, IconLogOut, IconShield, IconUser, IconUserCog } from "@dreamer/ui-view";
+import { Dropdown } from "@dreamer/ui-view";
+import { IconLock } from "@dreamer/ui-view/icons/Lock.tsx";
+import { IconLogOut } from "@dreamer/ui-view/icons/Logout.tsx";
+import { IconShield } from "@dreamer/ui-view/icons/Shield.tsx";
+import { IconUser } from "@dreamer/ui-view/icons/User.tsx";
+import { IconUserCog } from "@dreamer/ui-view/icons/UserCog.tsx";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { closeMenus, itemCls } from "@backend/components/menu-kit.tsx";
 import { api } from "@common/utils/client-api.ts";

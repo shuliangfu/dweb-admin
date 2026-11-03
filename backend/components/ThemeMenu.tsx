@@ -5,7 +5,11 @@
  */
 import { createSignal, onMount } from "@dreamer/view";
 import { getTheme, type ThemeMode, type ThemeOptions } from "@dreamer/theme";
-import { Dropdown, IconCheck, IconCircleSplit, IconMoon, IconSun } from "@dreamer/ui-view";
+import { Dropdown } from "@dreamer/ui-view";
+import { IconCheck } from "@dreamer/ui-view/icons/Check.tsx";
+import { IconCircleSplit } from "@dreamer/ui-view/icons/CircleSplit.tsx";
+import { IconMoon } from "@dreamer/ui-view/icons/Moon.tsx";
+import { IconSun } from "@dreamer/ui-view/icons/Sun.tsx";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import {
   closeMenus,

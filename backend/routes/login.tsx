@@ -13,9 +13,9 @@ import {
   Button,
   Checkbox,
   FormItem,
-  IconFingerprint,
   Input,
 } from "@dreamer/ui-view";
+import { IconFingerprint } from "@dreamer/ui-view/icons/Fingerprint.tsx";
 import type { LoadContext } from "@dreamer/dweb";
 import { createT, type Locale, resolveLocale } from "@common/i18n/mod.ts";
 import { api } from "@common/utils/client-api.ts";

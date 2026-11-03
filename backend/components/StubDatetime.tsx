@@ -2,7 +2,13 @@
  * Vue system/datetime CardView: digital clock strip + settings rows (demo; no setTime API).
  */
 import { onCleanup, onMount, createSignal } from "@dreamer/view";
-import { Button, Card, Descriptions, IconClock, message } from "@dreamer/ui-view";
+import {
+  Button,
+  Card,
+  Descriptions,
+  message,
+} from "@dreamer/ui-view";
+import { IconClock } from "@dreamer/ui-view/icons/Clock.tsx";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { reload } from "@backend/components/crud-kit.tsx";
 import type { StubPage } from "@common/stubs/catalog.ts";

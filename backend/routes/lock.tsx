@@ -4,7 +4,11 @@
  */
 import { createSignal, onCleanup, onMount } from "@dreamer/view";
 import type { LoadContext } from "@dreamer/dweb";
-import { Button, IconArrowRight, Input } from "@dreamer/ui-view";
+import {
+  Button,
+  Input,
+} from "@dreamer/ui-view";
+import { IconArrowRight } from "@dreamer/ui-view/icons/ArrowRight.tsx";
 import { createT, type Locale, resolveLocale } from "@common/i18n/mod.ts";
 import { api } from "@common/utils/client-api.ts";
 import { clearLockCookieClient, isLockedRequest } from "@backend/components/lock-kit.ts";

@@ -7,12 +7,12 @@
 import { createSignal } from "@dreamer/view";
 import {
   Button,
-  IconImage,
-  IconMessageSquare,
-  IconSend,
   Input,
   Modal,
 } from "@dreamer/ui-view";
+import { IconImage } from "@dreamer/ui-view/icons/Image.tsx";
+import { IconMessageSquare } from "@dreamer/ui-view/icons/MessageSquare.tsx";
+import { IconSend } from "@dreamer/ui-view/icons/Send.tsx";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 
 export const chatOpen = createSignal(false);

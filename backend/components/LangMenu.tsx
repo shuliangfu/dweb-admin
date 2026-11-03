@@ -3,7 +3,9 @@
  * Kept on the locale-cookie approach (GET /api/i18n/locale sets the cookie, redirects back):
  * the server resolves cookie > Accept-Language on every SSR request, so no hydration mismatch.
  */
-import { Dropdown, IconCheck, IconGlobe } from "@dreamer/ui-view";
+import { Dropdown } from "@dreamer/ui-view";
+import { IconCheck } from "@dreamer/ui-view/icons/Check.tsx";
+import { IconGlobe } from "@dreamer/ui-view/icons/Globe.tsx";
 import { LOCALE_LABELS, LOCALES, type Locale } from "@common/i18n/mod.ts";
 import { itemCls, triggerCls } from "@backend/components/menu-kit.tsx";
 
