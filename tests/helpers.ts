@@ -2,11 +2,28 @@
  * Shared test helpers: server bootstrap (reuses a running dev server, else spawns one),
  * CSRF-aware API client with login, and a Playwright browser helper.
  */
-export const BASE = Deno.env.get("E2E_BASE") ?? "http://localhost:3100";
-export const ADMIN_USER = Deno.env.get("SEED_ADMIN_USERNAME") ?? "admin";
-export const ADMIN_PASS = Deno.env.get("SEED_ADMIN_PASSWORD") ?? "admin888";
+function envGet(key: string): string | undefined {
+  try {
+    // Deno
+    // deno-lint-ignore no-explicit-any
+    const d = (globalThis as any).Deno;
+    if (d?.env?.get) return d.env.get(key);
+  } catch { /* ignore */ }
+  try {
+    // Bun / Node
+    // deno-lint-ignore no-explicit-any
+    return (globalThis as any).process?.env?.[key];
+  } catch {
+    return undefined;
+  }
+}
 
-let spawned: Deno.ChildProcess | null = null;
+export const BASE = envGet("E2E_BASE") ?? "http://localhost:3100";
+export const ADMIN_USER = envGet("SEED_ADMIN_USERNAME") ?? "admin";
+export const ADMIN_PASS = envGet("SEED_ADMIN_PASSWORD") ?? "admin888";
+
+// deno-lint-ignore no-explicit-any
+let spawned: any = null;
 
 async function up(): Promise<boolean> {
   try {
@@ -18,14 +35,25 @@ async function up(): Promise<boolean> {
   }
 }
 
-/** Make sure the backend answers on BASE; spawn `backend/main.ts --dev` when nothing listens. */
+/** Make sure the backend answers on BASE; spawn `deno … backend/main.ts --dev` when nothing listens. */
 export async function ensureServer(): Promise<void> {
   if (await up()) return;
-  spawned = new Deno.Command(Deno.execPath(), {
-    args: ["run", "--env-file=.env", "-A", "backend/main.ts", "--dev"],
-    stdout: "null",
-    stderr: "null",
-  }).spawn();
+  // Always spawn via the Deno CLI so Bun/Node test runners can reuse the same server binary.
+  // deno-lint-ignore no-explicit-any
+  const g = globalThis as any;
+  if (g.Deno?.Command) {
+    spawned = new g.Deno.Command(g.Deno.execPath(), {
+      args: ["run", "--env-file=.env", "-A", "backend/main.ts", "--dev"],
+      stdout: "null",
+      stderr: "null",
+    }).spawn();
+  } else {
+    const { spawn } = await import("node:child_process");
+    spawned = spawn("deno", ["run", "--env-file=.env", "-A", "backend/main.ts", "--dev"], {
+      stdio: "ignore",
+      detached: false,
+    });
+  }
   for (let i = 0; i < 120; i++) {
     if (await up()) return;
     await new Promise((r) => setTimeout(r, 500));
@@ -35,7 +63,8 @@ export async function ensureServer(): Promise<void> {
 
 export function stopServer(): void {
   try {
-    spawned?.kill("SIGTERM");
+    if (!spawned) return;
+    if (typeof spawned.kill === "function") spawned.kill("SIGTERM");
   } catch { /* already gone */ }
   spawned = null;
 }

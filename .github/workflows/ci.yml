@@ -1,5 +1,5 @@
-# CI: Deno check + unit/api + Playwright browser e2e (tests/e2e).
-# Uses @dreamer/test + existing helpers (browserLoggedIn). No Jest/Vitest.
+# CI: Deno + Bun + Node 22 on ubuntu-24.04 — unit + integration + Playwright browser e2e.
+# Triggers only on `dev`. Uses @dreamer/test; no Jest/Vitest.
 name: CI
 
 on:
@@ -12,11 +12,10 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  test:
+  test-deno:
     runs-on: ubuntu-24.04
     services:
       mongo:
-        # mongo:8 refuses to boot on GitHub kernels ≥6.19 (SERVER-121912)
         image: mongo:7
         ports:
           - 27018:27017
@@ -27,11 +26,9 @@ jobs:
           --health-retries 12
     steps:
       - uses: actions/checkout@v5
-
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.9
-
       - name: Env for CI
         run: |
           cp .env.example .env
@@ -43,16 +40,112 @@ jobs:
             'APP_PORT_API=3003' \
             'ADMIN_COOKIE_SECURE=0' \
             'LOGIN_RATE_MAX=200' >> .env
-
       - name: Cache dependencies
         continue-on-error: true
-        run: deno cache backend/main.ts frontend/main.ts mobile/main.ts api/main.ts
-
+        run: deno cache backend/main.ts api/main.ts
       - name: Install Playwright Chromium
         run: npx -y playwright@1.59.1 install --with-deps chromium
-
       - name: Check
         run: deno task check
-
-      - name: Test (unit + api + browser e2e)
+      - name: Test (Deno — unit + api + integration + browser e2e)
         run: deno test --env-file=.env -A tests/
+
+  test-bun:
+    runs-on: ubuntu-24.04
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27018:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.9
+      - name: Env for CI
+        run: |
+          cp .env.example .env
+          printf '%s\n' \
+            'DB_HOST=127.0.0.1' \
+            'DB_PORT=27018' \
+            'APP_HOST=127.0.0.1' \
+            'APP_PORT_BACKEND=3100' \
+            'APP_PORT_API=3003' \
+            'ADMIN_COOKIE_SECURE=0' \
+            'LOGIN_RATE_MAX=200' >> .env
+      - name: Install dependencies (Bun)
+        run: bun install
+      - name: Install Playwright Chromium
+        run: bunx playwright@1.59.1 install --with-deps chromium
+      - name: Start backend (Deno)
+        run: deno run --env-file=.env -A backend/main.ts --dev &
+      - name: Wait for backend
+        run: |
+          for i in $(seq 1 60); do
+            curl -sf http://127.0.0.1:3100/api/health && exit 0
+            sleep 1
+          done
+          exit 1
+      - name: Test (Bun — unit + integration + browser e2e)
+        run: bun run test:bun
+
+  test-node:
+    runs-on: ubuntu-24.04
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27018:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.9
+      - name: Env for CI
+        run: |
+          cp .env.example .env
+          printf '%s\n' \
+            'DB_HOST=127.0.0.1' \
+            'DB_PORT=27018' \
+            'APP_HOST=127.0.0.1' \
+            'APP_PORT_BACKEND=3100' \
+            'APP_PORT_API=3003' \
+            'ADMIN_COOKIE_SECURE=0' \
+            'LOGIN_RATE_MAX=200' >> .env
+      - name: Install dependencies (Node)
+        run: npm install
+      - name: Install Playwright Chromium
+        run: npx -y playwright@1.59.1 install --with-deps chromium
+      - name: Start backend (Deno)
+        run: deno run --env-file=.env -A backend/main.ts --dev &
+      - name: Wait for backend
+        run: |
+          for i in $(seq 1 60); do
+            curl -sf http://127.0.0.1:3100/api/health && exit 0
+            sleep 1
+          done
+          exit 1
+      - name: Test (Node — unit)
+        run: npm run test:node
+      - name: Test (Node — api)
+        run: npm run test:node:api
+      - name: Test (Node — integration)
+        run: npm run test:node:integration
+      - name: Test (Node — browser e2e)
+        run: npm run test:node:e2e
