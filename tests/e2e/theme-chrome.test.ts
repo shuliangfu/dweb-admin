@@ -9,12 +9,20 @@ const TAB_PAGES = ["/rbac/admins", "/rbac/roles", "/developer/menus", "/system/o
 
 /** Open several tabs (cookie-backed), come back to the dashboard and assert tabs are flush with one shared border. */
 async function openTabsAndCheckFlush(page: any, dark: boolean) {
+  let expected = 1; // home tab always present
   for (const p of TAB_PAGES) {
     await page.goto(BASE + p);
     await page.waitForSelector("[data-testid=tag-view]");
+    expected += 1;
+    await page.waitForFunction(
+      (n: number) => document.querySelectorAll(".adm-tag-item").length >= Math.min(n, 4),
+      expected,
+      { timeout: 8000 },
+    ).catch(() => {});
   }
   await page.goto(BASE + "/");
   await page.waitForSelector("[data-testid=dashboard]");
+  await page.waitForSelector(".adm-tag-item");
   await page.waitForTimeout(500);
   const items = await page.evaluate(() => {
     return [...document.querySelectorAll(".adm-tag-item")].map((e) => {
@@ -108,7 +116,9 @@ Deno.test({ name: "theme: DataPanel body is slightly darker in dark mode only, v
         await page.waitForSelector(".adm-data-panel");
         const r = await page.evaluate(() => {
           const panel = document.querySelector(".adm-data-panel") as HTMLElement;
-          const head = panel.querySelector(".adm-card-header") as HTMLElement;
+          // ui-view DataPanel title row is the first direct child (no longer .adm-card-header).
+          const head = panel.querySelector(":scope > div") as HTMLElement;
+          if (!head) throw new Error("DataPanel title row missing");
           return {
             panel: getComputedStyle(panel).backgroundColor,
             head: getComputedStyle(head).backgroundColor,

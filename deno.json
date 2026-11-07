@@ -19,7 +19,8 @@
     "start:mobile": "deno run -A dist/mobile/server.js --start",
     "start:api": "deno run -A dist/api/server.js --start",
     "run:hello": "echo Use: dweb-cli run hello/world -a console",
-    "check": "deno check backend/main.ts frontend/main.ts mobile/main.ts api/main.ts console/main.ts"
+    "check": "deno check backend/main.ts frontend/main.ts mobile/main.ts api/main.ts console/main.ts",
+    "fixture:mongo": "deno run --env-file=.env -A scripts/fixture-mongo.ts"
   },
   "imports": {
     "@common/": "./common/",

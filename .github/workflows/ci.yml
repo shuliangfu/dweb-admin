@@ -13,6 +13,10 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   DB_HOST: 127.0.0.1
   DB_PORT: "27017"
+  DB_NAME: dweb_admin
+  DB_USER: ci
+  DB_PASS: ci
+  DB_AUTH_SOURCE: admin
   APP_HOST: 127.0.0.1
   APP_PORT_BACKEND: "3100"
   APP_PORT_API: "3003"
@@ -54,10 +58,74 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Start MongoDB
+      # Ubuntu: ankane/setup-mongodb 7.0 fails on noble (404). Use mongo:7 via Docker.
+      # Do not use mongo:8 (GH runner kernels hit SERVER-121912).
+      - name: Start MongoDB (Ubuntu Docker)
+        if: runner.os == 'Linux'
+        run: |
+          docker run -d --name dweb-mongo \
+            -p 27017:27017 \
+            -e MONGO_INITDB_ROOT_USERNAME=ci \
+            -e MONGO_INITDB_ROOT_PASSWORD=ci \
+            -e MONGO_INITDB_DATABASE=dweb_admin \
+            mongo:7
+          for i in $(seq 1 60); do
+            if docker exec dweb-mongo mongosh -u ci -p ci --authenticationDatabase admin \
+              --quiet --eval 'db.adminCommand({ ping: 1 }).ok' 2>/dev/null | grep -q 1; then
+              echo "MongoDB ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "MongoDB failed to become ready" >&2
+          docker logs dweb-mongo || true
+          exit 1
+
+      # macOS / Windows: keep ankane binary install (no Docker daemon on macOS runners by default).
+      - name: Start MongoDB (macOS/Windows)
+        if: runner.os != 'Linux'
         uses: ankane/setup-mongodb@v1
         with:
           mongodb-version: "7.0"
+
+      - name: Create CI Mongo user (macOS/Windows)
+        if: runner.os != 'Linux'
+        run: |
+          for i in $(seq 1 60); do
+            if mongosh --quiet --eval 'db.adminCommand({ ping: 1 }).ok' 2>/dev/null | grep -q 1; then
+              break
+            fi
+            sleep 2
+          done
+          mongosh --quiet --eval '
+            const admin = db.getSiblingDB("admin");
+            try {
+              admin.createUser({
+                user: "ci",
+                pwd: "ci",
+                roles: [
+                  { role: "root", db: "admin" }
+                ]
+              });
+            } catch (e) {
+              if (!/already exists/i.test(String(e))) throw e;
+            }
+            const app = db.getSiblingDB("dweb_admin");
+            try {
+              app.createUser({
+                user: "ci",
+                pwd: "ci",
+                roles: [
+                  { role: "readWrite", db: "dweb_admin" },
+                  { role: "dbAdmin", db: "dweb_admin" }
+                ]
+              });
+            } catch (e) {
+              if (!/already exists/i.test(String(e))) throw e;
+            }
+            app.createCollection("_ci");
+            print("ci user ready");
+          '
 
       - name: Env for CI
         run: |
@@ -65,12 +133,63 @@ jobs:
           printf '%s\n' \
             'DB_HOST=127.0.0.1' \
             'DB_PORT=27017' \
+            'DB_NAME=dweb_admin' \
+            'DB_USER=ci' \
+            'DB_PASS=ci' \
+            'DB_AUTH_SOURCE=admin' \
             'APP_HOST=127.0.0.1' \
             'APP_PORT_BACKEND=3100' \
             'APP_PORT_API=3003' \
             'ADMIN_COOKIE_SECURE=0' \
             'LOGIN_RATE_MAX=200' \
             'E2E_BASE=http://127.0.0.1:3100' >> .env
+
+      # Restore sanitized seed fixtures (admin/admin888 + menus/RBAC/site_settings).
+      - name: Restore Mongo fixtures (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          docker exec dweb-mongo mkdir -p /tmp/dweb-fixture
+          docker cp tests/fixtures/mongo/. dweb-mongo:/tmp/dweb-fixture/
+          docker exec dweb-mongo mongorestore --drop \
+            -u ci -p ci --authenticationDatabase admin \
+            -d dweb_admin /tmp/dweb-fixture
+          docker exec dweb-mongo mongosh -u ci -p ci --authenticationDatabase admin --quiet --eval '
+            const dbn = db.getSiblingDB("dweb_admin");
+            const u = dbn.admin_users.findOne({username:"admin"});
+            if (!u) throw new Error("fixture missing admin");
+            print("fixture ok admin_users=" + dbn.admin_users.countDocuments() +
+              " menus=" + dbn.menus.countDocuments() +
+              " auth_routes=" + dbn.auth_routes.countDocuments());
+          '
+
+      - name: Install MongoDB Database Tools (macOS/Windows)
+        if: runner.os != 'Linux'
+        run: |
+          if [ "${{ runner.os }}" = "macOS" ]; then
+            brew list mongodb-database-tools >/dev/null 2>&1 || brew install mongodb-database-tools
+          else
+            # Windows GitHub runners: download official tools zip
+            curl -fsSL -o /tmp/mdbt.zip "https://fastdl.mongodb.org/tools/db/mongodb-database-tools-windows-x86_64-100.10.0.zip"
+            powershell -Command "Expand-Archive -Path /tmp/mdbt.zip -DestinationPath $env:RUNNER_TEMP\mdbt -Force"
+            echo "$RUNNER_TEMP/mdbt/mongodb-database-tools-windows-x86_64-100.10.0/bin" >> "$GITHUB_PATH"
+            export PATH="$RUNNER_TEMP/mdbt/mongodb-database-tools-windows-x86_64-100.10.0/bin:$PATH"
+            mongorestore --version
+          fi
+
+      - name: Restore Mongo fixtures (macOS/Windows)
+        if: runner.os != 'Linux'
+        run: |
+          mongorestore --drop \
+            --uri="mongodb://ci:ci@127.0.0.1:27017/?authSource=admin" \
+            -d dweb_admin tests/fixtures/mongo
+          mongosh --quiet --eval '
+            const dbn = db.getSiblingDB("dweb_admin");
+            const u = dbn.admin_users.findOne({username:"admin"});
+            if (!u) throw new Error("fixture missing admin");
+            print("fixture ok admin_users=" + dbn.admin_users.countDocuments() +
+              " menus=" + dbn.menus.countDocuments() +
+              " auth_routes=" + dbn.auth_routes.countDocuments());
+          '
 
       - name: Cache Deno deps
         if: matrix.runtime == 'deno'
