@@ -58,7 +58,7 @@ export function ErrorPage(props: {
         .adm-error-code{margin:0;font-size:4.5rem;line-height:1;font-weight:800;letter-spacing:-0.04em;color:#fda4af}
         .adm-error-title{margin:0.75rem 0 0;font-size:1.5rem;line-height:1.3;font-weight:600;color:#1e293b}
         .adm-error-msg{margin:0.5rem 0 0;font-size:0.875rem;line-height:1.55;color:#64748b;max-width:24rem;margin-left:auto;margin-right:auto}
-        .adm-error-detail{margin:1rem 0 0;padding:0.75rem 0.875rem;border-radius:0.75rem;background:#f8fafc;border:1px solid #e2e8f0;color:#475569;font-size:0.75rem;line-height:1.45;text-align:left;word-break:break-word;max-height:8rem;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+        .adm-error-detail{margin:1rem 0 0;padding:0.75rem 0.875rem;border-radius:0.75rem;background:#f8fafc;border:1px solid #e2e8f0;color:#475569;font-size:0.75rem;line-height:1.45;text-align:center;word-break:break-word;max-height:8rem;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
         .adm-error-actions{margin-top:1.5rem;display:flex;flex-wrap:wrap;gap:0.75rem;justify-content:center;align-items:center}
         .adm-error-actions a{text-decoration:none}
         @media (prefers-color-scheme: dark){
@@ -88,7 +88,7 @@ export function ErrorPage(props: {
         </p>
         {detail
           ? (
-            <pre class="adm-error-detail" data-testid="error-detail">{detail}</pre>
+            <pre class="adm-error-detail text-center" data-testid="error-detail">{detail}</pre>
           )
           : null}
         <div class="adm-error-actions mt-6 flex flex-wrap items-center justify-center gap-3">
