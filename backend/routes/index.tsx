@@ -3,7 +3,8 @@
  * Dashboard shows member KPIs, finance strip and charts (no live admin/menu/role cards).
  * DEMO (no Member/Finance models; docs/handoff.md): member KPIs, finance strip, charts.
  */
-import { Card, ChartBar, ChartDoughnut, ChartLine, IconUsers } from "@dreamer/ui-view";
+import { Card, IconUsers } from "@dreamer/ui-view";
+import { ChartBar, ChartDoughnut, ChartLine } from "@dreamer/ui-view/charts";
 import type { LoadContext } from "@dreamer/dweb";
 import { createT, type Locale, resolveLocale } from "@common/i18n/mod.ts";
 

@@ -51,7 +51,7 @@
     "@dreamer/websocket": "jsr:@dreamer/websocket@^1.1.0",
     "@dreamer/runtime-adapter": "jsr:@dreamer/runtime-adapter@^1.2.2",
     "@dreamer/logger": "jsr:@dreamer/logger@^1.1.0",
-    "@dreamer/ui-view": "jsr:@dreamer/ui-view@^1.2.1",
+    "@dreamer/ui-view": "jsr:@dreamer/ui-view@^1.2.2",
     "@dreamer/storage": "jsr:@dreamer/storage@^1.1.0",
     "@dreamer/utils": "jsr:@dreamer/utils@^1.1.0",
     "qrcode": "npm:qrcode@1.5.4"
