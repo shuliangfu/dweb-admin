@@ -130,12 +130,19 @@ export async function browserLoggedIn(opts: { viewport?: { width: number; height
   const ctx = await browser.newContext({ viewport: opts.viewport ?? { width: 1280, height: 800 }, locale: opts.locale });
   await ctx.request.get(BASE + "/login");
   const csrf = (await ctx.cookies()).find((c) => c.name === "_csrf")?.value ?? "";
-  const r = await ctx.request.post(BASE + "/api/auth/login", { data: { username: ADMIN_USER, password: ADMIN_PASS }, headers: { "x-csrf-token": csrf } });
+  // JSON login (not form-urlencoded): skips captcha unless a captcha cookie is already set.
+  const r = await ctx.request.post(BASE + "/api/auth/login", {
+    data: JSON.stringify({ username: ADMIN_USER, password: ADMIN_PASS }),
+    headers: { "x-csrf-token": csrf, "content-type": "application/json", accept: "application/json" },
+    maxRedirects: 0,
+  });
   const body = await r.json().catch(() => ({} as Record<string, unknown>));
   const st = String((body as any)?.status ?? "");
   if (r.status() !== 200 || st === "passkey" || st === "2fa" || (body as any)?.ok !== true) {
     throw new Error("browser login failed " + r.status() + " " + JSON.stringify(body));
   }
+  const sid = (await ctx.cookies()).find((c) => c.name === "dweb_admin_sid" || c.name.startsWith("dweb_admin"));
+  if (!sid?.value) throw new Error("browser login missing session cookie: " + JSON.stringify(await ctx.cookies()));
   if (opts.cookies?.length) await ctx.addCookies(opts.cookies.map((c) => ({ ...c, url: BASE })));
   return { browser, ctx };
 }

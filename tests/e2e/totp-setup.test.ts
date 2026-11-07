@@ -26,10 +26,14 @@ describe("totp setup (browser)", () => {
       await ctx.request.get(BASE + "/login");
       const csrf = (await ctx.cookies()).find((c) => c.name === "_csrf")?.value ?? "";
       const login = await ctx.request.post(BASE + "/api/auth/login", {
-        data: { username: u.username, password: u.password },
-        headers: { "x-csrf-token": csrf },
+        data: JSON.stringify({ username: u.username, password: u.password }),
+        headers: { "x-csrf-token": csrf, "content-type": "application/json", accept: "application/json" },
+        maxRedirects: 0,
       });
       expect(login.status()).toBe(200);
+      const body = await login.json();
+      expect(body.ok).toBe(true);
+      expect(body.status === "2fa" || body.status === "passkey").toBe(false);
 
       const page = await ctx.newPage();
       await page.goto(BASE + "/");

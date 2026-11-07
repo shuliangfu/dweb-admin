@@ -168,11 +168,16 @@ jobs:
           if [ "${{ runner.os }}" = "macOS" ]; then
             brew list mongodb-database-tools >/dev/null 2>&1 || brew install mongodb-database-tools
           else
-            # Windows GitHub runners: download official tools zip
-            curl -fsSL -o /tmp/mdbt.zip "https://fastdl.mongodb.org/tools/db/mongodb-database-tools-windows-x86_64-100.10.0.zip"
-            powershell -Command "Expand-Archive -Path /tmp/mdbt.zip -DestinationPath $env:RUNNER_TEMP\mdbt -Force"
-            echo "$RUNNER_TEMP/mdbt/mongodb-database-tools-windows-x86_64-100.10.0/bin" >> "$GITHUB_PATH"
-            export PATH="$RUNNER_TEMP/mdbt/mongodb-database-tools-windows-x86_64-100.10.0/bin:$PATH"
+            # Windows: bash shell — use RUNNER_TEMP (do not use PowerShell $env: inside bash).
+            TOOLS_VER=100.10.0
+            ZIP="mongodb-database-tools-windows-x86_64-${TOOLS_VER}.zip"
+            curl -fsSL -o "${RUNNER_TEMP}/${ZIP}" "https://fastdl.mongodb.org/tools/db/${ZIP}"
+            rm -rf "${RUNNER_TEMP}/mdbt"
+            mkdir -p "${RUNNER_TEMP}/mdbt"
+            unzip -o "${RUNNER_TEMP}/${ZIP}" -d "${RUNNER_TEMP}/mdbt"
+            TOOLS_BIN="${RUNNER_TEMP}/mdbt/mongodb-database-tools-windows-x86_64-${TOOLS_VER}/bin"
+            echo "${TOOLS_BIN}" >> "$GITHUB_PATH"
+            export PATH="${TOOLS_BIN}:$PATH"
             mongorestore --version
           fi
 
@@ -227,10 +232,33 @@ jobs:
           echo "backend failed to become healthy" >&2
           exit 1
 
+      - name: Start API (Deno)
+        run: |
+          deno run --env-file=.env -A api/main.ts --dev &
+          echo $! > /tmp/dweb-api.pid
+          for i in $(seq 1 90); do
+            if curl -sf http://127.0.0.1:3003/health \
+              || curl -sf http://127.0.0.1:3003/api/health \
+              || curl -sf -o /dev/null -w "%{http_code}" http://127.0.0.1:3003/ | grep -qE '^[0-9]{3}$'; then
+              echo "api ready"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "api failed to become healthy" >&2
+          exit 1
+
       - name: Warm up backend pages (cold compile)
         run: |
           for path in /login / /chat; do
             curl -sf -o /dev/null -w "%{http_code} %{url_effective}\n" "http://127.0.0.1:3100$path" || true
+          done
+          # Authenticated warm-up so first e2e paint is not a cold compile under Playwright.
+          CSRF=$(curl -sf -c /tmp/dweb-ci.ck -b /tmp/dweb-ci.ck http://127.0.0.1:3100/login -o /dev/null -D - | tr -d '\r' | awk -F'=|;' 'BEGIN{IGNORECASE=1} /set-cookie: _csrf=/{print $2; exit}')
+          CSRF=${CSRF:-$(awk '$6=="_csrf"{print $7}' /tmp/dweb-ci.ck)}
+          curl -sf -c /tmp/dweb-ci.ck -b /tmp/dweb-ci.ck             -H "content-type: application/json" -H "x-csrf-token: ${CSRF}"             -d '{"username":"admin","password":"admin888"}'             http://127.0.0.1:3100/api/auth/login >/tmp/dweb-login.json || true
+          for path in / /chat /rbac/admins /user /developer/menus; do
+            curl -sf -o /dev/null -b /tmp/dweb-ci.ck -w "%{http_code} %{url_effective}\n" "http://127.0.0.1:3100$path" || true
           done
 
       - name: Test unit + integration (Deno)
