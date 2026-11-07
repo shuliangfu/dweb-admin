@@ -39,14 +39,16 @@ export default function Framework500Page(props: {
   const code = props.statusCode ?? d.statusCode ?? 500;
   const detail = errorDetail(props.error) ?? errorDetail(d.error);
   return (
-    <ErrorPage
-      locale={locale}
-      code={code}
-      title={tr("error.page500Title")}
-      message={tr("error.page500Message")}
-      detail={detail}
-      showReload
-      homeHref="/"
-    />
+    <div data-dweb-special="_500" data-testid="framework-special-500">
+      <ErrorPage
+        locale={locale}
+        code={code}
+        title={tr("error.page500Title")}
+        message={tr("error.page500Message")}
+        detail={detail}
+        showReload
+        homeHref="/"
+      />
+    </div>
   );
 }

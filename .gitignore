@@ -43,3 +43,6 @@ backend/assets/ui-view-sources.css
 
 # local DIG screenshots
 .dig-shots/
+
+# local PM screenshots / cookie jars
+.pm-shots/

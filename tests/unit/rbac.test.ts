@@ -44,6 +44,7 @@ Deno.test("path classes", () => {
   assert(!isPublicPath("/chunk-ABC123.js", "POST"));
   assert(!isPublicPath("/system/users.js/x"));
   assert(isAuthOnlyPath("/api/menus/mine"));
+  assert(isAuthOnlyPath("/__debug/throw500"));
   assert(!isAuthOnlyPath("/system/users"));
 });
 
