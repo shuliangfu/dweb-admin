@@ -15,7 +15,9 @@
     "test:node": "node test-node.mjs",
     "test:node:api": "node test-node-api.mjs",
     "test:node:integration": "node test-node-integration.mjs",
-    "test:node:e2e": "node test-node-e2e.mjs"
+    "test:node:e2e": "node test-node-e2e.mjs",
+    "test:bun:unit": "bun test tests/unit/totp-qr.test.ts tests/unit/cs-ws-url.test.ts tests/unit/challenge-kind.test.ts tests/unit/cs.test.ts tests/api/login-gate.test.ts tests/integration/",
+    "test:bun:e2e": "bun test tests/e2e/totp-setup.test.ts tests/e2e/cs-chat.test.ts tests/e2e/support-portal.test.ts"
   },
   "dependencies": {
     "@dreamer/cache": "npm:@jsr/dreamer__cache@^1.1.0",

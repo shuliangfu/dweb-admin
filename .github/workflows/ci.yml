@@ -1,5 +1,6 @@
-# CI: Deno + Bun + Node 22 on ubuntu-24.04 — unit + integration + Playwright browser e2e.
-# Triggers only on `dev`. Uses @dreamer/test; no Jest/Vitest.
+# CI: 3 runtime (Deno / Bun / Node 22) × 3 OS (Ubuntu / macOS / Windows).
+# Unit + integration + Playwright browser e2e via @dreamer/test.
+# Triggers only on `dev`. Bun+Windows browser is allow-fail (continue-on-error).
 name: CI
 
 on:
@@ -10,142 +11,142 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  DB_HOST: 127.0.0.1
+  DB_PORT: "27017"
+  APP_HOST: 127.0.0.1
+  APP_PORT_BACKEND: "3100"
+  APP_PORT_API: "3003"
+  ADMIN_COOKIE_SECURE: "0"
+  LOGIN_RATE_MAX: "200"
+  E2E_BASE: http://127.0.0.1:3100
 
 jobs:
-  test-deno:
-    runs-on: ubuntu-24.04
-    services:
-      mongo:
-        image: mongo:7
-        ports:
-          - 27018:27017
-        options: >-
-          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 12
+  test:
+    name: ${{ matrix.runtime }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-latest, windows-latest]
+        runtime: [deno, bun, node]
+    defaults:
+      run:
+        shell: bash
+
     steps:
       - uses: actions/checkout@v5
-      - uses: denoland/setup-deno@v2
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
         with:
           deno-version: v2.9
-      - name: Env for CI
-        run: |
-          cp .env.example .env
-          printf '%s\n' \
-            'DB_HOST=127.0.0.1' \
-            'DB_PORT=27018' \
-            'APP_HOST=127.0.0.1' \
-            'APP_PORT_BACKEND=3100' \
-            'APP_PORT_API=3003' \
-            'ADMIN_COOKIE_SECURE=0' \
-            'LOGIN_RATE_MAX=200' >> .env
-      - name: Cache dependencies
-        continue-on-error: true
-        run: deno cache backend/main.ts api/main.ts
-      - name: Install Playwright Chromium
-        run: npx -y playwright@1.59.1 install --with-deps chromium
-      - name: Check
-        run: deno task check
-      - name: Test (Deno — unit + api + integration + browser e2e)
-        run: deno test --env-file=.env -A tests/
 
-  test-bun:
-    runs-on: ubuntu-24.04
-    services:
-      mongo:
-        image: mongo:7
-        ports:
-          - 27018:27017
-        options: >-
-          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 12
-    steps:
-      - uses: actions/checkout@v5
-      - uses: oven-sh/setup-bun@v2
+      - name: Setup Bun
+        if: matrix.runtime == 'bun'
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2.9
-      - name: Env for CI
-        run: |
-          cp .env.example .env
-          printf '%s\n' \
-            'DB_HOST=127.0.0.1' \
-            'DB_PORT=27018' \
-            'APP_HOST=127.0.0.1' \
-            'APP_PORT_BACKEND=3100' \
-            'APP_PORT_API=3003' \
-            'ADMIN_COOKIE_SECURE=0' \
-            'LOGIN_RATE_MAX=200' >> .env
-      - name: Install dependencies (Bun)
-        run: bun install
-      - name: Install Playwright Chromium
-        run: bunx playwright@1.59.1 install --with-deps chromium
-      - name: Start backend (Deno)
-        run: deno run --env-file=.env -A backend/main.ts --dev &
-      - name: Wait for backend
-        run: |
-          for i in $(seq 1 60); do
-            curl -sf http://127.0.0.1:3100/api/health && exit 0
-            sleep 1
-          done
-          exit 1
-      - name: Test (Bun — unit + integration + browser e2e)
-        run: bun run test:bun
 
-  test-node:
-    runs-on: ubuntu-24.04
-    services:
-      mongo:
-        image: mongo:7
-        ports:
-          - 27018:27017
-        options: >-
-          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 12
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - name: Setup Node 22
+        if: matrix.runtime == 'node' || matrix.runtime == 'bun'
+        uses: actions/setup-node@v5
         with:
           node-version: "22"
-      - uses: denoland/setup-deno@v2
+
+      - name: Start MongoDB
+        uses: ankane/setup-mongodb@v1
         with:
-          deno-version: v2.9
+          mongodb-version: "7.0"
+
       - name: Env for CI
         run: |
           cp .env.example .env
           printf '%s\n' \
             'DB_HOST=127.0.0.1' \
-            'DB_PORT=27018' \
+            'DB_PORT=27017' \
             'APP_HOST=127.0.0.1' \
             'APP_PORT_BACKEND=3100' \
             'APP_PORT_API=3003' \
             'ADMIN_COOKIE_SECURE=0' \
-            'LOGIN_RATE_MAX=200' >> .env
-      - name: Install dependencies (Node)
+            'LOGIN_RATE_MAX=200' \
+            'E2E_BASE=http://127.0.0.1:3100' >> .env
+
+      - name: Cache Deno deps
+        if: matrix.runtime == 'deno'
+        continue-on-error: true
+        run: deno cache backend/main.ts api/main.ts
+
+      - name: Install npm deps (Node)
+        if: matrix.runtime == 'node'
         run: npm install
+
+      - name: Install bun deps
+        if: matrix.runtime == 'bun'
+        run: bun install
+
       - name: Install Playwright Chromium
-        run: npx -y playwright@1.59.1 install --with-deps chromium
-      - name: Start backend (Deno)
-        run: deno run --env-file=.env -A backend/main.ts --dev &
-      - name: Wait for backend
         run: |
-          for i in $(seq 1 60); do
+          if [ "${{ runner.os }}" = "Linux" ]; then
+            npx -y playwright@1.59.1 install --with-deps chromium
+          else
+            npx -y playwright@1.59.1 install chromium
+          fi
+
+      - name: Check (Deno)
+        if: matrix.runtime == 'deno'
+        run: deno task check
+
+      - name: Start backend (Deno)
+        run: |
+          deno run --env-file=.env -A backend/main.ts --dev &
+          echo $! > /tmp/dweb-backend.pid
+          for i in $(seq 1 90); do
             curl -sf http://127.0.0.1:3100/api/health && exit 0
             sleep 1
           done
+          echo "backend failed to become healthy" >&2
           exit 1
-      - name: Test (Node — unit)
+
+      - name: Warm up backend pages (cold compile)
+        run: |
+          for path in /login / /chat; do
+            curl -sf -o /dev/null -w "%{http_code} %{url_effective}\n" "http://127.0.0.1:3100$path" || true
+          done
+
+      - name: Test unit + integration (Deno)
+        if: matrix.runtime == 'deno'
+        run: deno test --env-file=.env -A tests/unit/ tests/api/ tests/integration/
+
+      - name: Test browser e2e (Deno)
+        if: matrix.runtime == 'deno'
+        run: deno test --env-file=.env -A tests/e2e/
+
+      - name: Test unit + integration (Bun)
+        if: matrix.runtime == 'bun'
+        run: bun run test:bun:unit
+
+      - name: Test browser e2e (Bun)
+        if: matrix.runtime == 'bun' && runner.os != 'Windows'
+        run: bun run test:bun:e2e
+
+      - name: Bun+Windows browser (allow-fail)
+        if: matrix.runtime == 'bun' && runner.os == 'Windows'
+        continue-on-error: true
+        run: bun run test:bun:e2e
+
+      - name: Test unit (Node)
+        if: matrix.runtime == 'node'
         run: npm run test:node
-      - name: Test (Node — api)
+
+      - name: Test api (Node)
+        if: matrix.runtime == 'node'
         run: npm run test:node:api
-      - name: Test (Node — integration)
+
+      - name: Test integration (Node)
+        if: matrix.runtime == 'node'
         run: npm run test:node:integration
-      - name: Test (Node — browser e2e)
+
+      - name: Test browser e2e (Node)
+        if: matrix.runtime == 'node'
         run: npm run test:node:e2e
