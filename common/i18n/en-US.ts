@@ -279,6 +279,7 @@ export default {
     forbidden: "No permission",
     forbiddenTitle: "No permission",
     backHome: "Back home",
+    reload: "Try again",
     badOrigin: "Request origin not allowed",
     notFound: "Not found",
     badRequest: "Invalid request",

@@ -269,6 +269,7 @@ export default {
     forbidden: "无权限",
     forbiddenTitle: "无权限",
     backHome: "返回首页",
+    reload: "刷新重试",
     badOrigin: "请求来源不被允许",
     notFound: "资源不存在",
     badRequest: "请求参数不正确",
