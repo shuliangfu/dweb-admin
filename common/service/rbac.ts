@@ -36,6 +36,7 @@ const PUBLIC_PREFIX = ["/assets/", "/_client", "/__hmr", "/api/i18n/", "/api/aut
 
 /** Own-account endpoints: any logged-in user (password, 2FA, passkeys). */
 const AUTH_ONLY_PREFIX = [
+  "/api/chat/",
   "/api/account/",
   // Generic resource API: any logged-in user passes the guard; each handler then checks the
   // resource grant itself (backend/api-res.ts).
@@ -52,6 +53,7 @@ const AUTH_ONLY_EXACT = new Set([
   "/",
   "/workspace",
   "/lock",
+  "/chat",
   "/api/auth/logout",
   "/api/auth/me",
   "/api/auth/unlock",

@@ -88,14 +88,17 @@ export async function changePassword(
 
 // ---------------------------------------------------------------------- TOTP
 
-/** Start setup: returns a fresh secret + QR (SVG data URL). Not active until a code is verified. */
+/** Start setup: returns a fresh secret + scannable QR (PNG data URL). Not active until a code is verified. */
 export async function totpBegin(userId: string): Promise<Fail | Ok<{ secret: string; qrCode: string; otpauthUrl: string }>> {
   const user = await userById(userId);
   if (!user) return { ok: false, error: "notFound" };
   if (user.totpEnabled) return { ok: false, error: "totpAlready" };
   const r = totp.generateSecret(user.username);
+  // @dreamer/humancheck@1.1.0 ships a text placeholder SVG as qrCode — replace with a real matrix QR.
+  const QRCode = (await import("qrcode")).default;
+  const qrCode = await QRCode.toDataURL(r.otpauthUrl, { width: 200, margin: 1, errorCorrectionLevel: "M" });
   await AdminUser.updateById(userId, { totpPendingSecret: r.secret });
-  return { ok: true, secret: r.secret, qrCode: r.qrCode, otpauthUrl: r.otpauthUrl };
+  return { ok: true, secret: r.secret, qrCode, otpauthUrl: r.otpauthUrl };
 }
 
 async function codeValid(secret: string, code: string): Promise<boolean> {
@@ -317,6 +320,86 @@ export async function passkeySetEnabled(userId: string, enabled: boolean): Promi
   await AdminUser.updateById(userId, { passkeyEnabled: enabled });
   invalidateLoginFeatures();
   return { ok: true };
+}
+
+
+/** Post-password fingerprint gate — options (user-bound). Needs live `passkey-gate` cookie. */
+export async function passkeyGateOptions(challengeToken: string, request: Request) {
+  const ch = await peekChallenge(challengeToken, "passkey-gate");
+  if (!ch?.userId) return null;
+  const userId = String(ch.userId);
+  const user = await userById(userId);
+  if (!user || user.status !== "active" || !user.passkeyEnabled) return null;
+  const keys = (await AdminPasskey.findAll({ userId })) as unknown as AdminPasskeyDocument[];
+  if (!keys.length) return null;
+  const { rpID } = rp(request);
+  const options = await generateAuthenticationOptions({
+    rpID,
+    userVerification: "required",
+    allowCredentials: keys.map((k) => ({
+      id: k.credentialId,
+      transports: k.transports as AuthenticatorTransportFuture[] | undefined,
+    })),
+  });
+  await consumeChallenge(challengeToken, "passkey-gate");
+  const token = await createChallenge({
+    kind: "passkey-gate",
+    userId,
+    challenge: options.challenge,
+    remember: !!ch.remember,
+  });
+  return { options, token };
+}
+
+/**
+ * Post-password fingerprint gate — verify.
+ * Success → session, or `{ status: "2fa" }` when TOTP is also on.
+ */
+export async function passkeyGateVerify(
+  request: Request,
+  challengeToken: string,
+  response: AuthenticationResponseJSON,
+) {
+  const ch = await peekChallenge(challengeToken, "passkey-gate");
+  if (!ch?.userId || !ch.challenge) return null;
+  const userId = String(ch.userId);
+  const key = await AdminPasskey.findOne({ credentialId: response.id, userId }) as AdminPasskeyDocument | null;
+  if (!key) return null;
+  const user = await userById(userId);
+  if (!user || user.status !== "active" || !user.passkeyEnabled) return null;
+  const { rpID, origin } = rp(request);
+  try {
+    const v = await verifyAuthenticationResponse({
+      response,
+      expectedChallenge: ch.challenge,
+      expectedOrigin: origin,
+      expectedRPID: rpID,
+      requireUserVerification: true,
+      credential: {
+        id: key.credentialId,
+        publicKey: b64u.toBytes(key.publicKey),
+        counter: key.counter,
+        transports: key.transports as AuthenticatorTransportFuture[] | undefined,
+      },
+    });
+    if (!v.verified) return null;
+    await AdminPasskey.updateById(String(key._id), {
+      counter: v.authenticationInfo.newCounter,
+      lastUsedAt: new Date(),
+    });
+    await consumeChallenge(challengeToken, "passkey-gate");
+    const remember = !!ch.remember;
+    if (user.totpEnabled && user.totpSecret) {
+      return {
+        status: "2fa" as const,
+        challengeToken: await createChallenge({ kind: "2fa", userId, remember }),
+      };
+    }
+    return { status: "ok" as const, ...(await startSession(user, remember, clientMeta(request))) };
+  } catch (e) {
+    console.error("[passkey] gate verify failed:", e instanceof Error ? e.message : e);
+    return null;
+  }
 }
 
 /** Login step 1 (public): discoverable-credential options. */

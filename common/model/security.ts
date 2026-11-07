@@ -22,7 +22,7 @@ export class AdminPasskey extends MongoModel {
   static override indexes = [{ field: "credentialId", unique: true }, { field: "userId" }];
 }
 
-export type ChallengeKind = "2fa" | "passkey-reg" | "passkey-login";
+export type ChallengeKind = "2fa" | "passkey-reg" | "passkey-login" | "passkey-gate";
 
 /** One-shot challenge, keyed by SHA-256 of a random cookie token. */
 export interface AdminChallengeDocument {

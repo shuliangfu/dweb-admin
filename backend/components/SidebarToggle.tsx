@@ -1,11 +1,10 @@
+import { IconMenu } from "@dreamer/ui-view";
 /**
  * Hamburger button.
  *  - desktop (>= 768px): collapses the sidebar to an icon rail; the state is stored in the cookie
  *    `dweb-admin-sidebar` (1 = collapsed) which the layout reads during SSR, so there is no flash.
  *  - mobile: opens / closes the sidebar as a drawer (class `adm-drawer-open`).
  */
-import { IconMenu } from "@dreamer/ui-view/icons/Menu.tsx";
-
 export const SIDEBAR_COOKIE = "dweb-admin-sidebar";
 
 // deno-lint-ignore no-explicit-any

@@ -44,4 +44,27 @@ export default {
   // securityHeaders: true,
   // cors: { origin: ["https://app.example.com"], credentials: true },
   // rateLimit: { windowMs: 60_000, max: 120 },
+
+  // Browser clients (backend/FE/mobile) connect cross-port; allow local origins.
+  cors: {
+    origin: [
+      "http://127.0.0.1:3100",
+      "http://localhost:3100",
+      "http://127.0.0.1:3001",
+      "http://localhost:3001",
+      "http://127.0.0.1:3002",
+      "http://localhost:3002",
+      "http://127.0.0.1:3003",
+      "http://localhost:3003",
+    ],
+    credentials: true,
+  },
+  /** Customer-service realtime chat. Same HTTP port, path /ws. */
+  socket: {
+    adapter: "websocket",
+    path: "/ws",
+    pingTimeout: 60_000,
+    pingInterval: 30_000,
+    debug: false,
+  },
 } satisfies AppConfig;

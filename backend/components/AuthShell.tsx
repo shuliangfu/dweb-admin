@@ -2,7 +2,7 @@
  * Fullpage shell shared by login / forget / reset.
  * Vue fullpage/login.vue: left illustration (#363e54) + right form; lang/theme top-right.
  */
-import type { VNode } from "@dreamer/view";
+import type { JSXRenderable } from "@dreamer/view";
 import { Card, MessageContainer, Stack, ToastContainer } from "@dreamer/ui-view";
 import type { Locale } from "@common/i18n/mod.ts";
 import { createT } from "@common/i18n/mod.ts";
@@ -15,7 +15,7 @@ export function AuthShell(props: {
   subtitle?: string;
   /** When true (login), show Vue-style left art panel on md+. */
   showLeftArt?: boolean;
-  children?: VNode | VNode[];
+  children?: JSXRenderable;
 }) {
   const tr = createT(props.locale);
   const showArt = props.showLeftArt !== false;

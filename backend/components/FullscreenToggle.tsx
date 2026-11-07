@@ -2,9 +2,8 @@
  * Top-bar fullscreen control (documentElement). Matches Vue TopHeader switchScreen.
  */
 import { createSignal, onCleanup, onMount } from "@dreamer/view";
-import { IconExitFullscreen } from "@dreamer/ui-view/icons/ExitFullscreen.tsx";
-import { IconMaximize2 } from "@dreamer/ui-view/icons/Maximize2.tsx";
 import { triggerCls } from "@backend/components/menu-kit.tsx";
+import { IconExitFullscreen, IconMaximize2 } from "@dreamer/ui-view";
 
 type DocLike = {
   fullscreenElement: unknown;

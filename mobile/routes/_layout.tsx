@@ -1,5 +1,5 @@
 /**
- * 布局组件 - 页头、页脚和内容区域（使用 Tailwind CSS v4）
+ * Mobile product shell — compact header / nav / footer
  */
 
 import type { VNode } from "@dreamer/view";
@@ -10,48 +10,53 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div class="min-h-screen flex flex-col">
-      <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav class="flex items-center justify-between h-16">
-            <a
-              href="/"
-              class="text-xl font-bold text-primary-600 hover:text-primary-700"
-            >
-              mobile
-            </a>
-            <ul class="flex items-center gap-6 list-none m-0 p-0">
-              <li>
-                <a
-                  href="/"
-                  class="text-gray-600 hover:text-primary-600 transition-colors"
-                >
-                  首页
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/about"
-                  class="text-gray-600 hover:text-primary-600 transition-colors"
-                >
-                  关于
-                </a>
-              </li>
-            </ul>
-          </nav>
+    <div class="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      <header class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95">
+        <div class="mx-auto flex h-12 max-w-lg items-center justify-between px-3">
+          <a
+            href="/"
+            class="truncate text-base font-semibold tracking-tight text-indigo-600 dark:text-indigo-400"
+          >
+            Dweb Admin · 手机
+          </a>
+          <ul class="flex items-center gap-0.5 list-none m-0 p-0">
+            <li>
+              <a
+                href="/"
+                class="inline-flex min-h-10 items-center rounded-lg px-2.5 text-sm text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+              >
+                首页
+              </a>
+            </li>
+            <li>
+              <a
+                href="/about"
+                class="inline-flex min-h-10 items-center rounded-lg px-2.5 text-sm text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+              >
+                关于
+              </a>
+            </li>
+            <li>
+              <a
+                href="/support"
+                data-testid="nav-contact-cs"
+                class="inline-flex min-h-10 items-center rounded-lg px-2.5 text-sm font-medium text-indigo-600 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950/40"
+              >
+                客服
+              </a>
+            </li>
+          </ul>
         </div>
       </header>
 
       <main class="flex-1">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {children}
-        </div>
+        <div class="mx-auto max-w-lg px-3 py-5">{children}</div>
       </main>
 
-      <footer class="bg-gray-800 text-white py-8">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p class="text-gray-400">
-            © 2024 使用 @dreamer/dweb 构建
+      <footer class="border-t border-slate-200 bg-white py-5 dark:border-slate-800 dark:bg-slate-900">
+        <div class="mx-auto max-w-lg px-3 text-center">
+          <p class="text-xs text-slate-500 dark:text-slate-400">
+            © 2026 Dweb Admin · 手机端
           </p>
         </div>
       </footer>

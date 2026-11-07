@@ -5,7 +5,7 @@
  *  - Google 2FA (TOTP): QR + verify one code to enable; a valid code is required to disable
  */
 import { createEffect, createSignal } from "@dreamer/view";
-import { Button, FormItem, Input, Modal, Switch, Tabs, Tag } from "@dreamer/ui-view";
+import { Button, FormItem, Input, Modal, Switch, Tabs, Tag, message } from "@dreamer/ui-view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { createCredentialJSON, passkeySupported } from "@common/utils/webauthn-client.ts";
 import { api, ConfirmDelete, toastResult } from "@backend/components/crud-kit.tsx";
@@ -174,22 +174,23 @@ export function SecurityModal(props: { locale: Locale }) {
           onChange={(e: Event) => void togglePasskey((e.target as unknown as { checked: boolean }).checked)}
         />
       </div>
-      <div class="flex items-end gap-2">
-        <div class="flex-1">
-          <FormItem label={tr("security.passkeyName")}>
-            <Input
-              value={pkName}
-              placeholder="MacBook Touch ID"
-              onInput={(e: Event) => {
-                pkName.value = val(e);
-              }}
-            />
-          </FormItem>
-        </div>
-        <Button type="button" variant="primary" data-testid="passkey-enroll" onClick={enrollPasskey}>
-          {tr("security.passkeyEnroll")}
-        </Button>
-      </div>
+      <FormItem
+        label={tr("security.passkeyName")}
+        class="!my-0"
+        trailing={
+          <Button type="button" variant="primary" data-testid="passkey-enroll" onClick={enrollPasskey}>
+            {tr("security.passkeyEnroll")}
+          </Button>
+        }
+      >
+        <Input
+          value={pkName}
+          placeholder="MacBook Touch ID"
+          onInput={(e: Event) => {
+            pkName.value = val(e);
+          }}
+        />
+      </FormItem>
       <ul class="m-0 grid list-none gap-2 p-0">
         {(overview.value?.passkeys ?? []).length === 0
           ? <li class="text-sm opacity-60">{tr("security.passkeyNone")}</li>
@@ -250,9 +251,36 @@ export function SecurityModal(props: { locale: Locale }) {
           ? (
             <div class="grid gap-3">
               <p class="m-0 text-sm">{tr("security.totpScan")}</p>
-              <div class="flex items-center gap-4">
-                <img src={s.qrCode} alt="TOTP QR" class="h-40 w-40 rounded bg-white p-1" data-testid="totp-qr" />
-                <code class="break-all text-sm" data-testid="totp-secret">{s.secret}</code>
+              <div class="flex flex-wrap items-start gap-4">
+                <img
+                  src={s.qrCode}
+                  alt="TOTP QR"
+                  width={160}
+                  height={160}
+                  class="h-40 w-40 shrink-0 rounded bg-white p-1 object-contain"
+                  data-testid="totp-qr"
+                />
+                <div class="min-w-0 flex-1">
+                  <p class="m-0 mb-1 text-xs opacity-60">{tr("security.totpSecret")}</p>
+                  <code class="break-all text-sm" data-testid="totp-secret">{s.secret}</code>
+                  <div class="mt-2" data-testid="totp-copy-secret">
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => {
+                        try {
+                          void navigator.clipboard.writeText(s.secret).then(() => {
+                            message.success(tr("security.totpCopied"));
+                          });
+                        } catch {
+                          /* clipboard may be denied */
+                        }
+                      }}
+                    >
+                      {tr("security.totpCopy")}
+                    </Button>
+                  </div>
+                </div>
               </div>
               <FormItem label={tr("security.totpCode")} error={(codeError.value ? tr("apiError.totpWrong") : undefined) as never}>
                 <Input
@@ -271,8 +299,8 @@ export function SecurityModal(props: { locale: Locale }) {
             </div>
           )
           : (
-            <div class="flex justify-end">
-              <Button type="button" variant="primary" data-testid="totp-start" onClick={startTotp}>
+            <div class="flex justify-end" data-testid="totp-start">
+              <Button type="button" variant="primary" onClick={startTotp}>
                 {tr("security.totpStart")}
               </Button>
             </div>
@@ -300,9 +328,9 @@ export function SecurityModal(props: { locale: Locale }) {
                 tab.value = k;
               }}
               items={[
-                { key: "password", label: tr("security.tabPassword"), children: null },
-                { key: "passkey", label: tr("security.tabPasskey"), children: null },
-                { key: "totp", label: tr("security.tabTotp"), children: null },
+                { key: "password", label: <span data-testid="sec-tab-password">{tr("security.tabPassword")}</span>, children: null },
+                { key: "passkey", label: <span data-testid="sec-tab-passkey">{tr("security.tabPasskey")}</span>, children: null },
+                { key: "totp", label: <span data-testid="sec-tab-totp">{tr("security.tabTotp")}</span>, children: null },
               ] as never}
             />
             <div class="pt-4">

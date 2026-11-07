@@ -34,6 +34,10 @@ export default {
     passkeyFailed:
       "Fingerprint verification failed, retry or use your password",
     passkeyUnsupported: "This browser does not support fingerprint login",
+    passkeyGateTitle: "Fingerprint verification",
+    passkeyGateHint: "Fingerprint login is on for this account — verify to continue",
+    passkeyGate: "Continue with fingerprint",
+    passkeyGateFailed: "Fingerprint verification failed, please retry",
     or: "or",
     twofaTitle: "Two-step verification",
     twofaHint: "Enter the 6-digit code from your authenticator app",
@@ -452,6 +456,9 @@ export default {
     totpStart: "Enable two-step verification",
     totpScan:
       "Scan the QR code with Google Authenticator (or similar), or enter the key manually:",
+    totpSecret: "Secret key (manual entry)",
+    totpCopy: "Copy secret",
+    totpCopied: "Secret copied",
     totpCode: "6-digit code",
     totpVerify: "Verify and enable",
     totpDisableAsk: "Enter a current code to turn two-step verification off:",

@@ -18,7 +18,6 @@ import { themeFromCookie } from "@backend/components/theme-cookie.ts";
 import { tagsValueFromCookie } from "@backend/components/tag-cookie.ts";
 import { SecurityModal } from "@backend/components/SecurityModal.tsx";
 import { ProfileModal } from "@backend/components/ProfileModal.tsx";
-import { ChatModal } from "@backend/components/ChatModal.tsx";
 import { SettingsDrawer } from "@backend/components/SettingsDrawer.tsx";
 import { closeDrawer } from "@backend/components/SidebarToggle.tsx";
 import { resolvePageTitle } from "@backend/components/breadcrumb.ts";
@@ -91,6 +90,8 @@ export async function load(ctx: LoadContext): Promise<LayoutData | Response> {
 export default function Layout(props: { children?: VNode | VNode[]; data?: LayoutData }) {
   const data = props.data ?? {};
   if (data.isLoginPage || data.isLockPage) return <>{props.children}</>;
+  // CS popup window: authenticated page without admin chrome.
+  if ((data.pathname ?? "") === "/chat") return <>{props.children}</>;
   const locale = data.locale ?? "zh-CN";
   const tr = createT(locale);
   const pathname = data.pathname ?? "/";
@@ -140,7 +141,6 @@ export default function Layout(props: { children?: VNode | VNode[]; data?: Layou
       </div>
       <SecurityModal locale={locale} />
       <ProfileModal locale={locale} />
-      <ChatModal locale={locale} />
       <SettingsDrawer locale={locale} />
       <ToastContainer />
       <MessageContainer />

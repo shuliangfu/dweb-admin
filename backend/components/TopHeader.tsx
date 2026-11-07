@@ -1,17 +1,15 @@
 /**
  * Top chrome row — collapse toggle | user / chat / lang / theme / fullscreen / settings.
  */
-import { IconMessageCircle } from "@dreamer/ui-view/icons/MessageCircle.tsx";
-import { IconSettings } from "@dreamer/ui-view/icons/Settings.tsx";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { SidebarToggle } from "@backend/components/SidebarToggle.tsx";
 import { LangMenu } from "@backend/components/LangMenu.tsx";
 import { ThemeMenu } from "@backend/components/ThemeMenu.tsx";
 import { UserMenu } from "@backend/components/UserMenu.tsx";
 import { FullscreenToggle } from "@backend/components/FullscreenToggle.tsx";
-import { chatOpen } from "@backend/components/ChatModal.tsx";
 import { settingsOpen } from "@backend/components/SettingsDrawer.tsx";
 import { triggerCls } from "@backend/components/menu-kit.tsx";
+import { IconMessageCircle, IconSettings } from "@dreamer/ui-view";
 
 export function TopHeader(props: {
   locale: Locale;
@@ -38,7 +36,13 @@ export function TopHeader(props: {
           title={tr("shell.chatTitle")}
           aria-label={tr("shell.chatTitle")}
           onClick={() => {
-            chatOpen.value = true;
+            if (typeof window !== "undefined") {
+              window.open(
+                "/chat",
+                "dweb-admin-cs",
+                "popup=yes,width=960,height=720,noopener,noreferrer",
+              );
+            }
           }}
         >
           <IconMessageCircle size="xs" />

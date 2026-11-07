@@ -4,34 +4,8 @@
  * mobile click closes drawer. Top-level icons resolve via icon field or ICON_BY_KEY.
  * Second-level items always use the star icon.
  */
-import { Link } from "@dreamer/ui-view";
-import { IconBookOpen } from "@dreamer/ui-view/icons/BookOpen.tsx";
-import { IconChevronRight } from "@dreamer/ui-view/icons/ChevronRight.tsx";
-import { IconClock } from "@dreamer/ui-view/icons/Clock.tsx";
-import { IconCompass } from "@dreamer/ui-view/icons/Compass.tsx";
-import { IconDatabase } from "@dreamer/ui-view/icons/Database.tsx";
-import { IconFileText } from "@dreamer/ui-view/icons/FileText.tsx";
-import { IconFolder } from "@dreamer/ui-view/icons/Folder.tsx";
-import { IconGlobe } from "@dreamer/ui-view/icons/Globe.tsx";
-import { IconGrid } from "@dreamer/ui-view/icons/Grid.tsx";
-import { IconHome } from "@dreamer/ui-view/icons/Home.tsx";
-import { IconImage } from "@dreamer/ui-view/icons/Image.tsx";
-import { IconKey } from "@dreamer/ui-view/icons/Key.tsx";
-import { IconLayers } from "@dreamer/ui-view/icons/Layers.tsx";
-import { IconList } from "@dreamer/ui-view/icons/List.tsx";
-import { IconLock } from "@dreamer/ui-view/icons/Lock.tsx";
-import { IconMenu } from "@dreamer/ui-view/icons/Menu.tsx";
-import { IconMessageSquare } from "@dreamer/ui-view/icons/MessageSquare.tsx";
-import { IconNewspaper } from "@dreamer/ui-view/icons/Newspaper.tsx";
-import { IconPalette } from "@dreamer/ui-view/icons/Palette.tsx";
-import { IconServer } from "@dreamer/ui-view/icons/Server.tsx";
-import { IconSettings } from "@dreamer/ui-view/icons/Settings.tsx";
-import { IconShield } from "@dreamer/ui-view/icons/Shield.tsx";
-import { IconShieldCheck } from "@dreamer/ui-view/icons/ShieldCheck.tsx";
-import { IconSlidersHorizontal } from "@dreamer/ui-view/icons/SlidersHorizontal.tsx";
-import { IconStar } from "@dreamer/ui-view/icons/Star.tsx";
-import { IconUserCog } from "@dreamer/ui-view/icons/UserCog.tsx";
-import { IconUsers } from "@dreamer/ui-view/icons/Users.tsx";
+import { Link, IconBookOpen, IconChevronRight, IconClock, IconCompass, IconDatabase, IconFileText, IconFolder, IconGlobe, IconGrid, IconHome, IconImage, IconKey, IconLayers, IconList, IconLock, IconMenu, IconMessageSquare, IconNewspaper, IconPalette, IconServer, IconSettings, IconShield, IconShieldCheck, IconSlidersHorizontal, IconStar, IconUserCog, IconUsers } from "@dreamer/ui-view";
+
 import type { MenuNode } from "@common/service/menu.ts";
 import { closeDrawer } from "@backend/components/SidebarToggle.tsx";
 

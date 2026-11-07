@@ -118,6 +118,8 @@ services:
       - 'host.docker.internal:host-gateway'
     environment:
       DB_HOST: host.docker.internal
+      # Browser-facing api origin (host-mapped port). Override via .env API_PUBLIC_BASE.
+      API_PUBLIC_BASE: ${API_PUBLIC_BASE:-http://127.0.0.1:3003}
     ports:
       - '0.0.0.0:${HOST_PORT_API:-3003}:3003'
     command: ["deno","run","-A","dist/api/server.js"]

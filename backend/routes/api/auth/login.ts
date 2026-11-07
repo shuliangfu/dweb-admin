@@ -68,6 +68,18 @@ export async function login(ctx: ApiContext) {
       clearCaptchaCookie(),
     ]);
   }
+  if (result.status === "passkey") {
+    if (form) {
+      const headers = new Headers({ Location: "/login?step=passkey" });
+      headers.append("Set-Cookie", challengeCookie(result.challengeToken));
+      headers.append("Set-Cookie", clearCaptchaCookie());
+      return new Response(null, { status: 302, headers });
+    }
+    return jsonWithCookies({ ok: true, status: "passkey" }, 200, [
+      challengeCookie(result.challengeToken),
+      clearCaptchaCookie(),
+    ]);
+  }
   if (result.status === "2fa") {
     if (form) {
       const headers = new Headers({ Location: "/login?step=2fa" });

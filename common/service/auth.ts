@@ -3,6 +3,7 @@
  */
 import { getEnv, getEnvInt } from "@common/utils/env.ts";
 import {
+  AdminPasskey,
   AdminSession,
   type AdminSessionDocument,
   AdminUser,
@@ -67,6 +68,33 @@ export async function getCurrentUser(request: Request): Promise<AuthUser | null>
   };
 }
 
+/** Raw admin session cookie — for same-origin WS bootstrap only; never log. */
+export function readAdminSessionToken(request: Request): string {
+  return readToken(request);
+}
+
+/** Resolve admin from raw session token (WS `adminToken` query). */
+export async function adminFromToken(raw: string): Promise<AuthUser | null> {
+  if (!raw) return null;
+  const session = await AdminSession.findOne({
+    tokenHash: await sha256(raw),
+  }) as AdminSessionDocument | null;
+  if (!session || new Date(session.expiresAt).getTime() < Date.now()) return null;
+  const user = await AdminUser.findOne({ _id: session.userId }) as AdminUserDocument | null;
+  if (!user || user.status !== "active") return null;
+  const roleCodes = user.roleCodes ?? [];
+  return {
+    id: user._id!,
+    username: user.username,
+    nickname: user.nickname || user.username,
+    roleCodes,
+    isSuper: await hasSuperRole(roleCodes),
+  };
+}
+
+/** Prefer adminFromToken; getCurrentUser keeps cookie path. */
+
+
 // --- naive in-memory brute-force throttle (per username) ---
 const fails = new Map<string, { count: number; reset: number }>();
 const DUMMY_HASH = `pbkdf2$210000$${"0".repeat(32)}$${"0".repeat(64)}`;
@@ -88,7 +116,9 @@ export const REMEMBER_SECONDS = 60 * 60 * 24 * 30;
 
 export type LoginResult =
   | { status: "ok"; user: AuthUser; cookie: string; token: string }
-  /** Password OK, but a TOTP code is still required; `challengeToken` goes into a short-lived cookie. */
+  /** Password OK; fingerprint gate next (user has passkeyEnabled). */
+  | { status: "passkey"; challengeToken: string }
+  /** Password OK (or fingerprint gate done); TOTP code still required. */
   | { status: "2fa"; challengeToken: string };
 
 function toAuthUser(doc: AdminUserDocument, isSuper: boolean): AuthUser {
@@ -154,8 +184,18 @@ export async function login(
     return null;
   }
   fails.delete(name);
+  const { createChallenge } = await import("@common/service/challenge.ts");
+  // Gate order after password: fingerprint (if on) → two-step (if on) → enter.
+  if (doc.passkeyEnabled) {
+    const keyCount = await AdminPasskey.count({ userId: doc._id! });
+    if (keyCount > 0) {
+      return {
+        status: "passkey",
+        challengeToken: await createChallenge({ kind: "passkey-gate", userId: doc._id!, remember }),
+      };
+    }
+  }
   if (doc.totpEnabled && doc.totpSecret) {
-    const { createChallenge } = await import("@common/service/challenge.ts");
     return {
       status: "2fa",
       challengeToken: await createChallenge({ kind: "2fa", userId: doc._id!, remember }),

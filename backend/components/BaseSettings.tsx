@@ -2,14 +2,7 @@
  * 系统管理 / 基本设置 — website name and collapsed label are saved.
  * The other rows stay a preview; there is no general Config model.
  */
-import {
-  Button,
-  Card,
-  Descriptions,
-  Input,
-  Modal,
-} from "@dreamer/ui-view";
-import { IconList } from "@dreamer/ui-view/icons/List.tsx";
+import { Button, Card, Descriptions, Input, Modal, IconList } from "@dreamer/ui-view";
 import { createSignal } from "@dreamer/view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { STUB_BY_KEY } from "@common/stubs/catalog.ts";

@@ -1,0 +1,57 @@
+# CI: Deno check + unit/api + Playwright browser e2e (tests/e2e).
+# Uses @dreamer/test + existing helpers (browserLoggedIn). No Jest/Vitest.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    services:
+      mongo:
+        image: mongo:8
+        ports:
+          - 27018:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.9
+
+      - name: Env for CI
+        run: |
+          cp .env.example .env
+          printf '%s\n' \
+            'DB_HOST=127.0.0.1' \
+            'DB_PORT=27018' \
+            'APP_HOST=127.0.0.1' \
+            'APP_PORT_BACKEND=3100' \
+            'APP_PORT_API=3003' \
+            'ADMIN_COOKIE_SECURE=0' \
+            'LOGIN_RATE_MAX=200' >> .env
+
+      - name: Cache dependencies
+        continue-on-error: true
+        run: deno cache backend/main.ts frontend/main.ts mobile/main.ts api/main.ts
+
+      - name: Install Playwright Chromium
+        run: npx -y playwright@1.59.1 install --with-deps chromium
+
+      - name: Check
+        run: deno task check
+
+      - name: Test (unit + api + browser e2e)
+        run: deno test --env-file=.env -A tests/
