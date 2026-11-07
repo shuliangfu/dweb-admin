@@ -22,7 +22,7 @@
   "dependencies": {
     "@dreamer/cache": "npm:@jsr/dreamer__cache@^1.1.0",
     "@dreamer/database": "npm:@jsr/dreamer__database@^1.2.0",
-    "@dreamer/dweb": "npm:@jsr/dreamer__dweb@^3.8.3",
+    "@dreamer/dweb": "npm:@jsr/dreamer__dweb@^3.8.4",
     "@dreamer/humancheck": "npm:@jsr/dreamer__humancheck@^1.1.0",
     "@dreamer/i18n": "npm:@jsr/dreamer__i18n@^1.1.2",
     "@dreamer/logger": "npm:@jsr/dreamer__logger@^1.1.0",
