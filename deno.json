@@ -31,7 +31,7 @@
     "@console/": "./console/",
     "@dreamer/dweb": "../dweb/src/mod.ts",
     "@dreamer/render": "jsr:@dreamer/render@^1.5.3",
-    "@dreamer/router": "jsr:@dreamer/router@^1.2.1",
+    "@dreamer/router": "../router/src/mod.ts",
     "@dreamer/test": "jsr:@dreamer/test@^1.2.3",
     "@dreamer/plugins": "jsr:@dreamer/plugins@^1.2.0",
     "@dreamer/view": "jsr:@dreamer/view@^3.0.4",

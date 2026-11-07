@@ -1,6 +1,6 @@
 /**
  * Fullpage error chrome — centered card aligned across 403/404/500.
- * Used by /error/* routes and framework `_404` / `_error`.
+ * Used by /error/* routes and framework `_404` / `_500` / `_error`.
  *
  * Includes critical inline CSS so bare dweb `_error` SSR (no App/tailwind
  * injection) still looks centered and polished like the normal page path.
