@@ -7,28 +7,30 @@
       "dependencies": {
         "@dreamer/cache": "npm:@jsr/dreamer__cache@^1.1.0",
         "@dreamer/database": "npm:@jsr/dreamer__database@^1.2.0",
-        "@dreamer/dweb": "npm:@jsr/dreamer__dweb@^3.8.3",
+        "@dreamer/dweb": "npm:@jsr/dreamer__dweb@^3.8.4",
         "@dreamer/humancheck": "npm:@jsr/dreamer__humancheck@^1.1.0",
         "@dreamer/i18n": "npm:@jsr/dreamer__i18n@^1.1.2",
         "@dreamer/logger": "npm:@jsr/dreamer__logger@^1.1.0",
         "@dreamer/middlewares": "npm:@jsr/dreamer__middlewares@^1.1.0",
         "@dreamer/plugins": "npm:@jsr/dreamer__plugins@^1.2.0",
+        "@dreamer/queue": "npm:@jsr/dreamer__queue@^1.1.0",
         "@dreamer/render": "npm:@jsr/dreamer__render@^1.5.3",
-        "@dreamer/router": "npm:@jsr/dreamer__router@^1.2.1",
+        "@dreamer/router": "npm:@jsr/dreamer__router@^1.2.2",
         "@dreamer/runtime-adapter": "npm:@jsr/dreamer__runtime-adapter@^1.2.2",
         "@dreamer/storage": "npm:@jsr/dreamer__storage@^1.1.0",
         "@dreamer/theme": "npm:@jsr/dreamer__theme@^1.1.0",
-        "@dreamer/ui-view": "npm:@jsr/dreamer__ui-view@^1.2.1",
+        "@dreamer/ui-view": "npm:@jsr/dreamer__ui-view@^1.2.6",
+        "@dreamer/upload": "npm:@jsr/dreamer__upload@^2.0.1",
         "@dreamer/utils": "npm:@jsr/dreamer__utils@^1.1.0",
         "@dreamer/view": "npm:@jsr/dreamer__view@^3.0.4",
         "@dreamer/websocket": "npm:@jsr/dreamer__websocket@^1.1.0",
         "@simplewebauthn/server": "^13.3.3",
         "@std/assert": "npm:@jsr/std__assert@^1.0.19",
-        "@tailwindcss/postcss": "^4.3.4",
+        "@tailwindcss/postcss": "^4.3.5",
         "exceljs": "4.4.0",
         "postcss": "^8.5.32",
         "qrcode": "1.5.4",
-        "tailwindcss": "^4.3.4",
+        "tailwindcss": "^4.3.5",
       },
       "devDependencies": {
         "@dreamer/test": "npm:@jsr/dreamer__test@^1.2.3",
@@ -48,7 +50,7 @@
 
     "@dreamer/database": ["@jsr/dreamer__database@1.2.0", "https://npm.jsr.io/~/11/@jsr/dreamer__database/1.2.0.tgz", { "dependencies": { "@jsr/dreamer__cache": "^1.1.0", "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__runtime-adapter": "^1.2.2", "@jsr/dreamer__service": "^1.1.0", "mongodb": "7.0.0", "mysql2": "3.16.0", "pg": "8.16.3" } }, "sha512-tdnsTNjm/z52xde6ZtZgWrq8j5eHia/BX/I3+r3/9Ymha4pakFScOwZeJGP6tjbHqGfmAWOROflPfzmA+h3lgg=="],
 
-    "@dreamer/dweb": ["@jsr/dreamer__dweb@3.8.3", "https://npm.jsr.io/~/11/@jsr/dreamer__dweb/3.8.3.tgz", { "dependencies": { "@jsr/dreamer__config": "^1.1.1", "@jsr/dreamer__console": "^1.1.1", "@jsr/dreamer__database": "^1.2.0", "@jsr/dreamer__esbuild": "^1.4.1", "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__lifecycle": "^1.1.0", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__middleware": "^1.1.0", "@jsr/dreamer__middlewares": "^1.1.0", "@jsr/dreamer__plugin": "^1.1.0", "@jsr/dreamer__render": "^1.5.3", "@jsr/dreamer__router": "^1.2.1", "@jsr/dreamer__runtime-adapter": "^1.2.2", "@jsr/dreamer__server": "^1.3.0", "@jsr/dreamer__service": "^1.1.0", "@jsr/dreamer__session": "^1.1.0", "@jsr/dreamer__socket-io": "^1.2.1", "@jsr/dreamer__upload": "^2.0.0", "@jsr/dreamer__utils": "^1.1.0", "@jsr/dreamer__view": "^3.0.4", "@jsr/dreamer__websocket": "^1.1.0", "preact": "^11.1.1", "react": "^19.3.1" } }, "sha512-0YJc+LFEAd3YfFeKuEjcrVwkwYtoFflHWOS/euLxgTP3nKNAdPMIC7Er98u2JoOlliRHIwILoIuVrDRgcekY3g=="],
+    "@dreamer/dweb": ["@jsr/dreamer__dweb@3.8.4", "https://npm.jsr.io/~/11/@jsr/dreamer__dweb/3.8.4.tgz", { "dependencies": { "@jsr/dreamer__config": "^1.1.1", "@jsr/dreamer__console": "^1.1.1", "@jsr/dreamer__database": "^1.2.0", "@jsr/dreamer__esbuild": "^1.4.2", "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__lifecycle": "^1.1.0", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__middleware": "^1.1.0", "@jsr/dreamer__middlewares": "^1.1.0", "@jsr/dreamer__plugin": "^1.1.0", "@jsr/dreamer__render": "^1.5.3", "@jsr/dreamer__router": "^1.2.2", "@jsr/dreamer__runtime-adapter": "^1.2.2", "@jsr/dreamer__server": "^1.3.0", "@jsr/dreamer__service": "^1.1.0", "@jsr/dreamer__session": "^1.1.0", "@jsr/dreamer__socket-io": "^1.2.1", "@jsr/dreamer__upload": "^2.0.1", "@jsr/dreamer__utils": "^1.1.0", "@jsr/dreamer__view": "^3.0.4", "@jsr/dreamer__websocket": "^1.1.0", "preact": "^11.2.0", "react": "^19.3.1" } }, "sha512-kLT1ygNTn/luZuG2r76WCXza9tQ91f8FaHV0L12DWGKrHvUxJNjapKBPex8RWk1f7vL0a2f1R7Yjs7cmTSWgSQ=="],
 
     "@dreamer/humancheck": ["@jsr/dreamer__humancheck@1.1.0", "https://npm.jsr.io/~/11/@jsr/dreamer__humancheck/1.1.0.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-wusCxnmLJsUPkzqDXMU0tnhSbpkA4Tcn2OqqnoxxEsZ+UJUBXA5DcrbDW9Esji/QKHxzROFVJ203w60b9oDDzw=="],
 
@@ -60,9 +62,11 @@
 
     "@dreamer/plugins": ["@jsr/dreamer__plugins@1.2.0", "https://npm.jsr.io/~/11/@jsr/dreamer__plugins/1.2.0.tgz", { "dependencies": { "@jsr/dreamer__auth": "^1.1.0", "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__plugin": "^1.1.0", "@jsr/dreamer__queue": "^1.1.0", "@jsr/dreamer__runtime-adapter": "^1.2.2", "@jsr/dreamer__service": "^1.1.0", "@jsr/dreamer__theme": "^1.1.0", "@tailwindcss/postcss": "^4.1.18", "@unocss/core": "^66.0.0", "@unocss/preset-icons": "^66.0.0", "@unocss/preset-wind3": "^66.0.0", "postcss": "^8.5.10" } }, "sha512-48rA8KK9+MuewdsrkuyZC0AGt4rou6Afu5wQsLnZMEi9fcxEQc3mTfdcfYkgqHK98H6F+bmfLlynr9cuJUcnjg=="],
 
+    "@dreamer/queue": ["@jsr/dreamer__queue@1.1.0", "https://npm.jsr.io/~/11/@jsr/dreamer__queue/1.1.0.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__runtime-adapter": "^1.2.2", "@jsr/dreamer__service": "^1.1.0", "amqplib": "0.10.9", "memcache-client": "1.0.5", "mongodb": "7.0.0", "redis": "5.10.0" } }, "sha512-YTQ9U2sn/ZKxt7KlWrYUeVmFYqLJc1ySa/9WvT/0bPuP9IbmS52oiiMf54rt9K6SFXMnhSJMAIs29MUSYuvIlQ=="],
+
     "@dreamer/render": ["@jsr/dreamer__render@1.5.3", "https://npm.jsr.io/~/11/@jsr/dreamer__render/1.5.3.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__runtime-adapter": "^1.2.2", "@jsr/dreamer__view": "^3.0.4", "preact": "^11.1.1", "preact-render-to-string": "6.8.2", "react": "^19.3.1", "react-dom": "^19.3.1" } }, "sha512-zSoUDUiHAOrM5FGq0mVoUI6H8oXxIfZwEhwr/uk6L6xYv35BZN1PrIkE2B9ClivTNFtoMEwCtZcjnqsAb6XckQ=="],
 
-    "@dreamer/router": ["@jsr/dreamer__router@1.2.1", "https://npm.jsr.io/~/11/@jsr/dreamer__router/1.2.1.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-6wV437ZE0GgZ418V9qpgDfCnGR3pDX0gMGkJrW96nWk8knt8PlfVmCN4nCBWwwsTkcVbzkItq7JUryLnPvCmgQ=="],
+    "@dreamer/router": ["@jsr/dreamer__router@1.2.2", "https://npm.jsr.io/~/11/@jsr/dreamer__router/1.2.2.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-d3vRcSJi5BfXdd1HuDZfzhqkHTDmPwMRpp2EYhsn7GnF2X8HBXRAauM8F4/fdmJoc8HzviHjK+2m2+z7Nd/qoQ=="],
 
     "@dreamer/runtime-adapter": ["@jsr/dreamer__runtime-adapter@1.2.2", "https://npm.jsr.io/~/11/@jsr/dreamer__runtime-adapter/1.2.2.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.0", "node-cron": "3.0.3", "ws": "^8.21.1" } }, "sha512-hWAYhVCbAthzlnAKZUdEnYVFkdpBOnJRwuWLEHaiFBvMIR3i9v+H0aqijKaziNEGAvaIulUAWsSkyK4BMHg2dg=="],
 
@@ -72,7 +76,9 @@
 
     "@dreamer/theme": ["@jsr/dreamer__theme@1.1.0", "https://npm.jsr.io/~/11/@jsr/dreamer__theme/1.1.0.tgz", {}, "sha512-SGAgacxBnKk7dRVMcTqgv93yGTzHwh6ckOxSwEJ3vzoboNetyF6ZcS8gzdUu4C5Ek6vWuUJ4dkNJEaiPoL4dNA=="],
 
-    "@dreamer/ui-view": ["@jsr/dreamer__ui-view@1.2.2", "https://npm.jsr.io/~/11/@jsr/dreamer__ui-view/1.2.2.tgz", { "dependencies": { "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__markdown": "^1.1.1", "@jsr/dreamer__plugin": "^1.1.0", "@jsr/dreamer__runtime-adapter": "^1.2.2", "@jsr/dreamer__service": "^1.1.0", "@jsr/dreamer__storage": "^1.1.0", "@jsr/dreamer__view": "^3.0.4", "chart.js": "4.6.1", "prismjs": "1.30.0", "tailwind-merge": "3.7.0" } }, "sha512-RkC0rQflcW4oxEnJtp4qs5CIfr9ei2GURWapMR/+LYfrqi0xboUz95gDOAf8T/ECWqxGl8z/O4Fh3wi3AO9oJg=="],
+    "@dreamer/ui-view": ["@jsr/dreamer__ui-view@1.2.6", "https://npm.jsr.io/~/11/@jsr/dreamer__ui-view/1.2.6.tgz", { "dependencies": { "@jsr/dreamer__image": "^1.1.0", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__markdown": "^1.1.1", "@jsr/dreamer__plugin": "^1.1.0", "@jsr/dreamer__runtime-adapter": "^1.2.2", "@jsr/dreamer__service": "^1.1.0", "@jsr/dreamer__storage": "^1.1.0", "@jsr/dreamer__upload": "^2.0.1", "@jsr/dreamer__view": "^3.0.4", "chart.js": "4.6.1", "prismjs": "1.30.0", "tailwind-merge": "3.7.0" } }, "sha512-rs1OZPWUVmlXsWsQSVWuwkR4H9nKljqkJCJ1tciyF1DuhU0spvV6mMmIB5+tuAIN1t3EYY+mVoxY0pXZ86g+hw=="],
+
+    "@dreamer/upload": ["@jsr/dreamer__upload@2.0.1", "https://npm.jsr.io/~/11/@jsr/dreamer__upload/2.0.1.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-RWs68ddYK9Bs5Ojk10PwBjemLc97PawRjT4JvwOKUEySUJe/RoSoJzNAyZskI3I+4qDtd9xigPBUjAEKooFTvQ=="],
 
     "@dreamer/utils": ["@jsr/dreamer__utils@1.1.0", "https://npm.jsr.io/~/11/@jsr/dreamer__utils/1.1.0.tgz", { "dependencies": { "@jsr/dreamer__runtime-adapter": "^1.2.2", "pako": "2.1.0" } }, "sha512-0vO6nlvPpWkPUSn/+0VJv6EU6WxpKOPvw+ymgBpW6hwqmtCQKA/FGNXEbv++YvgY7xIMB4nyk5eTXdlvYLjxAg=="],
 
@@ -186,7 +192,7 @@
 
     "@jsr/dreamer__render": ["@jsr/dreamer__render@1.5.3", "https://npm.jsr.io/~/11/@jsr/dreamer__render/1.5.3.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__runtime-adapter": "^1.2.2", "@jsr/dreamer__view": "^3.0.4", "preact": "^11.1.1", "preact-render-to-string": "6.8.2", "react": "^19.3.1", "react-dom": "^19.3.1" } }, "sha512-zSoUDUiHAOrM5FGq0mVoUI6H8oXxIfZwEhwr/uk6L6xYv35BZN1PrIkE2B9ClivTNFtoMEwCtZcjnqsAb6XckQ=="],
 
-    "@jsr/dreamer__router": ["@jsr/dreamer__router@1.2.1", "https://npm.jsr.io/~/11/@jsr/dreamer__router/1.2.1.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-6wV437ZE0GgZ418V9qpgDfCnGR3pDX0gMGkJrW96nWk8knt8PlfVmCN4nCBWwwsTkcVbzkItq7JUryLnPvCmgQ=="],
+    "@jsr/dreamer__router": ["@jsr/dreamer__router@1.2.2", "https://npm.jsr.io/~/11/@jsr/dreamer__router/1.2.2.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-d3vRcSJi5BfXdd1HuDZfzhqkHTDmPwMRpp2EYhsn7GnF2X8HBXRAauM8F4/fdmJoc8HzviHjK+2m2+z7Nd/qoQ=="],
 
     "@jsr/dreamer__runtime-adapter": ["@jsr/dreamer__runtime-adapter@1.2.2", "https://npm.jsr.io/~/11/@jsr/dreamer__runtime-adapter/1.2.2.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.0", "node-cron": "3.0.3", "ws": "^8.21.1" } }, "sha512-hWAYhVCbAthzlnAKZUdEnYVFkdpBOnJRwuWLEHaiFBvMIR3i9v+H0aqijKaziNEGAvaIulUAWsSkyK4BMHg2dg=="],
 
@@ -202,7 +208,7 @@
 
     "@jsr/dreamer__theme": ["@jsr/dreamer__theme@1.1.0", "https://npm.jsr.io/~/11/@jsr/dreamer__theme/1.1.0.tgz", {}, "sha512-SGAgacxBnKk7dRVMcTqgv93yGTzHwh6ckOxSwEJ3vzoboNetyF6ZcS8gzdUu4C5Ek6vWuUJ4dkNJEaiPoL4dNA=="],
 
-    "@jsr/dreamer__upload": ["@jsr/dreamer__upload@2.0.0", "https://npm.jsr.io/~/11/@jsr/dreamer__upload/2.0.0.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-etMzhlSy3pXARYzIQPTaDxWK/bDND92Zn+REtk5MM/wesYKWHDB6LsRsHidX9m1RLj7xuAGRE8FgKRxa1Y9zjg=="],
+    "@jsr/dreamer__upload": ["@jsr/dreamer__upload@2.0.1", "https://npm.jsr.io/~/11/@jsr/dreamer__upload/2.0.1.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-RWs68ddYK9Bs5Ojk10PwBjemLc97PawRjT4JvwOKUEySUJe/RoSoJzNAyZskI3I+4qDtd9xigPBUjAEKooFTvQ=="],
 
     "@jsr/dreamer__utils": ["@jsr/dreamer__utils@1.1.0", "https://npm.jsr.io/~/11/@jsr/dreamer__utils/1.1.0.tgz", { "dependencies": { "@jsr/dreamer__runtime-adapter": "^1.2.2", "pako": "2.1.0" } }, "sha512-0vO6nlvPpWkPUSn/+0VJv6EU6WxpKOPvw+ymgBpW6hwqmtCQKA/FGNXEbv++YvgY7xIMB4nyk5eTXdlvYLjxAg=="],
 
