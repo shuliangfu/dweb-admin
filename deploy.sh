@@ -48,10 +48,10 @@ claim() {
 
 # Honour an explicit override; otherwise start at the compose default and
 # walk forward until the port is free on this machine.
-export HOST_PORT_BACKEND="${HOST_PORT_BACKEND:-$(claim 3000)}"
-export HOST_PORT_FRONTEND="${HOST_PORT_FRONTEND:-$(claim 3001)}"
-export HOST_PORT_MOBILE="${HOST_PORT_MOBILE:-$(claim 3002)}"
-export HOST_PORT_API="${HOST_PORT_API:-$(claim 3003)}"
+export HOST_PORT_BACKEND="${HOST_PORT_BACKEND:-$(claim 8810)}"
+export HOST_PORT_FRONTEND="${HOST_PORT_FRONTEND:-$(claim 8811)}"
+export HOST_PORT_MOBILE="${HOST_PORT_MOBILE:-$(claim 8812)}"
+export HOST_PORT_API="${HOST_PORT_API:-$(claim 8813)}"
 
 echo "publish backend:${HOST_PORT_BACKEND} frontend:${HOST_PORT_FRONTEND} mobile:${HOST_PORT_MOBILE} api:${HOST_PORT_API}"
 

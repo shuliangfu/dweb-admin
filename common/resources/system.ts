@@ -212,6 +212,8 @@ export const permissionsResource = itemResource("permission");
 const menuSearch: SearchDef[] = [
   { name: "keyword", label: l("标识", "Key") },
   { name: "path", label: l("路径", "Path") },
+  /** Drill-down: empty → top-level only; set → children of that parent. */
+  { name: "parentKey", label: l("上级", "Parent"), type: "select" },
 ];
 const menuForm: FormDef[] = [
   { name: "key", label: l("标识", "Key"), required: true, createOnly: true, pattern: "^[a-z][a-z0-9_.-]{0,63}$", placeholder: l("例如 rbac.admins", "e.g. rbac.admins") },
@@ -253,11 +255,13 @@ export const menusResource: ResourceDef = {
   form: menuForm,
   async dynamicOptions(ctx) {
     const all = await listAllMenus();
+    const tops = all.filter((m) => !m.parentKey).map((m) => ({
+      value: m.key,
+      label: pickLocalized(m.title as never, ctx.locale, m.key),
+    }));
     return {
-      parentKey: [{ value: "", label: t(ctx.locale, "menusForm.topLevel") }, ...all.filter((m) => !m.parentKey).map((m) => ({
-        value: m.key,
-        label: pickLocalized(m.title as never, ctx.locale, m.key),
-      }))],
+      // Form: blank = create as top-level. Search: blank = list tops only (see list()).
+      parentKey: [{ value: "", label: t(ctx.locale, "menusForm.topLevel") }, ...tops],
     };
   },
   create: (body) => createMenu(menuBody(body)) as never,
@@ -268,6 +272,11 @@ export const menusResource: ResourceDef = {
   async list(q, ctx): Promise<ListResult> {
     const all = await listAllMenus();
     const byKey = new Map(all.map((m) => [m.key, m]));
+    const childCount = new Map<string, number>();
+    for (const m of all) {
+      if (!m.parentKey) continue;
+      childCount.set(m.parentKey, (childCount.get(m.parentKey) ?? 0) + 1);
+    }
     let rows: Row[] = all.map((m) => ({
       id: m.key,
       key: m.key,
@@ -281,11 +290,18 @@ export const menusResource: ResourceDef = {
       icon: m.icon,
       sort: m.sort,
       status: m.status,
+      childCount: childCount.get(m.key) ?? 0,
     }));
     const kw = q.filters.keyword?.toLowerCase();
     if (kw) rows = rows.filter((r) => String(r.key).toLowerCase().includes(kw) || String(r.title).toLowerCase().includes(kw));
     const pq = q.filters.path?.toLowerCase();
     if (pq) rows = rows.filter((r) => String(r.path).toLowerCase().includes(pq));
+    // Hierarchy: keyword/path search spans all levels; otherwise default tops or drill-down by parentKey.
+    if (!kw && !pq) {
+      const pk = q.filters.parentKey;
+      if (pk) rows = rows.filter((r) => String(r.parentKey) === pk);
+      else rows = rows.filter((r) => !r.parentKey);
+    }
     const prop = q.sort || "sort";
     rows.sort((a, b) => {
       const x = a[prop], y = b[prop];

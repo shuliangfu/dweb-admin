@@ -6,6 +6,7 @@
  */
 
 import { getWebSocketServer, type App } from "@dreamer/dweb";
+import { isDatabaseInitialized } from "@dreamer/database";
 import { upgradeWebSocket } from "@dreamer/runtime-adapter";
 import {
   authMiddleware,
@@ -13,16 +14,34 @@ import {
   type Server as WsServer,
 } from "@dreamer/websocket";
 import { adminFromToken } from "@common/service/auth.ts";
+import { hasPermission } from "@common/service/rbac.ts";
 import {
   canJoinCsSession,
+  CS_IDLE_HIDE_MS,
+  CS_LOBBY_ROOM,
   CS_MAX_TEXT,
   CS_MIN_SEND_GAP_MS,
+  csSessionIdleMs,
+  getCsLobbyRowsByIds,
   guestFromToken,
+  clearCsSessionHidden,
+  hideCsSession,
+  isManualHiddenCsSession,
   parseSessionId,
+  shouldHealStaleCsHide,
+  previewForKind,
+  publishCsSession,
+  resetAllCsGuestOnline,
+  setCsGuestOnline,
+  setCsLobbyPublisher,
   sendCsChat,
   type CsChatView,
+  type CsSendPayload,
+  type CsSessionRow,
 } from "@common/service/cs.ts";
+import type { CsMediaMeta, CsMessageKind } from "@common/models/mod.ts";
 import { getEnv } from "@common/utils/env.ts";
+import { localCorsOrigins } from "@common/utils/local-origins.ts";
 
 type Actor =
   | { kind: "admin"; id: string; name: string }
@@ -91,37 +110,7 @@ function refreshHandshakeHeaders(socket: Socket): void {
 }
 
 function csAllowedOrigins(): string[] {
-  const ports = new Set<string>([
-    getEnv("APP_PORT_BACKEND") ?? "3100",
-    getEnv("APP_PORT_FRONTEND") ?? "3001",
-    getEnv("APP_PORT_API") ?? "3003",
-    getEnv("APP_PORT_MOBILE") ?? "3002",
-    getEnv("HOST_PORT_BACKEND") ?? "",
-    getEnv("HOST_PORT_FRONTEND") ?? "",
-    getEnv("HOST_PORT_API") ?? "",
-    getEnv("HOST_PORT_MOBILE") ?? "",
-    // Common local docker publish ports used by deploy.sh claim().
-    "3000", "3001", "3002", "3003", "3004", "3005", "3100",
-  ]);
-  const hosts = ["127.0.0.1", "localhost"];
-  const out: string[] = [];
-  for (const h of hosts) {
-    for (const port of ports) {
-      if (!port) continue;
-      out.push(`http://${h}:${port}`);
-      out.push(`https://${h}:${port}`);
-    }
-  }
-  const pub = getEnv("API_PUBLIC_BASE")?.replace(/\/$/, "");
-  if (pub?.startsWith("http://") || pub?.startsWith("https://")) {
-    try {
-      const u = new URL(pub);
-      out.push(`${u.protocol}//${u.host}`);
-    } catch {
-      // ignore
-    }
-  }
-  return [...new Set(out)];
+  return localCorsOrigins();
 }
 
 function patchHandleUpgradeOrigins(ws: WsServer): void {
@@ -181,7 +170,8 @@ function patchHandleUpgradeOrigins(ws: WsServer): void {
       upgradeResult = upgradeWebSocket(request, { allowedOrigins });
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : String(err);
-      console.error("[ws-cs] upgrade rejected:", errMsg);
+      const badOrigin = request.headers.get("origin") ?? "(none)";
+      console.error("[ws-cs] upgrade rejected:", errMsg, "origin=", badOrigin);
       return new Response(`WebSocket upgrade failed: ${errMsg}`, { status: 500 });
     }
 
@@ -199,7 +189,240 @@ function patchHandleUpgradeOrigins(ws: WsServer): void {
     });
     return self.toUpgradeResponse(response);
   };
-  console.log("[ws-cs] handleUpgrade Origin allow:", allowedOrigins.join(", "));
+}
+
+/**
+ * Guest presence refcount (per sessionId).
+ * A Set alone races on reconnect: new socket marks online, then the old
+ * socket's close handler marks offline and sticks guestOnline=false in Mongo
+ * while the guest is still connected — admin refresh then shows gray dots.
+ */
+const onlineGuestCounts = new Map<string, number>();
+
+function isGuestOnline(sessionId: string): boolean {
+  return (onlineGuestCounts.get(sessionId) ?? 0) > 0;
+}
+
+/** @returns true when this socket is the first live connection for sid. */
+function retainGuestOnline(sessionId: string): boolean {
+  const n = (onlineGuestCounts.get(sessionId) ?? 0) + 1;
+  onlineGuestCounts.set(sessionId, n);
+  return n === 1;
+}
+
+/** @returns true when no live sockets remain for sid (now offline). */
+function releaseGuestOnline(sessionId: string): boolean {
+  const cur = onlineGuestCounts.get(sessionId) ?? 0;
+  if (cur <= 1) {
+    onlineGuestCounts.delete(sessionId);
+    return cur > 0;
+  }
+  onlineGuestCounts.set(sessionId, cur - 1);
+  return false;
+}
+
+function onlineGuestIds(): string[] {
+  return [...onlineGuestCounts.entries()]
+    .filter(([, n]) => n > 0)
+    .map(([id]) => id);
+}
+
+/** Live guest session ids in this api process (HTTP hard-load merge). */
+export function getCsOnlineGuestIds(): string[] {
+  return onlineGuestIds();
+}
+
+
+function sessionSortIso(
+  row: {
+    lastMessageAt?: Date | string;
+    updatedAt?: Date | string;
+  } | null | undefined,
+): string {
+  const raw = row?.lastMessageAt ?? row?.updatedAt;
+  if (!raw) return new Date().toISOString();
+  const t = raw instanceof Date ? raw : new Date(raw);
+  return Number.isNaN(t.getTime()) ? new Date().toISOString() : t.toISOString();
+}
+
+async function publishGuestOnline(
+  sid: string,
+  actorName: string,
+  row: {
+    guestName?: string;
+    status?: string;
+    lastPreview?: string;
+    lastMessageAt?: Date | string;
+    updatedAt?: Date | string;
+    claimedByAdminId?: string | null;
+    claimedByName?: string | null;
+    claimedAt?: Date | string | null;
+  } | null,
+): Promise<void> {
+  const claimedBy = row?.claimedByAdminId
+    ? String(row.claimedByAdminId).trim()
+    : "";
+  publishCsSession(lobbyRow({
+    id: sid,
+    guestName: actorName || row?.guestName || "",
+    status: row?.status || "open",
+    lastPreview: row?.lastPreview ?? "",
+    online: true,
+    hidden: false,
+    // Presence must not bump last-message sort key.
+    updatedAt: sessionSortIso(row),
+    claimedByAdminId: claimedBy || null,
+    claimedByName: claimedBy
+      ? (String(row?.claimedByName ?? "").trim() || null)
+      : null,
+    claimedAt: claimedBy && row?.claimedAt
+      ? (row.claimedAt instanceof Date
+        ? row.claimedAt.toISOString()
+        : String(row.claimedAt))
+      : null,
+  }));
+}
+
+/**
+ * Retain presence once per socket. Safe to call from connect + join.
+ * Optional sessionId overrides actor.sessionId (join room path).
+ */
+async function attachGuestPresence(
+  socket: Socket,
+  actor: Extract<Actor, { kind: "guest" }>,
+  sessionId?: string,
+): Promise<void> {
+  const sid = String(sessionId ?? actor.sessionId ?? "").trim();
+  if (!sid) return;
+  socket.data.guestSessionId = sid;
+  if (socket.data.guestPresenceOn === true) {
+    // Already counted this socket — still heal Mongo + re-announce online.
+    const row = await setCsGuestOnline(sid, true);
+    if (!row) return;
+    await publishGuestOnline(sid, actor.name, row);
+    return;
+  }
+  socket.data.guestPresenceOn = true;
+  retainGuestOnline(sid);
+  const row = await setCsGuestOnline(sid, true);
+  if (!row) {
+    // Hard-deleted mid-flight — undo retain.
+    socket.data.guestPresenceOn = false;
+    releaseGuestOnline(sid);
+    return;
+  }
+  // Always publish online (first or heal) so lobby / soft-poll stay green.
+  await publishGuestOnline(sid, actor.name, row);
+}
+
+async function detachGuestPresence(
+  socket: Socket,
+  actor: Extract<Actor, { kind: "guest" }>,
+): Promise<void> {
+  const sid = String(
+    socket.data.guestSessionId ?? actor.sessionId ?? "",
+  ).trim();
+  if (!sid) return;
+  if (socket.data.guestPresenceOn !== true) return;
+  socket.data.guestPresenceOn = false;
+  const nowOffline = releaseGuestOnline(sid);
+  if (!nowOffline) return; // another live socket still holds presence
+  const row = await setCsGuestOnline(sid, false);
+  // Hard-deleted → drop signal only.
+  if (!row) {
+    publishCsSession(lobbyRow({
+      id: sid,
+      guestName: actor.name,
+      status: "open",
+      online: false,
+      hidden: true,
+      updatedAt: new Date().toISOString(),
+    }));
+    return;
+  }
+  // Short offline must stay listed (grayscale). Drop only when:
+  //  - admin manual hide, or
+  //  - idle ≥ 24h (auto-hide).
+  // Heal stale idle/legacy hiddenAt under the 24h gate so reconnect-visible
+  // sessions do not vanish the moment the socket closes.
+  let drop = false;
+  if (isManualHiddenCsSession(row)) {
+    drop = true;
+  } else if (csSessionIdleMs(row) >= CS_IDLE_HIDE_MS) {
+    await hideCsSession(sid, "idle");
+    drop = true;
+  } else if (shouldHealStaleCsHide(row)) {
+    await clearCsSessionHidden(sid);
+    drop = false;
+  }
+  publishCsSession(lobbyRow({
+    id: sid,
+    guestName: actor.name || row.guestName || "",
+    status: "open",
+    lastPreview: row.lastPreview ?? "",
+    online: false,
+    hidden: drop,
+    updatedAt: sessionSortIso(row),
+  }));
+}
+
+/**
+ * Push currently-online guests to one admin socket (reload / reconnect hydrate).
+ * Memory refcount is source of truth — emit synthetic rows first (no Mongo wait)
+ * so admin refresh goes green even when guestOnline was cleared by boot reset race.
+ * Then enrich from Mongo and heal stale guestOnline=false for soft-poll / hard load.
+ */
+async function emitPresenceSnapshot(socket: Socket): Promise<void> {
+  const ids = onlineGuestIds();
+  if (!ids.length) return;
+  const now = new Date().toISOString();
+  // Phase 1: instant online flags only (do NOT blank guestName / claim —
+  // client upsert must keep prior claimedBy* across hard-refresh hydrate).
+  for (const id of ids) {
+    socket.emit("session", {
+      id,
+      online: true,
+      hidden: false,
+      updatedAt: now,
+    });
+  }
+  // Phase 2: enrich names/preview + heal Mongo so HTTP list agrees with live sockets.
+  try {
+    const rows = await getCsLobbyRowsByIds(ids);
+    const seen = new Set<string>();
+    for (const row of rows) {
+      seen.add(row.id);
+      socket.emit("session", {
+        ...row,
+        online: true,
+        hidden: false,
+      });
+      void setCsGuestOnline(row.id, true);
+    }
+    for (const id of ids) {
+      if (!seen.has(id)) void setCsGuestOnline(id, true);
+    }
+  } catch (e) {
+    console.error("[ws-cs] presence snapshot failed", e);
+    for (const id of ids) void setCsGuestOnline(id, true);
+  }
+}
+
+function lobbyRow(
+  partial: Partial<CsSessionRow> & { id: string },
+): CsSessionRow {
+  return {
+    id: partial.id,
+    guestName: (partial.guestName && partial.guestName.trim()) || "",
+    status: partial.status ?? "open",
+    lastPreview: partial.lastPreview ?? "",
+    updatedAt: partial.updatedAt ?? new Date().toISOString(),
+    online: partial.online,
+    hidden: partial.hidden,
+    claimedByAdminId: partial.claimedByAdminId,
+    claimedByName: partial.claimedByName,
+    claimedAt: partial.claimedAt,
+  };
 }
 
 let _csWsReady = false;
@@ -212,7 +435,38 @@ export function registerCsChatWs(app: App): void {
   const ws = getWebSocketServer(app.container);
   _csWsReady = true;
   patchHandleUpgradeOrigins(ws);
-  console.log("[ws-cs] customer-service handlers registered on /ws");
+  setCsLobbyPublisher((row) => {
+    void ws.emitToRoom(CS_LOBBY_ROOM, "session", row);
+  });
+  // Api process restart drops all WS sockets — clear stale guestOnline so
+  // backend soft-poll / admin refresh do not show ghost greens.
+  // IMPORTANT: EventEmitter "start" runs BEFORE lifecycle "starting" (DB connect).
+  // Wait for isDatabaseInitialized() first — never race model before initDatabase.
+  void (async () => {
+    for (let i = 0; i < 80; i++) {
+      if (isDatabaseInitialized()) break;
+      await new Promise((r) => setTimeout(r, 100));
+    }
+    if (!isDatabaseInitialized()) {
+      console.error(
+        "[ws-cs] guestOnline boot reset skipped: database still not initialized",
+      );
+      return;
+    }
+    for (let i = 0; i < 40; i++) {
+      const n = await resetAllCsGuestOnline();
+      if (n >= 0) {
+        for (const id of onlineGuestIds()) {
+          void setCsGuestOnline(id, true);
+        }
+        console.log("[ws-cs] guestOnline boot reset ok", n);
+        return;
+      }
+      await new Promise((r) => setTimeout(r, 250));
+    }
+    console.error("[ws-cs] guestOnline boot reset gave up");
+  })();
+  console.log("[ws-cs] customer-service handlers registered on /ws (presence-live-v4)");
 
   ws.use((socket, next) => {
     refreshHandshakeHeaders(socket);
@@ -226,6 +480,7 @@ export function registerCsChatWs(app: App): void {
       if (adminToken) {
         const admin = await adminFromToken(adminToken);
         if (!admin) return false;
+        if (!await hasPermission(admin.roleCodes, "cs.view")) return false;
         socket.data.actor = {
           kind: "admin",
           id: admin.id,
@@ -281,8 +536,40 @@ export function registerCsChatWs(app: App): void {
       message: "ok",
     });
 
+    // Admins auto-join lobby for live session list / presence.
+    if (actor.kind === "admin") {
+      socket.join(CS_LOBBY_ROOM);
+      const joined0 = (socket.data.rooms as Set<string> | undefined) ?? new Set();
+      joined0.add(CS_LOBBY_ROOM);
+      socket.data.rooms = joined0;
+      // Rehydrate live presence from this api process (source of truth), not
+      // only Mongo — covers admin refresh while guests stay connected.
+      void emitPresenceSnapshot(socket);
+    }
+
+    // Guest presence on connect (not only join): title may show「已连接」before
+    // room join; lobby / soft-poll must still see them immediately.
+    if (actor.kind === "guest") {
+      void attachGuestPresence(socket, actor);
+    }
+
     socket.on("join", async (data: { room?: string }, cb?: (r: unknown) => void) => {
       const room = String(data?.room ?? "");
+      // Explicit lobby join (admin only) — same as auto-join.
+      if (room === CS_LOBBY_ROOM) {
+        if (actor.kind !== "admin") {
+          cb?.({ ok: false, message: "无权进入" });
+          return;
+        }
+        socket.join(room);
+        const joinedL = (socket.data.rooms as Set<string> | undefined) ?? new Set();
+        joinedL.add(room);
+        socket.data.rooms = joinedL;
+        socket.emit("joined", { room, sessionId: "" });
+        cb?.({ ok: true, room });
+        void emitPresenceSnapshot(socket);
+        return;
+      }
       const sessionId = parseSessionId(room);
       if (!sessionId) {
         cb?.({ ok: false, message: "房间无效" });
@@ -300,6 +587,10 @@ export function registerCsChatWs(app: App): void {
       socket.data.rooms = joined;
       socket.emit("joined", { room, sessionId });
       cb?.({ ok: true, room, sessionId });
+      if (actor.kind === "guest") {
+        // Idempotent for this socket — connect already retained when possible.
+        await attachGuestPresence(socket, actor, sessionId);
+      }
     });
 
     socket.on("leave", (data: { room?: string }, cb?: (r: unknown) => void) => {
@@ -314,17 +605,31 @@ export function registerCsChatWs(app: App): void {
     socket.on(
       "chat",
       async (
-        data: { room?: string; text?: string },
+        data: {
+          room?: string;
+          text?: string;
+          kind?: string;
+          media?: CsMediaMeta;
+        },
         cb?: (r: unknown) => void,
       ) => {
         const room = String(data?.room ?? "");
         const sessionId = parseSessionId(room);
         const text = String(data?.text ?? "").trim();
+        const kind = (String(data?.kind ?? "text").trim().toLowerCase() ||
+          "text") as CsMessageKind;
+        const media = data?.media;
         if (!sessionId) {
           cb?.({ ok: false, message: "房间无效" });
           return;
         }
-        if (!text || text.length > CS_MAX_TEXT) {
+        // text/emoji still capped; media kinds may have empty text
+        const needsText = kind === "text" || kind === "emoji";
+        if (needsText && (!text || text.length > CS_MAX_TEXT)) {
+          cb?.({ ok: false, message: "内容无效" });
+          return;
+        }
+        if (text.length > CS_MAX_TEXT) {
           cb?.({ ok: false, message: "内容无效" });
           return;
         }
@@ -349,6 +654,7 @@ export function registerCsChatWs(app: App): void {
           return;
         }
 
+        const sendBody: CsSendPayload = { kind, text, media };
         const result = await sendCsChat(
           {
             id: actor.id,
@@ -356,7 +662,7 @@ export function registerCsChatWs(app: App): void {
             role: actor.kind === "admin" ? "admin" : "guest",
           },
           sessionId,
-          text,
+          sendBody,
         );
         if (typeof result === "string") {
           cb?.({ ok: false, message: result });
@@ -372,14 +678,30 @@ export function registerCsChatWs(app: App): void {
           fromId: msg.fromId,
           text: msg.text,
           time: msg.time,
+          kind: msg.kind ?? kind,
+          media: msg.media,
         };
         void ws.emitToRoom(room, "chat", payload);
         socket.emit("chat", payload);
         cb?.({ ok: true, message: payload });
+        // Keep admin list preview fresh without waiting for poll.
+        publishCsSession(lobbyRow({
+          id: sessionId,
+          guestName: actor.kind === "guest" ? actor.name : "",
+          status: "open",
+          lastPreview: previewForKind(msg.kind ?? kind, msg.text ?? "", msg.media),
+          updatedAt: msg.time || new Date().toISOString(),
+          online: actor.kind === "guest" ? true : isGuestOnline(sessionId),
+          // sendCsChat clears hiddenAt → reveal in lobby
+          hidden: false,
+        }));
       },
     );
 
     onClosed(socket, () => {
+      if (actor.kind === "guest") {
+        void detachGuestPresence(socket, actor);
+      }
       socket.data.rooms = undefined;
       socket.data.actor = undefined;
     });

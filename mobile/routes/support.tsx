@@ -1,23 +1,47 @@
 /**
- * Mobile guest customer-service — CsChatApp + apiPublicBase
+ * Mobile guest CS — full-screen App page wrapping shared WebChat.
+ * Not modal / float; bottom Tab stays from layout.
+ * marker: MOBILE_SUPPORT_APP_SHELL_20261107 + PANE_FIXED_HEIGHT
  */
-import { CsChatApp } from "@common/components/CsChatApp.tsx";
-import { apiPublicBase } from "@common/utils/cs-ws.ts";
+import { WebChat } from "@common/components/WebChat.tsx";
 
 export default function SupportPage() {
   return (
-    <div class="box-border">
-      <div class="mb-3">
-        <h1 class="text-lg font-semibold text-slate-900 dark:text-slate-50">
-          联系客服
-        </h1>
-        <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-          访客会话实时同步，无需登录。
-        </p>
-      </div>
-      <div class="mx-auto h-[min(85vh,40rem)] max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <CsChatApp mode="guest" apiBase={apiPublicBase()} title="联系客服" />
-      </div>
+    <div
+      class="flex h-full max-h-full min-h-0 w-full flex-1 flex-col overflow-hidden bg-gradient-to-b from-indigo-50/40 via-white to-white dark:from-indigo-950/20 dark:via-slate-900 dark:to-slate-900"
+      data-testid="mobile-support-shell"
+    >
+      <WebChat
+        mode="guest"
+        apiBase=""
+        title="在线客服"
+        class="h-full min-h-0 flex-1 rounded-none border-0 bg-transparent shadow-none"
+        showEmoji
+        showImage
+        showAttachment
+        showVoice
+        imageMaxSize={5 * 1024 * 1024}
+        attachmentMaxSize={20 * 1024 * 1024}
+        attachmentAcceptMimes={[
+          "application/pdf",
+          "application/zip",
+          "application/x-zip-compressed",
+          "text/plain",
+          "application/msword",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "application/vnd.ms-excel",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        ]}
+        attachmentAcceptExts={[
+          ".pdf",
+          ".zip",
+          ".txt",
+          ".doc",
+          ".docx",
+          ".xls",
+          ".xlsx",
+        ]}
+      />
     </div>
   );
 }

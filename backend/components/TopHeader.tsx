@@ -10,14 +10,24 @@ import { FullscreenToggle } from "@backend/components/FullscreenToggle.tsx";
 import { settingsOpen } from "@backend/components/SettingsDrawer.tsx";
 import { triggerCls } from "@backend/components/menu-kit.tsx";
 import { IconMessageCircle, IconSettings } from "@dreamer/ui-view";
+import { openAdminCs } from "@backend/components/cs-open.ts";
+import { Can } from "@common/components/Can.tsx";
+import { setMePermissions } from "@common/hook/can.ts";
 
 export function TopHeader(props: {
   locale: Locale;
   nickname: string;
   roles: string[];
   themeMode?: "light" | "dark" | "system";
+  permissions?: string[];
+  isSuper?: boolean;
 }) {
   const tr = createT(props.locale);
+  // Keep mePerms in sync when chrome re-renders with SSR payload.
+  setMePermissions({
+    permissions: props.permissions ?? [],
+    isSuper: !!props.isSuper,
+  });
 
   return (
     <header
@@ -29,24 +39,18 @@ export function TopHeader(props: {
       </div>
       <div class="flex shrink-0 items-center gap-0.5">
         <UserMenu locale={props.locale} nickname={props.nickname} roles={props.roles} />
-        <button
-          type="button"
-          class={triggerCls}
-          data-testid="chat-toggle"
-          title={tr("shell.chatTitle")}
-          aria-label={tr("shell.chatTitle")}
-          onClick={() => {
-            if (typeof window !== "undefined") {
-              window.open(
-                "/chat",
-                "dweb-admin-cs",
-                "popup=yes,width=960,height=720,noopener,noreferrer",
-              );
-            }
-          }}
-        >
-          <IconMessageCircle size="xs" />
-        </button>
+        <Can permission="cs.view">
+          <button
+            type="button"
+            class={triggerCls}
+            data-testid="chat-toggle"
+            title={tr("shell.chatTitle")}
+            aria-label={tr("shell.chatTitle")}
+            onClick={() => openAdminCs()}
+          >
+            <IconMessageCircle size="xs" />
+          </button>
+        </Can>
         <LangMenu locale={props.locale} />
         <ThemeMenu locale={props.locale} initialMode={props.themeMode} />
         <FullscreenToggle

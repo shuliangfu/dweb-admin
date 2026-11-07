@@ -23,7 +23,7 @@
  *    - **web**: `/api/<resource>` (exactly two segments, first `api`)
  *    - **kind:api** (apiOnly): bare `/` and `/<resource>` (parts.length 0|1)
  *
- * ### kind:"api" (this repo’s `api/` app, port 3003)
+ * ### kind:"api" (this repo’s `api/` app, port 8813)
  *
  * Routes live at the URL root (no `/api` prefix). Verified with `deno task dev:api`:
  * - `GET /` → `index` (200) — root fallback (server 1.2.2)

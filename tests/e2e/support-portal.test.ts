@@ -16,8 +16,8 @@ describe("support portal (browser)", () => {
       await page.goto(BASE + "/");
       await page.waitForSelector("[data-testid=chat-toggle]");
       await page.goto(BASE + "/chat");
-      await page.waitForSelector("[data-testid=cs-chat-app]");
-      expect(await page.locator("[data-testid=cs-chat-app]").count()).toBe(1);
+      await page.waitForSelector("[data-testid=web-chat]");
+      expect(await page.locator("[data-testid=web-chat]").count()).toBe(1);
     } finally {
       await browser.close();
     }

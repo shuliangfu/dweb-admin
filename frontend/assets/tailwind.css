@@ -1,8 +1,14 @@
 /**
  * TailwindCSS v4 入口
  * 指定内容扫描路径（生成 class 时使用）
+ * marker: FE_TW_UI_VIEW_MODAL_SCAN_20261107
  */
+/* ui-view Modal close (w-5/h-5) lives outside frontend/; backend list is the shared scan set */
+@import "../../backend/assets/ui-view-sources.css";
 @source "../**/*.{ts,tsx}";
+@source "../../common/**/*.{ts,tsx}";
+/* ImageViewer mask／toolbar — ensure FE keeps bg-black/90 even before backend sources regenerate */
+@source "../../node_modules/@jsr/dreamer__ui-view/src/shared/data-display/ImageViewer.tsx";
 
 @import "tailwindcss";
 

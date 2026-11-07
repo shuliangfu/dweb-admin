@@ -1,8 +1,11 @@
 /**
- * Frontend product shell — header / nav / footer
+ * Frontend product shell — header / nav / footer + keep-alive CS float
+ * marker: FE_LAYOUT_CS_FLOAT_20261107
  */
 
 import type { VNode } from "@dreamer/view";
+import { CsSupportFloat } from "@frontend/components/CsSupportFloat.tsx";
+import { openCsSupport } from "@frontend/components/cs-support-open.ts";
 
 interface LayoutProps {
   children?: VNode | VNode[];
@@ -37,13 +40,14 @@ export default function Layout({ children }: LayoutProps) {
               </a>
             </li>
             <li>
-              <a
-                href="/support"
+              <button
+                type="button"
                 data-testid="nav-contact-cs"
                 class="rounded-lg px-3 py-2 text-sm font-medium text-indigo-600 transition-colors hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950/40"
+                onClick={() => openCsSupport()}
               >
-                联系客服
-              </a>
+                在线客服
+              </button>
             </li>
           </ul>
         </div>
@@ -62,6 +66,9 @@ export default function Layout({ children }: LayoutProps) {
           </p>
         </div>
       </footer>
+
+      {/* Keep-alive float: sole FE WebChat host */}
+      <CsSupportFloat />
     </div>
   );
 }

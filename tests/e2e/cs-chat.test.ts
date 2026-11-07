@@ -13,7 +13,7 @@ describe("cs chat (browser)", () => {
     try {
       const page = await ctx.newPage();
       await page.goto(BASE + "/chat");
-      await page.waitForSelector("[data-testid=cs-chat-app]", { timeout: 10000 });
+      await page.waitForSelector("[data-testid=web-chat]", { timeout: 10000 });
       // sessions endpoint must return wsUrl for real socket (not a fake stub)
       const boot = await page.evaluate(async () => {
         const res = await fetch("/api/chat/sessions", { credentials: "same-origin" });
@@ -35,7 +35,7 @@ describe("cs chat (browser)", () => {
     }
   }, { timeout: 60000, sanitizeOps: false, sanitizeResources: false });
 
-  it("top header chat button opens /chat popup target", async () => {
+  it("top header chat button is present (desktop opens in-app float)", async () => {
     await ensureServer();
     const { browser, ctx } = await browserLoggedIn();
     try {
@@ -43,13 +43,13 @@ describe("cs chat (browser)", () => {
       await page.goto(BASE + "/");
       await page.waitForSelector("[data-testid=chat-toggle]");
       const meta = await page.locator("[data-testid=chat-toggle]").evaluate((el) => {
-        // Read handler by simulating: ensure button exists; open logic uses window.open("/chat", ...)
+        // Ensure header CS entry exists; desktop opens in-app float (no browser address bar).
         return el.getAttribute("data-testid");
       });
       expect(meta).toBe("chat-toggle");
-      // Soft check: navigating to /chat works (popup path)
+      // Soft check: /chat page still works for mobile / direct URL
       await page.goto(BASE + "/chat");
-      await page.waitForSelector("[data-testid=cs-chat-app]");
+      await page.waitForSelector("[data-testid=web-chat]");
     } finally {
       await browser.close();
     }

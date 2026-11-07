@@ -16,6 +16,10 @@ _client.dep.tsx
 # Docker 缓存（deno cache 预填目录）
 runtime/
 
+# CS／WebChat 用户上传（仓根；禁进 git；保留空目录标记）
+uploads/*
+!uploads/.gitkeep
+
 # docker.sh export 写出的镜像包
 backups/
 
@@ -36,3 +40,6 @@ backups/
 # ui-view generated @source list (machine specific paths)
 backend/assets/ui-view-sources.css
 .shots/
+
+# local DIG screenshots
+.dig-shots/

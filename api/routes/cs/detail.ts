@@ -1,8 +1,10 @@
 /**
  * Action `detail` → /cs/detail?sessionId=&guestToken= — guest loads history.
+ * Returns wsUrl (page-origin when proxied) so restored sessions reconnect same-origin.
  */
 import type { ApiContext } from "@dreamer/dweb";
 import { getCsDetail, guestFromToken } from "@common/service/cs.ts";
+import { csWsUrl } from "@common/utils/cs-ws.ts";
 import { jsonResponse } from "@common/utils/http.ts";
 
 export async function detail(ctx: ApiContext) {
@@ -17,5 +19,8 @@ export async function detail(ctx: ApiContext) {
     return jsonResponse({ error: "forbidden" }, 403);
   }
   const data = await getCsDetail(sessionId);
-  return jsonResponse(data);
+  return jsonResponse({
+    ...data,
+    wsUrl: csWsUrl(ctx.req),
+  });
 }

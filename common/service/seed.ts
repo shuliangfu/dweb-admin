@@ -22,20 +22,128 @@ import { scanRoutes } from "@common/service/route-scan.ts";
 
 export const SUPER_ROLE = "super_admin";
 export const OPERATOR_ROLE = "operator";
+export const CS_AGENT_ROLE = "cs_agent";
 
 const ITEMS: { name: string; type: ItemType; description: string; isSuper?: boolean }[] = [
   { name: SUPER_ROLE, type: "role", description: "Super admin: every permission", isSuper: true },
-  { name: OPERATOR_ROLE, type: "role", description: "Operator: read-only access to the admin list" },
-  { name: "admin.view", type: "permission", description: "View administrators" },
+  { name: OPERATOR_ROLE, type: "role", description: "Operator: read + CS (no remove)" },
+  { name: CS_AGENT_ROLE, type: "role", description: "Customer-service agent" },
+  // view / write packages
+  { name: "admin.view", type: "permission", description: "View administrators / assign / online" },
+  { name: "admin.write", type: "permission", description: "Create / update / remove admins" },
+  { name: "rbac.view", type: "permission", description: "View roles / permissions / routes" },
+  { name: "rbac.write", type: "permission", description: "Mutate roles / permissions / routes" },
+  { name: "system.view", type: "permission", description: "View system settings pages" },
+  { name: "system.write", type: "permission", description: "Update system settings" },
+  { name: "user.view", type: "permission", description: "View member list pages" },
+  { name: "user.write", type: "permission", description: "Mutate member resources" },
+  { name: "cms.view", type: "permission", description: "View CMS list pages" },
+  { name: "cms.write", type: "permission", description: "Mutate CMS resources" },
+  { name: "developer.view", type: "permission", description: "View developer pages (menus/logs/…)" },
+  { name: "developer.write", type: "permission", description: "Mutate developer resources" },
+  // CS
+  { name: "cs.view", type: "permission", description: "Open CS lobby / chat" },
+  { name: "cs.claim", type: "permission", description: "Claim CS sessions" },
+  { name: "cs.reply", type: "permission", description: "Reply in CS chat" },
+  { name: "cs.upload", type: "permission", description: "Upload CS attachments" },
+  { name: "cs.hide", type: "permission", description: "Hide CS sessions" },
+  { name: "cs.remove", type: "permission", description: "Delete CS sessions" },
+];
+
+/** Action-mode CS APIs are not picked up by METHOD_RE scan — seed managed routes explicitly. */
+const SEED_ROUTES: { method: "GET" | "POST"; path: string }[] = [
+  { method: "GET", path: "/chat" },
+  { method: "GET", path: "/api/chat/sessions" },
+  { method: "POST", path: "/api/chat/sessions" },
+  { method: "GET", path: "/api/chat/detail" },
+  { method: "POST", path: "/api/chat/claim" },
+  { method: "POST", path: "/api/chat/hide" },
+  { method: "POST", path: "/api/chat/remove" },
 ];
 
 /** parent → children (role ⊇ permission ⊇ routes). */
 const CHILDREN: { parent: string; type: ChildType; child: string }[] = [
+  // roles → permissions
   { parent: OPERATOR_ROLE, type: "permission", child: "admin.view" },
+  { parent: OPERATOR_ROLE, type: "permission", child: "rbac.view" },
+  { parent: OPERATOR_ROLE, type: "permission", child: "system.view" },
+  { parent: OPERATOR_ROLE, type: "permission", child: "user.view" },
+  { parent: OPERATOR_ROLE, type: "permission", child: "cms.view" },
+  { parent: OPERATOR_ROLE, type: "permission", child: "developer.view" },
+  { parent: OPERATOR_ROLE, type: "permission", child: "cs.view" },
+  { parent: OPERATOR_ROLE, type: "permission", child: "cs.claim" },
+  { parent: OPERATOR_ROLE, type: "permission", child: "cs.reply" },
+  { parent: OPERATOR_ROLE, type: "permission", child: "cs.upload" },
+  { parent: OPERATOR_ROLE, type: "permission", child: "cs.hide" },
+  { parent: CS_AGENT_ROLE, type: "permission", child: "cs.view" },
+  { parent: CS_AGENT_ROLE, type: "permission", child: "cs.claim" },
+  { parent: CS_AGENT_ROLE, type: "permission", child: "cs.reply" },
+  { parent: CS_AGENT_ROLE, type: "permission", child: "cs.upload" },
+  { parent: CS_AGENT_ROLE, type: "permission", child: "cs.hide" },
+  { parent: CS_AGENT_ROLE, type: "permission", child: "cs.remove" },
+  // admin.*
   { parent: "admin.view", type: "route", child: routeKey("GET", "/rbac/admins") },
   { parent: "admin.view", type: "route", child: routeKey("GET", "/rbac/assign") },
   { parent: "admin.view", type: "route", child: routeKey("GET", "/system/online") },
   { parent: "admin.view", type: "route", child: routeKey("GET", "/api/users") },
+  { parent: "admin.write", type: "route", child: routeKey("POST", "/api/users") },
+  { parent: "admin.write", type: "route", child: routeKey("POST", "/api/users/:id/update") },
+  { parent: "admin.write", type: "route", child: routeKey("POST", "/api/users/:id/remove") },
+  { parent: "admin.write", type: "route", child: routeKey("POST", "/api/sessions/:id/remove") },
+  // rbac.*
+  { parent: "rbac.view", type: "route", child: routeKey("GET", "/rbac/roles") },
+  { parent: "rbac.view", type: "route", child: routeKey("GET", "/rbac/permissions") },
+  { parent: "rbac.view", type: "route", child: routeKey("GET", "/rbac/routes") },
+  { parent: "rbac.view", type: "route", child: routeKey("GET", "/api/rbac/roles") },
+  { parent: "rbac.view", type: "route", child: routeKey("GET", "/api/rbac/permissions") },
+  { parent: "rbac.view", type: "route", child: routeKey("GET", "/api/rbac/routes") },
+  { parent: "rbac.write", type: "route", child: routeKey("POST", "/api/rbac/roles") },
+  { parent: "rbac.write", type: "route", child: routeKey("POST", "/api/rbac/permissions") },
+  { parent: "rbac.write", type: "route", child: routeKey("POST", "/api/rbac/routes") },
+  // system.*
+  { parent: "system.view", type: "route", child: routeKey("GET", "/system/base") },
+  { parent: "system.view", type: "route", child: routeKey("GET", "/system/datetime") },
+  { parent: "system.view", type: "route", child: routeKey("GET", "/system/region") },
+  { parent: "system.write", type: "route", child: routeKey("POST", "/api/site/base/update") },
+  { parent: "system.write", type: "route", child: routeKey("POST", "/api/res/system.region") },
+  // user.*
+  { parent: "user.view", type: "route", child: routeKey("GET", "/user") },
+  { parent: "user.view", type: "route", child: routeKey("GET", "/user/active") },
+  { parent: "user.view", type: "route", child: routeKey("GET", "/user/zombie") },
+  { parent: "user.write", type: "route", child: routeKey("POST", "/api/res/user.index") },
+  { parent: "user.write", type: "route", child: routeKey("POST", "/api/res/user.active") },
+  { parent: "user.write", type: "route", child: routeKey("POST", "/api/res/user.zombie") },
+  // cms.*
+  { parent: "cms.view", type: "route", child: routeKey("GET", "/cms/article") },
+  { parent: "cms.view", type: "route", child: routeKey("GET", "/cms/news") },
+  { parent: "cms.view", type: "route", child: routeKey("GET", "/cms/notice") },
+  { parent: "cms.view", type: "route", child: routeKey("GET", "/cms/photo") },
+  { parent: "cms.write", type: "route", child: routeKey("POST", "/api/res/cms.article") },
+  { parent: "cms.write", type: "route", child: routeKey("POST", "/api/res/cms.news") },
+  { parent: "cms.write", type: "route", child: routeKey("POST", "/api/res/cms.notice") },
+  { parent: "cms.write", type: "route", child: routeKey("POST", "/api/res/cms.photo") },
+  // developer.*
+  { parent: "developer.view", type: "route", child: routeKey("GET", "/developer/menus") },
+  { parent: "developer.view", type: "route", child: routeKey("GET", "/developer/database") },
+  { parent: "developer.view", type: "route", child: routeKey("GET", "/developer/feedback") },
+  { parent: "developer.view", type: "route", child: routeKey("GET", "/developer/language") },
+  { parent: "developer.view", type: "route", child: routeKey("GET", "/developer/system") },
+  { parent: "developer.write", type: "route", child: routeKey("POST", "/api/menus") },
+  { parent: "developer.write", type: "route", child: routeKey("POST", "/api/menus/:key/update") },
+  { parent: "developer.write", type: "route", child: routeKey("POST", "/api/menus/:key/remove") },
+  { parent: "developer.write", type: "route", child: routeKey("POST", "/api/res/menus") },
+  { parent: "developer.write", type: "route", child: routeKey("POST", "/api/res/developer.database") },
+  { parent: "developer.write", type: "route", child: routeKey("POST", "/api/res/developer.feedback") },
+  { parent: "developer.write", type: "route", child: routeKey("POST", "/api/res/developer.language") },
+  { parent: "developer.write", type: "route", child: routeKey("POST", "/api/res/developer.system") },
+  // cs.*
+  { parent: "cs.view", type: "route", child: routeKey("GET", "/chat") },
+  { parent: "cs.view", type: "route", child: routeKey("GET", "/api/chat/sessions") },
+  { parent: "cs.view", type: "route", child: routeKey("POST", "/api/chat/sessions") },
+  { parent: "cs.view", type: "route", child: routeKey("GET", "/api/chat/detail") },
+  { parent: "cs.claim", type: "route", child: routeKey("POST", "/api/chat/claim") },
+  { parent: "cs.hide", type: "route", child: routeKey("POST", "/api/chat/hide") },
+  { parent: "cs.remove", type: "route", child: routeKey("POST", "/api/chat/remove") },
 ];
 
 const MENUS: Omit<MenuDocument, "_id" | "createdAt" | "updatedAt">[] = [
@@ -306,6 +414,12 @@ export async function seedAll(): Promise<void> {
   }
   // Every route that exists today becomes a managed (assignable) route on first run.
   for (const r of await scanRoutes()) {
+    if (!await AuthRoute.findOne({ method: r.method, path: r.path })) {
+      await AuthRoute.create({ ...r, source: "seed" });
+    }
+  }
+  // Action-mode CS endpoints + /chat page (explicit; scan skips non-GET|POST exports).
+  for (const r of SEED_ROUTES) {
     if (!await AuthRoute.findOne({ method: r.method, path: r.path })) {
       await AuthRoute.create({ ...r, source: "seed" });
     }

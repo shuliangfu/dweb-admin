@@ -3,6 +3,7 @@
  * The other rows stay a preview; there is no general Config model.
  */
 import { Button, Card, Descriptions, Input, Modal, IconList } from "@dreamer/ui-view";
+import { Can } from "@common/components/Can.tsx";
 import { createSignal } from "@dreamer/view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { STUB_BY_KEY } from "@common/stubs/catalog.ts";
@@ -51,17 +52,19 @@ export function BaseSettings(props: { locale: Locale; website: string; shortName
         }
         extra={
           <div class="flex flex-wrap gap-2">
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => {
-                website.value = props.website;
-                shortName.value = props.shortName;
-                open.value = true;
-              }}
-            >
-              {tr("stub.edit")}
-            </Button>
+            <Can permission="system.write">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  website.value = props.website;
+                  shortName.value = props.shortName;
+                  open.value = true;
+                }}
+              >
+                {tr("stub.edit")}
+              </Button>
+            </Can>
             <Button type="button" variant="secondary" onClick={reload}>
               {tr("stub.refresh")}
             </Button>

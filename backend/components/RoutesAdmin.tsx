@@ -5,6 +5,7 @@
  */
 import { createSignal } from "@dreamer/view";
 import { Alert, Button, Card, Transfer } from "@dreamer/ui-view";
+import { Can } from "@common/components/Can.tsx";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { api, toastResult } from "@backend/components/crud-kit.tsx";
 import { DataPanel, type PanelInitial, refreshPanel } from "@common/components/DataPanel.tsx";
@@ -56,9 +57,11 @@ export function RoutesAdmin(props: { locale: Locale; initial: PanelInitial; mana
           messages={{ count: (n: number) => `${n}`, selectedSuffix: (n: number) => ` / ${n}` }}
         />
         <div class="mt-3">
-          <Button type="button" variant="primary" loading={busy.value} data-testid="routes-save" onClick={save}>
-            {tr("rbac.routeSave")}
-          </Button>
+          <Can permission="rbac.write">
+            <Button type="button" variant="primary" loading={busy.value} data-testid="routes-save" onClick={save}>
+              {tr("rbac.routeSave")}
+            </Button>
+          </Can>
         </div>
       </Card>
       <DataPanel initial={props.initial} locale={props.locale} />

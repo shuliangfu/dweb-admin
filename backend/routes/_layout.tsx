@@ -7,7 +7,10 @@
 
 import type { VNode } from "@dreamer/view";
 import type { LoadContext } from "@dreamer/dweb";
-import { MessageContainer, ToastContainer } from "@dreamer/ui-view";
+import {
+  MessageContainer as UiMessageContainer,
+  ToastContainer as UiToastContainer,
+} from "@dreamer/ui-view/feedback";
 import { createT, type Locale, resolveLocale } from "@common/i18n/mod.ts";
 import type { MenuNode } from "@common/service/menu.ts";
 import { SideMenu } from "@backend/components/SideMenu.tsx";
@@ -19,16 +22,25 @@ import { tagsValueFromCookie } from "@backend/components/tag-cookie.ts";
 import { SecurityModal } from "@backend/components/SecurityModal.tsx";
 import { ProfileModal } from "@backend/components/ProfileModal.tsx";
 import { SettingsDrawer } from "@backend/components/SettingsDrawer.tsx";
+import { CsChatFloat } from "@backend/components/CsChatFloat.tsx";
+import { PermissionsBootstrap } from "@common/components/PermissionsBootstrap.tsx";
+import { Can } from "@common/components/Can.tsx";
 import { closeDrawer } from "@backend/components/SidebarToggle.tsx";
 import { resolvePageTitle } from "@backend/components/breadcrumb.ts";
 import { isLockedRequest } from "@backend/components/lock-kit.ts";
+
+/** Local aliases — avoid barrel TDZ / client bind loss (ToastContainer is not defined). */
+const ToastContainer = UiToastContainer;
+const MessageContainer = UiMessageContainer;
 
 interface LayoutData {
   isLoginPage?: boolean;
   isLockPage?: boolean;
   pathname?: string;
   locale?: Locale;
-  user?: { username: string; nickname: string; roleCodes: string[] } | null;
+  user?: { username: string; nickname: string; roleCodes: string[]; isSuper?: boolean; permissions?: string[] } | null;
+  permissions?: string[];
+  isSuper?: boolean;
   menu?: MenuNode[];
   /** Sidebar collapsed (cookie dweb-admin-sidebar=1), applied during SSR. */
   collapsed?: boolean;
@@ -60,13 +72,27 @@ export async function load(ctx: LoadContext): Promise<LayoutData | Response> {
       : new Response(null, { status: 302, headers: { Location: "/login" } });
   }
 
+  const { listPermissionsFromGraph, loadGraph } = await import("@common/service/rbac.ts");
+  const grants = listPermissionsFromGraph(await loadGraph(), user.roleCodes);
+  const isSuper = user.isSuper || grants.isSuper;
+  const permissions = grants.permissions;
+  const userPayload = {
+    username: user.username,
+    nickname: user.nickname,
+    roleCodes: user.roleCodes,
+    isSuper,
+    permissions,
+  };
+
   const locked = isLockedRequest(ctx.req.headers.get("cookie"));
   if (pathname === "/lock") {
     return {
       isLockPage: true,
       pathname,
       locale,
-      user: { username: user.username, nickname: user.nickname, roleCodes: user.roleCodes },
+      user: userPayload,
+      permissions,
+      isSuper,
     };
   }
   if (locked) {
@@ -77,7 +103,9 @@ export async function load(ctx: LoadContext): Promise<LayoutData | Response> {
   return {
     pathname,
     locale,
-    user: { username: user.username, nickname: user.nickname, roleCodes: user.roleCodes },
+    user: userPayload,
+    permissions,
+    isSuper,
     menu: await buildMenuTree(user.roleCodes, locale),
     collapsed: /(?:^|;\s*)dweb-admin-sidebar=1/.test(ctx.req.headers.get("cookie") ?? ""),
     website: brand.website,
@@ -118,6 +146,8 @@ export default function Layout(props: { children?: VNode | VNode[]; data?: Layou
           themeMode={data.themeMode}
           nickname={data.user?.nickname ?? ""}
           roles={data.user?.roleCodes ?? []}
+          permissions={data.permissions ?? data.user?.permissions ?? []}
+          isSuper={!!(data.isSuper ?? data.user?.isSuper)}
         />
         <TagView
           cookie={data.tagsCookie}
@@ -139,9 +169,16 @@ export default function Layout(props: { children?: VNode | VNode[]; data?: Layou
           </div>
         </main>
       </div>
+      <PermissionsBootstrap
+        permissions={data.permissions ?? data.user?.permissions ?? []}
+        isSuper={!!(data.isSuper ?? data.user?.isSuper)}
+      />
       <SecurityModal locale={locale} />
       <ProfileModal locale={locale} />
       <SettingsDrawer locale={locale} />
+      <Can permission="cs.view">
+        <CsChatFloat />
+      </Can>
       <ToastContainer />
       <MessageContainer />
     </div>

@@ -4,6 +4,8 @@
  * Production: securityHeaders / cors allowlist / rateLimit — see PRODUCTION_CHECKLIST
  */
 import type { AppConfig } from "@dreamer/dweb";
+import { csUploadAppConfig, csUploadPlugin } from "@api/cs-upload.ts";
+import { localCorsOrigins } from "@common/utils/local-origins.ts";
 
 export default {
   /** 应用名称，用于日志与元数据。 */
@@ -45,20 +47,17 @@ export default {
   // cors: { origin: ["https://app.example.com"], credentials: true },
   // rateLimit: { windowMs: 60_000, max: 120 },
 
-  // Browser clients (backend/FE/mobile) connect cross-port; allow local origins.
+  // Browser clients — env-driven local ports (8810–8813).
+  // Guest FE/mobile prefer same-origin /cs proxy; CORS remains for absolute clients.
   cors: {
-    origin: [
-      "http://127.0.0.1:3100",
-      "http://localhost:3100",
-      "http://127.0.0.1:3001",
-      "http://localhost:3001",
-      "http://127.0.0.1:3002",
-      "http://localhost:3002",
-      "http://127.0.0.1:3003",
-      "http://localhost:3003",
-    ],
+    origin: localCorsOrigins(),
     credentials: true,
   },
+  /** WebChat CS media upload via uiViewUploadPlugin (localDir + dual + virusScan). */
+  upload: csUploadAppConfig as any,
+  /** Wraps uploadHandler onStart: complete（virusScan）→ dual；file via onRequest. */
+  plugins: [csUploadPlugin],
+
   /** Customer-service realtime chat. Same HTTP port, path /ws. */
   socket: {
     adapter: "websocket",

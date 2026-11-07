@@ -53,7 +53,7 @@ export function resourceMeta(
     search: def.search.map((s) => ({
       ...s,
       label: pick(s.label, locale),
-      options: s.options?.map((o) => ({ value: o.value, label: pick(o.label, locale) })),
+      options: dyn[s.name] ?? s.options?.map((o) => ({ value: o.value, label: pick(o.label, locale) })),
     })),
     form: (def.form ?? []).map((f) => ({
       ...f,

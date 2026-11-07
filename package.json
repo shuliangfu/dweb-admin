@@ -33,17 +33,19 @@
     "@dreamer/runtime-adapter": "npm:@jsr/dreamer__runtime-adapter@^1.2.2",
     "@dreamer/storage": "npm:@jsr/dreamer__storage@^1.1.0",
     "@dreamer/theme": "npm:@jsr/dreamer__theme@^1.1.0",
-    "@dreamer/ui-view": "npm:@jsr/dreamer__ui-view@^1.2.1",
+    "@dreamer/ui-view": "npm:@jsr/dreamer__ui-view@^1.2.6",
+    "@dreamer/queue": "npm:@jsr/dreamer__queue@^1.1.0",
     "@dreamer/utils": "npm:@jsr/dreamer__utils@^1.1.0",
     "@dreamer/view": "npm:@jsr/dreamer__view@^3.0.4",
     "@dreamer/websocket": "npm:@jsr/dreamer__websocket@^1.1.0",
     "@simplewebauthn/server": "^13.3.3",
     "@std/assert": "npm:@jsr/std__assert@^1.0.19",
-    "@tailwindcss/postcss": "^4.3.4",
+    "@tailwindcss/postcss": "^4.3.5",
     "exceljs": "4.4.0",
     "postcss": "^8.5.32",
     "qrcode": "1.5.4",
-    "tailwindcss": "^4.3.4"
+    "tailwindcss": "^4.3.5",
+    "@dreamer/upload": "npm:@jsr/dreamer__upload@^2.0.1"
   },
   "devDependencies": {
     "@dreamer/test": "npm:@jsr/dreamer__test@^1.2.3",

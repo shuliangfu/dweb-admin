@@ -162,7 +162,7 @@ Deno.test({ name: "res: export returns ALL filtered rows (not just a page) as a 
     await seed(api, 27);
     const q = `res=${RES}&title=${TAG}&sort=visits&order=asc`;
     // xlsx: zip magic + the right content type + the sheet contains every row
-    const x = await fetch(`${Deno.env.get("E2E_BASE") ?? "http://localhost:3100"}/api/res/download?${q}&format=xlsx`, { headers: { cookie: api.cookieHeader() } });
+    const x = await fetch(`${Deno.env.get("E2E_BASE") ?? "http://localhost:8810"}/api/res/download?${q}&format=xlsx`, { headers: { cookie: api.cookieHeader() } });
     assertEquals(x.status, 200);
     assert((x.headers.get("content-type") ?? "").includes("spreadsheetml"));
     assertEquals(x.headers.get("content-disposition")?.includes(".xlsx"), true);

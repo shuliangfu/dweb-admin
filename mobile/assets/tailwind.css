@@ -1,8 +1,14 @@
 /**
  * TailwindCSS v4 入口
  * 指定内容扫描路径（生成 class 时使用）
+ * marker: MOBILE_TW_UI_VIEW_IMAGEVIEWER_SCAN_20261107
  */
+/* ui-view ImageViewer 遮罩／工具栏 class 在 node_modules；与 FE 共用 backend 扫描清单 + 显式 ImageViewer */
+@import "../../backend/assets/ui-view-sources.css";
 @source "../**/*.{ts,tsx}";
+@source "../../common/**/*.{ts,tsx}";
+/* ImageViewer 仅被 common/WebChat 引用；backend 扫描未收录时仍须进 mobile CSS，否则遮罩 bg-black/90 缺失 → 控件浮在会话上 */
+@source "../../node_modules/@jsr/dreamer__ui-view/src/shared/data-display/ImageViewer.tsx";
 
 @import "tailwindcss";
 

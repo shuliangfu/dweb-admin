@@ -25,11 +25,24 @@ export {
   type AdminPasskeyDocument,
   type ChallengeKind,
 } from "./security.ts";
+/** Chat models live under common/models/ (one collection per file). */
 export {
-  CsMessage,
-  type CsMessageDocument,
-  type CsFromRole,
+  ChatSession,
+  type ChatSessionDocument,
+  type ChatSessionStatus,
   CsSession,
   type CsSessionDocument,
   type CsSessionStatus,
-} from "./cs.ts";
+} from "../models/chat-session.ts";
+export {
+  ChatMessage,
+  type ChatMessageDocument,
+  type ChatMessageKind,
+  type ChatMediaMeta,
+  type ChatFromRole,
+  CsMessage,
+  type CsMessageDocument,
+  type CsMessageKind,
+  type CsMediaMeta,
+  type CsFromRole,
+} from "../models/chat-message.ts";

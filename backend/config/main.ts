@@ -23,9 +23,9 @@ export default {
      */
     apiMode: "action",
   },
-  /** HTTP port from APP_PORT_BACKEND (default 3100). */
+  /** HTTP port from APP_PORT_BACKEND (default 8810). */
   server: {
-    port: getEnvInt("APP_PORT_BACKEND", 3100),
+    port: getEnvInt("APP_PORT_BACKEND", 8810),
   },
   /** 渲染：engine（react|preact|view）、mode（ssr|csr|ssg|hybrid）、debug；ssr/ssg 在对应模式下生效。 */
   // 完整说明见 docs/APP_CONFIG.md（含 SSR/SSG 客户端激活；需要时取消下方注释）

@@ -18,7 +18,7 @@ function envGet(key: string): string | undefined {
   }
 }
 
-export const BASE = envGet("E2E_BASE") ?? "http://127.0.0.1:3100";
+export const BASE = envGet("E2E_BASE") ?? "http://127.0.0.1:8810";
 export const ADMIN_USER = envGet("SEED_ADMIN_USERNAME") ?? "admin";
 export const ADMIN_PASS = envGet("SEED_ADMIN_PASSWORD") ?? "admin888";
 

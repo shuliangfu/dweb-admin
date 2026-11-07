@@ -20,14 +20,14 @@ services:
       # Set before the app loads .env so DB_HOST=127.0.0.1 inside the file does not win.
       DB_HOST: host.docker.internal
     ports:
-      - '0.0.0.0:${HOST_PORT_BACKEND:-3000}:3000'
+      - '0.0.0.0:${HOST_PORT_BACKEND:-8810}:8810'
     command: ["deno","run","-A","dist/backend/server.js"]
     volumes:
       - .:/app
       - ${DENO_CACHE_DIR:-./runtime/deno-cache}:/deno-dir
     healthcheck:
-      # 用 /proc/net/tcp 检测端口（3000 → 0BB8）
-      test: ['CMD-SHELL', 'grep -q "0BB8" /proc/net/tcp 2>/dev/null || exit 1']
+      # 用 /proc/net/tcp 检测端口（8810 → 226A）
+      test: ['CMD-SHELL', 'grep -q "226A" /proc/net/tcp 2>/dev/null || exit 1']
       interval: 10s
       timeout: 5s
       retries: 12
@@ -53,14 +53,14 @@ services:
     environment:
       DB_HOST: host.docker.internal
     ports:
-      - '0.0.0.0:${HOST_PORT_FRONTEND:-3001}:3001'
+      - '0.0.0.0:${HOST_PORT_FRONTEND:-8811}:8811'
     command: ["deno","run","-A","dist/frontend/server.js"]
     volumes:
       - .:/app
       - ${DENO_CACHE_DIR:-./runtime/deno-cache}:/deno-dir
     healthcheck:
-      # 用 /proc/net/tcp 检测端口（3001 → 0BB9）
-      test: ['CMD-SHELL', 'grep -q "0BB9" /proc/net/tcp 2>/dev/null || exit 1']
+      # 用 /proc/net/tcp 检测端口（8811 → 226B）
+      test: ['CMD-SHELL', 'grep -q "226B" /proc/net/tcp 2>/dev/null || exit 1']
       interval: 10s
       timeout: 5s
       retries: 12
@@ -86,14 +86,14 @@ services:
     environment:
       DB_HOST: host.docker.internal
     ports:
-      - '0.0.0.0:${HOST_PORT_MOBILE:-3002}:3002'
+      - '0.0.0.0:${HOST_PORT_MOBILE:-8812}:8812'
     command: ["deno","run","-A","dist/mobile/server.js"]
     volumes:
       - .:/app
       - ${DENO_CACHE_DIR:-./runtime/deno-cache}:/deno-dir
     healthcheck:
-      # 用 /proc/net/tcp 检测端口（3002 → 0BBA）
-      test: ['CMD-SHELL', 'grep -q "0BBA" /proc/net/tcp 2>/dev/null || exit 1']
+      # 用 /proc/net/tcp 检测端口（8812 → 226C）
+      test: ['CMD-SHELL', 'grep -q "226C" /proc/net/tcp 2>/dev/null || exit 1']
       interval: 10s
       timeout: 5s
       retries: 12
@@ -119,16 +119,20 @@ services:
     environment:
       DB_HOST: host.docker.internal
       # Browser-facing api origin (host-mapped port). Override via .env API_PUBLIC_BASE.
-      API_PUBLIC_BASE: ${API_PUBLIC_BASE:-http://127.0.0.1:3003}
+      API_PUBLIC_BASE: ${API_PUBLIC_BASE:-http://127.0.0.1:8813}
+      # Always host gateway inside containers (.env CLAMAV_HOST=127.0.0.1 is for host deno).
+      CLAMAV_HOST: host.docker.internal
+      CLAMAV_PORT: ${CLAMAV_PORT:-3310}
+      CLAMAV_REQUIRED: ${CLAMAV_REQUIRED:-1}
     ports:
-      - '0.0.0.0:${HOST_PORT_API:-3003}:3003'
+      - '0.0.0.0:${HOST_PORT_API:-8813}:8813'
     command: ["deno","run","-A","dist/api/server.js"]
     volumes:
       - .:/app
       - ${DENO_CACHE_DIR:-./runtime/deno-cache}:/deno-dir
     healthcheck:
-      # 用 /proc/net/tcp 检测端口（3003 → 0BBB）
-      test: ['CMD-SHELL', 'grep -q "0BBB" /proc/net/tcp 2>/dev/null || exit 1']
+      # 用 /proc/net/tcp 检测端口（8813 → 226D）
+      test: ['CMD-SHELL', 'grep -q "226D" /proc/net/tcp 2>/dev/null || exit 1']
       interval: 10s
       timeout: 5s
       retries: 12

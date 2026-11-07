@@ -1,8 +1,8 @@
 /**
  * Left sidebar. Tree from DB (common/service/menu.ts), RBAC-filtered + localized.
  * Aligns with Vue Side/Item: icon + title, collapse centers icon, unique-opened groups,
- * mobile click closes drawer. Top-level icons resolve via icon field or ICON_BY_KEY.
- * Second-level items always use the star icon.
+ * mobile click closes drawer. Top-level icons resolve via icon field or ICON_BY_KEY (size xs).
+ * Second-level items always use the star icon (size sm, CSS shrinks further).
  */
 import { Link, IconBookOpen, IconChevronRight, IconClock, IconCompass, IconDatabase, IconFileText, IconFolder, IconGlobe, IconGrid, IconHome, IconImage, IconKey, IconLayers, IconList, IconLock, IconMenu, IconMessageSquare, IconNewspaper, IconPalette, IconServer, IconSettings, IconShield, IconShieldCheck, IconSlidersHorizontal, IconStar, IconUserCog, IconUsers } from "@dreamer/ui-view";
 
@@ -62,9 +62,9 @@ function resolveIconName(node: MenuNode): string {
   return (raw && ICONS[raw] ? raw : "") || "menu";
 }
 
-function Icon(props: { name: string }) {
+function Icon(props: { name: string; size?: "xs" | "sm" }) {
   const C = ICONS[props.name] ?? IconMenu;
-  return <C size="sm" class="adm-menu-icon shrink-0" />;
+  return <C size={props.size ?? "sm"} class="adm-menu-icon shrink-0" />;
 }
 
 function isActive(pathname: string, path: string): boolean {
@@ -120,7 +120,7 @@ export function SideMenu(props: { tree: MenuNode[]; pathname: string }) {
                   }`}
                   onClick={onNavClick}
                 >
-                  <Icon name={iconName} />
+                  <Icon name={iconName} size="xs" />
                   <span class="adm-label truncate">{node.title}</span>
                 </Link>
               </li>
@@ -140,7 +140,7 @@ export function SideMenu(props: { tree: MenuNode[]; pathname: string }) {
                   class={`${topBase} cursor-pointer list-none select-none`}
                   title={node.title}
                 >
-                  <Icon name={iconName} />
+                  <Icon name={iconName} size="xs" />
                   <span class="adm-label min-w-0 flex-1 truncate">
                     {node.title}
                   </span>
@@ -160,7 +160,7 @@ export function SideMenu(props: { tree: MenuNode[]; pathname: string }) {
                         }`}
                         onClick={onNavClick}
                       >
-                        <Icon name="star" />
+                        <Icon name="star" size="sm" />
                         <span class="truncate">{child.title}</span>
                       </Link>
                     </li>

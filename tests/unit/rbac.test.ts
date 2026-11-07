@@ -71,7 +71,7 @@ Deno.test("i18n zh-CN / en-US", () => {
 });
 
 // ---- Yii2-style hierarchy -------------------------------------------------
-import { type Graph, resolveGrants, wouldCycle } from "@common/service/rbac.ts";
+import { type Graph, listPermissionsFromGraph, resolveGrants, wouldCycle } from "@common/service/rbac.ts";
 import { parseRouteInput } from "@common/service/rbac-admin.ts";
 
 const graph: Graph = {
@@ -132,4 +132,20 @@ Deno.test("parseRouteInput", () => {
     "POST /c",
   ]);
   assertEquals(parseRouteInput("nonsense"), null);
+});
+
+Deno.test("listPermissionsFromGraph expands permissions; super lists all", () => {
+  const g = listPermissionsFromGraph(graph, ["staff"]);
+  assertEquals(g.permissions.includes("user.view"), true);
+  assertEquals(g.isSuper, false);
+  const root = listPermissionsFromGraph(graph, ["root"]);
+  assertEquals(root.isSuper, true);
+  assertEquals(root.permissions.includes("user.view"), true);
+  assertEquals(root.permissions.includes("user.all"), true);
+});
+
+Deno.test("path classes: /chat and /api/chat are not AUTH_ONLY", () => {
+  assert(!isAuthOnlyPath("/chat"));
+  assert(!isAuthOnlyPath("/api/chat/sessions"));
+  assert(!isAuthOnlyPath("/api/chat/claim"));
 });

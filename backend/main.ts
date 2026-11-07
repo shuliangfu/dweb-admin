@@ -113,7 +113,8 @@ use(rbacGuardMiddleware);
 /** Generates the ui-view @source list; must be registered before the Tailwind plugin. */
 app.registerPlugin(uiViewTailwindPlugin({
   outputPath: "backend/assets/ui-view-sources.css",
-  scanPath: ["backend"],
+  // common/WebChat 用 ImageViewer；扫 common 才能把遮罩 class 写进共享 @source
+  scanPath: ["backend", "common", "frontend", "mobile"],
 }));
 
 app.registerPlugin(tailwindPlugin({

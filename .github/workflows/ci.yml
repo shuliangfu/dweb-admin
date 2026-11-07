@@ -18,11 +18,11 @@ env:
   DB_PASS: ci
   DB_AUTH_SOURCE: admin
   APP_HOST: 127.0.0.1
-  APP_PORT_BACKEND: "3100"
-  APP_PORT_API: "3003"
+  APP_PORT_BACKEND: "8810"
+  APP_PORT_API: "8813"
   ADMIN_COOKIE_SECURE: "0"
   LOGIN_RATE_MAX: "200"
-  E2E_BASE: http://127.0.0.1:3100
+  E2E_BASE: http://127.0.0.1:8810
 
 jobs:
   test:
@@ -138,11 +138,11 @@ jobs:
             'DB_PASS=ci' \
             'DB_AUTH_SOURCE=admin' \
             'APP_HOST=127.0.0.1' \
-            'APP_PORT_BACKEND=3100' \
-            'APP_PORT_API=3003' \
+            'APP_PORT_BACKEND=8810' \
+            'APP_PORT_API=8813' \
             'ADMIN_COOKIE_SECURE=0' \
             'LOGIN_RATE_MAX=200' \
-            'E2E_BASE=http://127.0.0.1:3100' >> .env
+            'E2E_BASE=http://127.0.0.1:8810' >> .env
 
       # Restore sanitized seed fixtures (admin/admin888 + menus/RBAC/site_settings).
       - name: Restore Mongo fixtures (Ubuntu)
@@ -226,7 +226,7 @@ jobs:
           deno run --env-file=.env -A backend/main.ts --dev &
           echo $! > /tmp/dweb-backend.pid
           for i in $(seq 1 90); do
-            curl -sf http://127.0.0.1:3100/api/health && exit 0
+            curl -sf http://127.0.0.1:8810/api/health && exit 0
             sleep 1
           done
           echo "backend failed to become healthy" >&2
@@ -237,9 +237,9 @@ jobs:
           deno run --env-file=.env -A api/main.ts --dev &
           echo $! > /tmp/dweb-api.pid
           for i in $(seq 1 90); do
-            if curl -sf http://127.0.0.1:3003/health \
-              || curl -sf http://127.0.0.1:3003/api/health \
-              || curl -sf -o /dev/null -w "%{http_code}" http://127.0.0.1:3003/ | grep -qE '^[0-9]{3}$'; then
+            if curl -sf http://127.0.0.1:8813/health \
+              || curl -sf http://127.0.0.1:8813/api/health \
+              || curl -sf -o /dev/null -w "%{http_code}" http://127.0.0.1:8813/ | grep -qE '^[0-9]{3}$'; then
               echo "api ready"
               exit 0
             fi
@@ -251,14 +251,14 @@ jobs:
       - name: Warm up backend pages (cold compile)
         run: |
           for path in /login / /chat; do
-            curl -sf -o /dev/null -w "%{http_code} %{url_effective}\n" "http://127.0.0.1:3100$path" || true
+            curl -sf -o /dev/null -w "%{http_code} %{url_effective}\n" "http://127.0.0.1:8810$path" || true
           done
           # Authenticated warm-up so first e2e paint is not a cold compile under Playwright.
-          CSRF=$(curl -sf -c /tmp/dweb-ci.ck -b /tmp/dweb-ci.ck http://127.0.0.1:3100/login -o /dev/null -D - | tr -d '\r' | awk -F'=|;' 'BEGIN{IGNORECASE=1} /set-cookie: _csrf=/{print $2; exit}')
+          CSRF=$(curl -sf -c /tmp/dweb-ci.ck -b /tmp/dweb-ci.ck http://127.0.0.1:8810/login -o /dev/null -D - | tr -d '\r' | awk -F'=|;' 'BEGIN{IGNORECASE=1} /set-cookie: _csrf=/{print $2; exit}')
           CSRF=${CSRF:-$(awk '$6=="_csrf"{print $7}' /tmp/dweb-ci.ck)}
-          curl -sf -c /tmp/dweb-ci.ck -b /tmp/dweb-ci.ck             -H "content-type: application/json" -H "x-csrf-token: ${CSRF}"             -d '{"username":"admin","password":"admin888"}'             http://127.0.0.1:3100/api/auth/login >/tmp/dweb-login.json || true
+          curl -sf -c /tmp/dweb-ci.ck -b /tmp/dweb-ci.ck             -H "content-type: application/json" -H "x-csrf-token: ${CSRF}"             -d '{"username":"admin","password":"admin888"}'             http://127.0.0.1:8810/api/auth/login >/tmp/dweb-login.json || true
           for path in / /chat /rbac/admins /user /developer/menus; do
-            curl -sf -o /dev/null -b /tmp/dweb-ci.ck -w "%{http_code} %{url_effective}\n" "http://127.0.0.1:3100$path" || true
+            curl -sf -o /dev/null -b /tmp/dweb-ci.ck -w "%{http_code} %{url_effective}\n" "http://127.0.0.1:8810$path" || true
           done
 
       - name: Test unit + integration (Deno)

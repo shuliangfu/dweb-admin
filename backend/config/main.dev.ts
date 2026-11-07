@@ -1,6 +1,7 @@
 /**
  * 开发环境配置
  * 只需写增量覆盖，框架会自动与 main.ts 深度合并
+ * marker: UPLOAD_HMR_IGNORE_20261107
  */
 export default {
   server: {
@@ -12,7 +13,7 @@ export default {
       },
       watch: {
         paths: ["./backend", "./common"],
-        ignore: ["node_modules", ".git", "dist"],
+        ignore: ["node_modules", ".git", "dist", "runtime", "uploads"],
       },
     },
   },

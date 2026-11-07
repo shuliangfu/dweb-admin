@@ -3,11 +3,18 @@
  * Vue fullpage/login.vue: left illustration (#363e54) + right form; lang/theme top-right.
  */
 import type { JSXRenderable } from "@dreamer/view";
-import { Card, MessageContainer, Stack, ToastContainer } from "@dreamer/ui-view";
+import { Card, Stack } from "@dreamer/ui-view";
+import {
+  MessageContainer as UiMessageContainer,
+  ToastContainer as UiToastContainer,
+} from "@dreamer/ui-view/feedback";
 import type { Locale } from "@common/i18n/mod.ts";
 import { createT } from "@common/i18n/mod.ts";
 import { LangMenu } from "@backend/components/LangMenu.tsx";
 import { ThemeMenu } from "@backend/components/ThemeMenu.tsx";
+
+const ToastContainer = UiToastContainer;
+const MessageContainer = UiMessageContainer;
 
 export function AuthShell(props: {
   locale: Locale;

@@ -1,7 +1,7 @@
 /// <reference lib="dom" />
 /** Compare the list-page toolbar button group of an old checkout (OLD base) against the current tree (NEW base). */
 import { chromium } from "playwright";
-const OLD = Deno.env.get("OLD") ?? "http://localhost:3101", NEW = Deno.env.get("NEW") ?? "http://localhost:3100";
+const OLD = Deno.env.get("OLD") ?? "http://localhost:8811", NEW = Deno.env.get("NEW") ?? "http://localhost:8810";
 const PATH = Deno.env.get("P") ?? "/rbac/admins";
 async function shot(base: string, dark: boolean): Promise<Uint8Array> {
   const browser = await chromium.launch();

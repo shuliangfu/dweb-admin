@@ -36,7 +36,6 @@ const PUBLIC_PREFIX = ["/assets/", "/_client", "/__hmr", "/api/i18n/", "/api/aut
 
 /** Own-account endpoints: any logged-in user (password, 2FA, passkeys). */
 const AUTH_ONLY_PREFIX = [
-  "/api/chat/",
   "/api/account/",
   // Generic resource API: any logged-in user passes the guard; each handler then checks the
   // resource grant itself (backend/api-res.ts).
@@ -53,7 +52,6 @@ const AUTH_ONLY_EXACT = new Set([
   "/",
   "/workspace",
   "/lock",
-  "/chat",
   "/api/auth/logout",
   "/api/auth/me",
   "/api/auth/unlock",
@@ -225,3 +223,49 @@ export async function canAccessStrict(
   const grants = resolveGrants(await loadGraph(), roleCodes);
   return grants.isSuper || ruleAllows(grants.rules, method, pathname);
 }
+
+/**
+ * Expand roleCodes through the item graph into visited permission names.
+ * Super roles: isSuper=true (hasPermission always true); list also includes every
+ * permission currently in the graph for UI convenience.
+ */
+export function listPermissionsFromGraph(
+  graph: Graph,
+  roleCodes: string[],
+): { permissions: string[]; isSuper: boolean } {
+  const visited = new Set<string>();
+  const permissions = new Set<string>();
+  let isSuper = false;
+  const stack = roleCodes.filter((n) => graph.items[n]);
+  while (stack.length) {
+    const name = stack.pop()!;
+    if (visited.has(name)) continue;
+    visited.add(name);
+    const meta = graph.items[name];
+    if (!meta) continue;
+    if (meta.type === "role" && meta.isSuper) isSuper = true;
+    if (meta.type === "permission") permissions.add(name);
+    for (const c of graph.children[name] ?? []) {
+      if (c.type === "route") continue;
+      if (graph.items[c.child]) stack.push(c.child);
+    }
+  }
+  if (isSuper) {
+    for (const [name, meta] of Object.entries(graph.items)) {
+      if (meta.type === "permission") permissions.add(name);
+    }
+  }
+  return { permissions: [...permissions].sort(), isSuper };
+}
+
+/** Permission names granted to `roleCodes` (graph expand; super → all known). */
+export async function listPermissions(roleCodes: string[]): Promise<string[]> {
+  return listPermissionsFromGraph(await loadGraph(), roleCodes).permissions;
+}
+
+/** True when any role is super, or `name` is among expanded permissions. */
+export async function hasPermission(roleCodes: string[], name: string): Promise<boolean> {
+  const { permissions, isSuper } = listPermissionsFromGraph(await loadGraph(), roleCodes);
+  return isSuper || permissions.includes(name);
+}
+

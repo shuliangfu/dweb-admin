@@ -537,6 +537,11 @@ button[data-variant="primary"]:hover:not(:disabled) {
   height: var(--adm-menu-sub-h, 30px);
   box-sizing: border-box;
 }
+/* Top-level icons: was sm (1.25rem/20px); now xs via SideMenu + belt CSS (1rem/16px). */
+.adm-menu .adm-top-item .adm-menu-icon {
+  width: 1rem;
+  height: 1rem;
+}
 /* Submenu stars: sm is 20px; shrink by about one third (14px). */
 .adm-menu .adm-sub-item .adm-menu-icon {
   width: 0.875rem;

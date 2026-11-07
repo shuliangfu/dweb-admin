@@ -60,7 +60,8 @@ export async function getCurrentUser(request: Request): Promise<AuthUser | null>
   if (!user || user.status !== "active") return null;
   const roleCodes = user.roleCodes ?? [];
   return {
-    id: user._id!,
+    // Mongo adapter may yield ObjectId-like _id; normalize for === / JSON / upload owner
+    id: String(user._id ?? ""),
     username: user.username,
     nickname: user.nickname || user.username,
     roleCodes,
@@ -84,7 +85,7 @@ export async function adminFromToken(raw: string): Promise<AuthUser | null> {
   if (!user || user.status !== "active") return null;
   const roleCodes = user.roleCodes ?? [];
   return {
-    id: user._id!,
+    id: String(user._id ?? ""),
     username: user.username,
     nickname: user.nickname || user.username,
     roleCodes,
@@ -123,7 +124,7 @@ export type LoginResult =
 
 function toAuthUser(doc: AdminUserDocument, isSuper: boolean): AuthUser {
   return {
-    id: doc._id!,
+    id: String(doc._id ?? ""),
     username: doc.username,
     nickname: doc.nickname || doc.username,
     roleCodes: doc.roleCodes ?? [],

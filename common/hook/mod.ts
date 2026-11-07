@@ -1,6 +1,4 @@
 /**
  * common/hook
- * 各应用共享的 hook 层，按需在此添加并导出。
  */
-
-export {};
+export { can, canAny, mePerms, setMePermissions, type MePermissions } from "./can.ts";
