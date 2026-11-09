@@ -226,7 +226,14 @@ Deno.test("resolveResourceCaps: only-view panel keeps export, drops mutators via
 
 
 // ---- DataPanel ActionCtrl (call-site overrides) ---------------------------
-import { resolveActionCtrl } from "../../../ui-view/src/desktop/data-display/data-panel-types.ts";
+// Import from published @dreamer/ui-view — CI has no sibling ../ui-view checkout.
+import {
+  assertRowActionsConfig,
+  assertToolbarConfig,
+  isRowBuiltin,
+  isToolbarBuiltin,
+  resolveActionCtrl,
+} from "@dreamer/ui-view";
 
 Deno.test("resolveActionCtrl: undefined → fallback; false hides; disable defaults false", () => {
   assertEquals(resolveActionCtrl(undefined, true), { show: true, disable: false });
@@ -237,13 +244,6 @@ Deno.test("resolveActionCtrl: undefined → fallback; false hides; disable defau
   assertEquals(o.show, true);
   assertEquals(o.disable, true);
 });
-
-import {
-  assertRowActionsConfig,
-  assertToolbarConfig,
-  isRowBuiltin,
-  isToolbarBuiltin,
-} from "../../../ui-view/src/desktop/data-display/data-panel-types.ts";
 
 Deno.test("assertToolbarConfig / assertRowActionsConfig: custom requires action", () => {
   assertToolbarConfig({ create: true, search: false });

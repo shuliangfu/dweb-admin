@@ -38,8 +38,11 @@ describe("totp setup (browser)", () => {
       const page = await ctx.newPage();
       await page.goto(BASE + "/");
       await page.waitForSelector("[data-testid=user-menu]");
+      // SSR paints the trigger before Dropdown click handlers hydrate (same as list-pages/theme-chrome).
+      await page.waitForTimeout(500);
       await page.click("[data-testid=user-menu]");
-      await page.waitForSelector("[data-testid=open-security]");
+      await page.waitForSelector("[data-testid=user-options]", { state: "visible", timeout: 10000 });
+      await page.waitForSelector("[data-testid=open-security]", { state: "visible" });
       await page.click("[data-testid=open-security]");
       await page.waitForSelector("[data-testid=sec-password]");
       await page.click("[data-testid=sec-tab-totp]");
