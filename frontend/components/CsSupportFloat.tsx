@@ -25,7 +25,7 @@ export function CsSupportFloat() {
               data-testid="cs-support-fab"
               aria-label="打开在线客服"
               title="在线客服"
-              class="fixed bottom-5 right-5 z-[1200] flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/30 transition hover:scale-105 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 dark:shadow-indigo-900/40"
+              class="fixed bottom-9 right-9 z-[1200] flex h-14 w-14 items-center justify-center rounded-[18px] bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] text-white shadow-[0_16px_30px_rgba(79,70,229,0.4)] transition hover:scale-105 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2"
               onClick={() => openCsSupport()}
             >
               <svg

@@ -26,11 +26,11 @@ export default function App({
         <meta name="description" content={description} />
         <meta name="theme-color" content="#4f46e5" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
         <title>{title}</title>
       </head>
-      <body class="m-0 bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+      <body class="m-0 bg-[#f4f0ea] text-[#12101a] antialiased dark:bg-slate-950 dark:text-slate-100">
         <div id="app">{children}</div>
       </body>
     </html>

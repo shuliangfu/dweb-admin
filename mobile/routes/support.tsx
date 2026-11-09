@@ -8,8 +8,9 @@ import { WebChat } from "@common/components/WebChat.tsx";
 export default function SupportPage() {
   return (
     <div
-      class="flex h-full max-h-full min-h-0 w-full flex-1 flex-col overflow-hidden bg-[#f8fafc] dark:bg-slate-900"
+      class="flex h-full max-h-full min-h-0 w-full flex-1 flex-col overflow-hidden bg-[#f4f0ea] pb-[76px] dark:bg-slate-900"
       data-testid="mobile-support-shell"
+      style="padding-top: env(safe-area-inset-top)"
     >
       <WebChat
         mode="guest"

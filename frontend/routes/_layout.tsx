@@ -1,5 +1,5 @@
 /**
- * Frontend product shell — header / nav / footer + keep-alive CS float
+ * Frontend product shell — full-bleed header / footer + keep-alive CS float
  * marker: FE_LAYOUT_CS_FLOAT_20261107
  */
 
@@ -7,35 +7,65 @@ import type { VNode } from "@dreamer/view";
 import { CsSupportFloat } from "@frontend/components/CsSupportFloat.tsx";
 import { openCsSupport } from "@frontend/components/cs-support-open.ts";
 
-interface LayoutProps {
-  children?: VNode | VNode[];
+interface LayoutData {
+  pathname?: string;
 }
 
-export default function Layout({ children }: LayoutProps) {
+interface LayoutProps {
+  children?: VNode | VNode[];
+  data?: LayoutData;
+}
+
+export function load(ctx: { pathname?: string }) {
+  return { pathname: ctx.pathname || "/" };
+}
+
+export default function Layout({ children, data }: LayoutProps) {
+  const pathname = data?.pathname || "/";
+  const isHome = pathname === "/" || pathname === "";
+  const isAbout = pathname === "/about" || pathname.startsWith("/about/");
+  const isSupport = pathname === "/support" || pathname.startsWith("/support/");
+
+  const headerClass = isHome
+    ? "sticky top-0 z-50 border-b border-transparent bg-[#0d1020] text-white"
+    : isSupport
+    ? "sticky top-0 z-50 border-b border-transparent bg-transparent text-[#12101a]"
+    : "sticky top-0 z-50 border-b border-[#e8e2d8] bg-[rgba(255,252,248,0.86)] text-[#12101a] backdrop-blur";
+
+  const linkIdle = isHome
+    ? "rounded-full px-3.5 py-2 text-sm text-[#e8e4f5] transition-colors hover:bg-white/10"
+    : "rounded-full px-3.5 py-2 text-sm text-[#5c5665] transition-colors hover:bg-[#efeaf7] hover:text-[#3d36d9]";
+
+  const linkActive =
+    "rounded-full bg-[#efeaf7] px-3.5 py-2 text-sm font-semibold text-[#3d36d9]";
+
+  const csClass = isHome
+    ? "rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#3d36d9] shadow-sm transition hover:bg-[#f4f0ea]"
+    : "rounded-full bg-[#4f46e5] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#4338ca]";
+
   return (
-    <div class="min-h-screen flex flex-col bg-[#f8fafc] text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-      <header class="sticky top-0 z-50 border-b border-[#e2e8f0] bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-900/90">
-        <div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <div class="flex min-h-screen flex-col bg-[#f4f0ea] text-[#12101a] dark:bg-slate-950 dark:text-slate-100">
+      <header class={headerClass}>
+        <div class="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between px-6 sm:px-10 lg:px-16">
           <a
             href="/"
-            class="text-lg font-semibold tracking-tight text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+            class={`flex items-center gap-2.5 text-lg font-bold tracking-tight ${
+              isHome ? "text-white" : "text-[#12101a] dark:text-slate-50"
+            }`}
           >
+            <span class="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-[13px] font-extrabold text-white">
+              D
+            </span>
             Dweb Admin
           </a>
-          <ul class="flex items-center gap-1 list-none m-0 p-0 sm:gap-2">
+          <ul class="m-0 flex list-none items-center gap-1 p-0 sm:gap-2">
             <li>
-              <a
-                href="/"
-                class="rounded-lg px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-100 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800"
-              >
+              <a href="/" class={linkIdle}>
                 首页
               </a>
             </li>
             <li>
-              <a
-                href="/about"
-                class="rounded-lg px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-100 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800"
-              >
+              <a href="/about" class={isAbout ? linkActive : linkIdle}>
                 关于
               </a>
             </li>
@@ -43,7 +73,7 @@ export default function Layout({ children }: LayoutProps) {
               <button
                 type="button"
                 data-testid="nav-contact-cs"
-                class="rounded-lg px-3 py-2 text-sm font-medium text-indigo-600 transition-colors hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950/40"
+                class={csClass}
                 onClick={() => openCsSupport()}
               >
                 在线客服
@@ -53,18 +83,12 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </header>
 
-      <main class="flex-1">
-        <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-          {children}
-        </div>
-      </main>
+      <main class="flex-1">{children}</main>
 
-      <footer class="border-t border-[#e2e8f0] bg-white py-8 dark:border-slate-800 dark:bg-slate-900">
-        <div class="mx-auto max-w-6xl px-4 text-center sm:px-6 lg:px-8">
-          <p class="text-sm text-slate-500 dark:text-slate-400">
-            © 2026 Dweb Admin · 基于 @dreamer/dweb 构建
-          </p>
-        </div>
+      <footer class="border-t border-[#e8e2d8] bg-[#fffcf8] py-9 dark:border-slate-800 dark:bg-slate-900">
+        <p class="m-0 px-6 text-center text-[13px] text-[#8a8490] dark:text-slate-400">
+          © 2026 Dweb Admin · 基于 @dreamer/dweb 构建
+        </p>
       </footer>
 
       {/* Keep-alive float: sole FE WebChat host */}

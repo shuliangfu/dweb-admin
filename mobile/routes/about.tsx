@@ -16,43 +16,55 @@ const rows = [
 
 export default function About() {
   return (
-    <div class="space-y-4">
-      <section class="overflow-hidden rounded-2xl border border-[#e2e8f0] bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <div class="border-b border-slate-100 px-4 py-4 dark:border-slate-800">
-          <p class="m-0 text-base font-semibold text-slate-900 dark:text-slate-50">
-            关于
-          </p>
-          <p class="m-0 mt-1 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
-            dweb-admin：Deno 后台管理模板。本端用原生 App 信息架构介绍产品，并用整页客服承接咨询；管理与接待在后台完成。
-          </p>
+    <div>
+      <section
+        class="relative overflow-hidden rounded-b-[28px] bg-gradient-to-br from-[#151327] to-[#4f46e5] px-5 pb-7 text-white"
+        style="padding-top: calc(env(safe-area-inset-top) + 12px)"
+      >
+        <div class="mb-3 mt-2 grid h-14 w-14 place-items-center rounded-[18px] bg-white/15 text-[22px] font-extrabold">
+          D
         </div>
-        <ul class="m-0 list-none divide-y divide-slate-100 p-0 dark:divide-slate-800">
-          {rows.map((row) => (
-            <li class="flex min-h-12 items-center justify-between gap-3 px-4 py-3 text-sm">
-              <span class="shrink-0 text-slate-500">{row.label}</span>
-              <span class="text-right font-medium text-slate-800 dark:text-slate-100">
-                {row.value}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section class="rounded-2xl border border-[#e2e8f0] bg-white px-4 py-3.5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <h3 class="m-0 text-sm font-semibold text-slate-800 dark:text-slate-100">
-          和 Web 前台的区别
-        </h3>
-        <p class="m-0 mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-          Web 前台可偏门户介绍；本 App 保持顶栏＋底 Tab、分区卡／列表，客服是满屏聊天页，首页无常驻浮标。
+        <h1 class="m-0 text-[26px] font-bold tracking-tight">关于</h1>
+        <p class="m-0 mt-2 text-[13px] leading-[1.6] text-[#ddd6fe]">
+          dweb-admin：Deno 后台管理模板。本端用原生 App
+          信息架构介绍产品，并用整页客服承接咨询；管理与接待在后台完成。
         </p>
       </section>
 
-      <a
-        href="/support"
-        class="flex min-h-12 items-center justify-center rounded-[10px] bg-indigo-600 px-4 text-[15px] font-semibold text-white shadow-sm active:bg-indigo-700"
-      >
-        打开在线客服
-      </a>
+      <div class="flex flex-col gap-3.5 px-4 pt-4">
+        <section class="rounded-[20px] border border-[#e8e2d8] bg-[#fffcf8] px-4 dark:border-slate-700 dark:bg-slate-900">
+          <ul class="m-0 list-none p-0">
+            {rows.map((row, i) => (
+              <li
+                class={`flex items-center justify-between gap-3 py-3 text-[13px] ${
+                  i === 0 ? "" : "border-t border-[#f0ebe3] dark:border-slate-800"
+                }`}
+              >
+                <span class="shrink-0 text-[#8a8490]">{row.label}</span>
+                <span class="text-right font-semibold text-[#12101a] dark:text-slate-100">
+                  {row.value}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section class="rounded-[20px] border border-[#e8e2d8] bg-[#fffcf8] p-4 dark:border-slate-700 dark:bg-slate-900">
+          <h3 class="m-0 text-[13px] font-bold text-[#3f3a45] dark:text-slate-200">
+            和 Web 前台的区别
+          </h3>
+          <p class="m-0 mt-2 text-[13px] leading-[1.7] text-[#5c5665] dark:text-slate-300">
+            Web 前台可偏门户介绍；本 App 保持顶栏＋底 Tab、分区卡／列表，客服是满屏聊天页，首页无常驻浮标。
+          </p>
+        </section>
+
+        <a
+          href="/support"
+          class="flex h-12 items-center justify-center rounded-[14px] bg-[#4f46e5] text-[15px] font-bold text-white no-underline active:bg-[#4338ca]"
+        >
+          打开在线客服
+        </a>
+      </div>
     </div>
   );
 }

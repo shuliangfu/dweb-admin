@@ -1,5 +1,5 @@
 /**
- * Mobile native-app shell — top bar + bottom tabs (no marketing footer)
+ * Mobile native-app shell — immersive pages + floating inset bottom tabs
  */
 
 import type { VNode } from "@dreamer/view";
@@ -19,20 +19,10 @@ export function load(ctx: { pathname?: string }) {
 
 function tabClass(active: boolean): string {
   return [
-    "flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 px-1 text-[11px] font-medium transition-colors",
-    active
-      ? "text-indigo-600 dark:text-indigo-400"
-      : "text-slate-500 dark:text-slate-400",
+    "flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 px-1 text-[10px] font-semibold transition-colors",
+    active ? "text-[#4f46e5]" : "text-[#8a8490]",
   ].join(" ");
 }
-
-function titleFor(path: string): string {
-  if (path === "/about") return "关于";
-  if (path === "/support" || path.startsWith("/support")) return "在线客服";
-  if (path.startsWith("/user")) return "用户";
-  return "首页";
-}
-
 
 function IconHome({ active }: { active: boolean }) {
   return (
@@ -99,23 +89,7 @@ export default function Layout({ children, data }: LayoutProps) {
   const supportActive = isSupport;
 
   return (
-    <div class="flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden bg-[#f8fafc] text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-      {!isSupport
-        ? (
-          <header
-            class="z-40 shrink-0 border-b border-[#e2e8f0] bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95"
-            style="padding-top: env(safe-area-inset-top)"
-          >
-            <div class="mx-auto flex h-11 max-w-lg items-center justify-between px-4">
-              <h1 class="truncate text-[17px] font-semibold tracking-tight text-slate-900 dark:text-slate-50">
-                {titleFor(pathname)}
-              </h1>
-              <span class="text-[11px] font-medium text-slate-400">Dweb</span>
-            </div>
-          </header>
-        )
-        : null}
-
+    <div class="relative flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden bg-[#f4f0ea] text-[#12101a] dark:bg-slate-950 dark:text-slate-100">
       <main
         class={`flex min-h-0 flex-1 flex-col ${
           isSupport ? "overflow-hidden" : "overflow-y-auto"
@@ -124,26 +98,34 @@ export default function Layout({ children, data }: LayoutProps) {
         {isSupport
           ? children
           : (
-            <div class="mx-auto w-full max-w-lg flex-1 px-4 py-4">
+            <div class="mx-auto w-full max-w-lg flex-1 pb-24">
               {children}
             </div>
           )}
       </main>
 
       <nav
-        class="z-40 shrink-0 border-t border-[#e2e8f0] bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95"
+        class="absolute bottom-3 left-3 right-3 z-40 flex h-16 items-stretch rounded-[22px] border border-[#e8e2d8] bg-[rgba(255,252,248,0.94)] shadow-[0_10px_30px_rgba(18,16,26,0.1)] backdrop-blur dark:border-slate-700 dark:bg-slate-900/95"
         style="padding-bottom: env(safe-area-inset-bottom)"
         aria-label="底部导航"
       >
-        <ul class="mx-auto flex max-w-lg list-none items-stretch m-0 p-0">
+        <ul class="m-0 flex w-full list-none items-stretch p-0">
           <li class="flex flex-1">
-            <a href="/" class={tabClass(homeActive)} aria-current={homeActive ? "page" : undefined}>
+            <a
+              href="/"
+              class={tabClass(homeActive)}
+              aria-current={homeActive ? "page" : undefined}
+            >
               <IconHome active={homeActive} />
               <span>首页</span>
             </a>
           </li>
           <li class="flex flex-1">
-            <a href="/about" class={tabClass(aboutActive)} aria-current={aboutActive ? "page" : undefined}>
+            <a
+              href="/about"
+              class={tabClass(aboutActive)}
+              aria-current={aboutActive ? "page" : undefined}
+            >
               <IconInfo active={aboutActive} />
               <span>关于</span>
             </a>
