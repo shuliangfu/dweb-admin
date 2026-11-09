@@ -13,25 +13,27 @@ import {
   type DataPanelProps as UiDataPanelProps,
   type DataPanelQuery,
   type DataPanelRow,
+  type DataPanelRowActionsConfig,
   type DataPanelSearchField,
+  type DataPanelToolbarConfig,
   type DataPanelWriteResult,
 } from "@dreamer/ui-view";
 import type { Locale } from "@common/i18n/mod.ts";
 import { api } from "@common/utils/client-api.ts";
 import type { ListQuery, ResourceMeta, Row } from "@common/resources/types.ts";
 import type { PanelInitial as ResPanelInitial } from "@common/resources/mod.ts";
+import { CHROME_CAPS } from "@common/resources/chrome-caps.ts";
 
 export type PanelInitial = ResPanelInitial;
 
 export interface DataPanelProps {
   initial: PanelInitial;
   locale: Locale;
-  onCreate?: () => void;
-  onEdit?: (row: Row) => void;
-  onView?: (row: Row) => void;
+  /** Call-site toolbar overrides; show = caller ?? meta.caps / chrome. */
+  toolbar?: DataPanelToolbarConfig;
+  /** Call-site row action overrides (same level as toolbar). */
+  rowActions?: DataPanelRowActionsConfig;
   renderCell?: Record<string, (row: Row) => unknown>;
-  rowExtra?: (row: Row) => unknown;
-  toolbarExtra?: unknown;
   onChanged?: () => void;
   selectable?: boolean;
   onImportRows?: (rows: Record<string, string>[]) => void;
@@ -246,7 +248,7 @@ function makeDataSource(
         },
       }
       : {}),
-    ...(meta.caps.import || props.onImportRows
+    ...(meta.caps.import
       ? {
         async importRows(rows: Record<string, string>[]) {
           if (props.onImportRows) {
@@ -323,33 +325,26 @@ export function DataPanel(props: DataPanelProps) {
       defaultSort={meta.defaultSort}
       fixed={meta.fixed}
       caps={{
-        create: meta.caps.create || !!props.onCreate,
-        update: meta.caps.update || !!props.onEdit,
-        view: meta.caps.view || !!props.onView,
+        // Auth caps baseline (SSR resolveResourceCaps). Call-site toolbar/rowActions override via show = caller ?? caps.
+        create: meta.caps.create,
+        update: meta.caps.update,
+        view: meta.caps.view,
         remove: meta.caps.remove,
         batchStatus: meta.caps.batchStatus,
-        import: meta.caps.import || !!props.onImportRows,
+        import: meta.caps.import,
         export: meta.caps.export,
-        print: true,
-        columns: true,
-        density: true,
-        fullscreen: true,
-        copy: true,
+        // Chrome caps — NOT auth (always on for viewers unless toolbar.* overrides).
+        ...CHROME_CAPS,
       }}
+      toolbar={props.toolbar}
+      rowActions={props.rowActions}
       locale={locale}
       syncUrl
       class="adm-data-panel adm-panel-card"
       selectable={props.selectable}
-      onCreate={props.onCreate}
-      onEdit={props.onEdit as ((row: DataPanelRow) => void) | undefined}
-      onView={props.onView as ((row: DataPanelRow) => void) | undefined}
       renderCell={props.renderCell as
         | Record<string, (row: DataPanelRow) => unknown>
         | undefined}
-      rowExtra={props.rowExtra as
-        | ((row: DataPanelRow) => unknown)
-        | undefined}
-      toolbarExtra={props.toolbarExtra}
       onChanged={props.onChanged}
       onImportRows={props.onImportRows}
       onExport={onExport}

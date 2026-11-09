@@ -12,6 +12,8 @@ import {
 } from "./system.ts";
 import { stubResources } from "./stubs.ts";
 import { type ListResult, type ResourceDef, type ResourceMeta, pick, type ListQuery } from "./types.ts";
+import { resolveResourceCaps, staticAuthCaps } from "./caps.ts";
+export { resolveResourceCaps, staticAuthCaps, CHROME_CAPS, trimCapsForWrite } from "./caps.ts";
 
 const defs: ResourceDef[] = [
   adminsResource,
@@ -61,15 +63,7 @@ export function resourceMeta(
       placeholder: f.placeholder ? pick(f.placeholder, locale) : undefined,
       options: dyn[f.name] ?? f.options?.map((o) => ({ value: o.value, label: pick(o.label, locale) })),
     })),
-    caps: {
-      create: !!def.create,
-      update: !!def.update,
-      view: def.view !== false,
-      remove: !!def.remove,
-      batchStatus: !!(def.setField && def.statusField),
-      import: !!def.importRows,
-      export: true,
-    },
+    caps: staticAuthCaps(def),
     statusField: def.statusField,
     statusValues: def.statusValues?.map((o) => ({ value: o.value, label: pick(o.label, locale) })),
     defaultSort: def.defaultSort,
@@ -90,7 +84,7 @@ export async function loadPanel(
   key: string,
   req: Request,
   locale: Locale,
-  user: { id: string; username: string },
+  user: { id: string; username: string; roleCodes?: string[]; isSuper?: boolean },
 ): Promise<PanelInitial> {
   const def = getResource(key);
   if (!def) throw new Error(`Unknown resource: ${key}`);
@@ -103,5 +97,11 @@ export async function loadPanel(
     console.error(`[res:${key}] list failed`, e);
   }
   const dyn = def.dynamicOptions ? await def.dynamicOptions(ctx).catch(() => ({})) : {};
-  return { meta: resourceMeta(def, locale, dyn), query, rows: r.rows, total: r.total, totals: r.totals };
+  const meta = resourceMeta(def, locale, dyn);
+  // me → resolveResourceCaps → meta.caps → DataPanel buttons (auth only; chrome separate)
+  meta.caps = await resolveResourceCaps(
+    { roleCodes: user.roleCodes ?? [], isSuper: !!user.isSuper },
+    def,
+  );
+  return { meta, query, rows: r.rows, total: r.total, totals: r.totals };
 }

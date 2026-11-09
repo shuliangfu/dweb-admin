@@ -9,6 +9,7 @@ import { Can } from "@common/components/Can.tsx";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { api, toastResult } from "@backend/components/crud-kit.tsx";
 import { DataPanel, type PanelInitial, refreshPanel } from "@common/components/DataPanel.tsx";
+import { resourcePanelActions } from "@common/hook/panel-actions.ts";
 
 const target = createSignal<string[]>([]);
 const managedNow = createSignal<string[]>([]);
@@ -23,6 +24,8 @@ export function RoutesAdmin(props: { locale: Locale; initial: PanelInitial; mana
   const data = [...props.managed, ...props.available]
     .sort((a, b) => a.split(" ")[1].localeCompare(b.split(" ")[1]) || a.localeCompare(b))
     .map((k) => ({ key: k, title: k }));
+
+  const panelActions = resourcePanelActions(props.initial.meta.key);
 
   async function save() {
     if (busy.value) return;
@@ -64,7 +67,12 @@ export function RoutesAdmin(props: { locale: Locale; initial: PanelInitial; mana
           </Can>
         </div>
       </Card>
-      <DataPanel initial={props.initial} locale={props.locale} />
+      <DataPanel
+        initial={props.initial}
+        locale={props.locale}
+        toolbar={panelActions.toolbar}
+        rowActions={panelActions.rowActions}
+      />
     </div>
   );
 }

@@ -201,6 +201,7 @@ const menuSchema = {
   parentKey: string().optional().max(64),
   title: object({ "zh-CN": string().optional().max(64), "en-US": string().optional().max(64) }),
   path: string().optional().max(200),
+  permission: string().optional().max(64),
   icon: string().optional().max(32),
   sort: number().optional(),
   status: string().optional(),
@@ -215,6 +216,7 @@ export async function listAllMenus() {
       parentKey: m.parentKey ?? "",
       title: m.title ?? {},
       path: m.path ?? "",
+      permission: m.permission ?? "",
       icon: m.icon ?? "menu",
       sort: m.sort ?? 0,
       status: m.status,
@@ -249,6 +251,7 @@ export async function createMenu(body: unknown): Promise<Ok | Fail> {
     parentKey,
     title: { "zh-CN": "", "en-US": "", ...(d.title as object) },
     path: (d.path as string) ?? "",
+    permission: String(d.permission ?? "").trim(),
     icon: (d.icon as string) || "menu",
     sort: (d.sort as number) ?? 100,
     status,
@@ -275,6 +278,7 @@ export async function updateMenu(key: string, body: unknown): Promise<Ok | Fail>
   }
   if (d.title) patch.title = { ...menu.title, ...(d.title as object) };
   for (const f of ["path", "icon", "sort"] as const) if (d[f] !== undefined) patch[f] = d[f];
+  if (d.permission !== undefined) patch.permission = String(d.permission ?? "").trim();
   if (d.status !== undefined) {
     if (!STATUS.includes(d.status as string)) return { ok: false, error: "invalid" };
     patch.status = d.status;

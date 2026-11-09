@@ -7,6 +7,8 @@
 import { createSignal } from "@dreamer/view";
 import { Button, Descriptions, FormItem, Input, Modal, Tag, Transfer } from "@dreamer/ui-view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
+import { can } from "@common/hook/can.ts";
+import { capGate } from "@common/hook/panel-actions.ts";
 import { api, toastResult } from "@backend/components/crud-kit.tsx";
 import { DataPanel, type PanelInitial, refreshPanel } from "@common/components/DataPanel.tsx";
 
@@ -234,9 +236,20 @@ export function ItemAdmin(props: { kind: "role" | "permission"; locale: Locale; 
     <DataPanel
       initial={props.initial}
       locale={props.locale}
-      onCreate={openCreate}
-      onEdit={(r) => void openDetail(r.id, "edit")}
-      onView={(r) => void openDetail(r.id, "view")}
+      toolbar={{
+        create: can("rbac.write") ? { action: openCreate } : false,
+        import: false,
+        export: capGate(can("rbac.view") || can("rbac.write")),
+      }}
+      rowActions={{
+        view: (can("rbac.view") || can("rbac.write"))
+          ? { action: (r) => void openDetail(r.id, "view") }
+          : false,
+        edit: can("rbac.write")
+          ? { action: (r) => void openDetail(r.id, "edit") }
+          : false,
+        remove: capGate(can("rbac.write")),
+      }}
     >
       <Modal
         open={open}

@@ -5,14 +5,17 @@
  * Core UI: shared @common/components/WebChat (messages / input / WS green「已连接」).
  */
 import type { LoadContext } from "@dreamer/dweb";
-import { getCurrentUser } from "@common/service/auth.ts";
 import { WebChat } from "@common/components/WebChat.tsx";
 import { ChatPageChrome } from "@backend/components/ChatPageChrome.tsx";
 import { PermissionsBootstrap } from "@common/components/PermissionsBootstrap.tsx";
 import { can, setMePermissions } from "@common/hook/can.ts";
-import { listPermissionsFromGraph, loadGraph } from "@common/service/rbac.ts";
 
 export async function load(ctx: LoadContext) {
+  // Server-only: dynamic import so strip-load drops these from the client chunk.
+  const { getCurrentUser } = await import("@common/service/auth.ts");
+  const { listPermissionsFromGraph, loadGraph } = await import(
+    "@common/service/rbac.ts"
+  );
   const user = await getCurrentUser(ctx.req);
   if (!user) {
     return ctx.res

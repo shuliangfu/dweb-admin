@@ -8,6 +8,14 @@ export function resLoad(key: string) {
   return async (ctx: LoadContext) => {
     const locale = resolveLocale(ctx.req);
     const user = await getCurrentUser(ctx.req);
-    return { locale, initial: await loadPanel(key, ctx.req, locale, { id: user?.id ?? "", username: user?.username ?? "" }) };
+    return {
+      locale,
+      initial: await loadPanel(key, ctx.req, locale, {
+        id: user?.id ?? "",
+        username: user?.username ?? "",
+        roleCodes: user?.roleCodes ?? [],
+        isSuper: !!user?.isSuper,
+      }),
+    };
   };
 }

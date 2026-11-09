@@ -5,7 +5,7 @@
  *  - Google 2FA (TOTP): QR + verify one code to enable; a valid code is required to disable
  */
 import { createEffect, createSignal } from "@dreamer/view";
-import { Button, FormItem, Input, Modal, Switch, Tabs, Tag, message } from "@dreamer/ui-view";
+import { Button, FormItem, Input, Modal, QRCode, Switch, Tabs, Tag, message } from "@dreamer/ui-view";
 import { createT, type Locale } from "@common/i18n/mod.ts";
 import { createCredentialJSON, passkeySupported } from "@common/utils/webauthn-client.ts";
 import { api, ConfirmDelete, toastResult } from "@backend/components/crud-kit.tsx";
@@ -30,7 +30,7 @@ const pkName = createSignal("");
 const pkEnabled = createSignal(false);
 const removing = createSignal("");
 // totp
-const setup = createSignal<{ secret: string; qrCode: string } | null>(null);
+const setup = createSignal<{ secret: string; otpauthUrl: string } | null>(null);
 const code = createSignal("");
 const codeError = createSignal(false);
 const busy = createSignal(false);
@@ -107,10 +107,10 @@ export function SecurityModal(props: { locale: Locale }) {
 
   async function startTotp() {
     busy.value = true;
-    const r = await api<{ secret: string; qrCode: string }>("POST", "/api/account/totp/setup");
+    const r = await api<{ secret: string; otpauthUrl: string }>("POST", "/api/account/totp/setup");
     busy.value = false;
     if (r.ok) {
-      setup.value = { secret: r.data.secret, qrCode: r.data.qrCode };
+      setup.value = { secret: r.data.secret, otpauthUrl: r.data.otpauthUrl };
       code.value = "";
       codeError.value = false;
     } else toastResult(r, "", net);
@@ -252,14 +252,9 @@ export function SecurityModal(props: { locale: Locale }) {
             <div class="grid gap-3">
               <p class="m-0 text-sm">{tr("security.totpScan")}</p>
               <div class="flex flex-wrap items-start gap-4">
-                <img
-                  src={s.qrCode}
-                  alt="TOTP QR"
-                  width={160}
-                  height={160}
-                  class="h-40 w-40 shrink-0 rounded bg-white p-1 object-contain"
-                  data-testid="totp-qr"
-                />
+                <div class="h-40 w-40 shrink-0 rounded bg-white p-1" data-testid="totp-qr">
+                  <QRCode value={s.otpauthUrl} size={152} class="block" aria-label="TOTP QR" />
+                </div>
                 <div class="min-w-0 flex-1">
                   <p class="m-0 mb-1 text-xs opacity-60">{tr("security.totpSecret")}</p>
                   <code class="break-all text-sm" data-testid="totp-secret">{s.secret}</code>

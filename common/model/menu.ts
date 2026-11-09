@@ -14,6 +14,11 @@ export interface MenuDocument {
   title: Record<string, string>;
   /** Page path; empty for a pure group node. */
   path: string;
+  /**
+   * Optional named permission (e.g. "admin.view").
+   * Sidebar: path still needs GET grant; when set, also requires hasPermission(name).
+   */
+  permission?: string;
   /** Icon name understood by the SideMenu component. */
   icon: string;
   sort: number;

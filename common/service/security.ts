@@ -88,17 +88,16 @@ export async function changePassword(
 
 // ---------------------------------------------------------------------- TOTP
 
-/** Start setup: returns a fresh secret + scannable QR (PNG data URL). Not active until a code is verified. */
+/** Start setup: returns secret + otpauthUrl (client renders <QRCode>). Not active until a code is verified. */
 export async function totpBegin(userId: string): Promise<Fail | Ok<{ secret: string; qrCode: string; otpauthUrl: string }>> {
   const user = await userById(userId);
   if (!user) return { ok: false, error: "notFound" };
   if (user.totpEnabled) return { ok: false, error: "totpAlready" };
   const r = totp.generateSecret(user.username);
-  // @dreamer/humancheck@1.1.0 ships a text placeholder SVG as qrCode — replace with a real matrix QR.
-  const QRCode = (await import("qrcode")).default;
-  const qrCode = await QRCode.toDataURL(r.otpauthUrl, { width: 200, margin: 1, errorCorrectionLevel: "M" });
+  // Real matrix QR is rendered client-side with @dreamer/ui-view <QRCode value={otpauthUrl} />.
+  // Keep returning humancheck fields for API compat (qrCode may be a placeholder SVG).
   await AdminUser.updateById(userId, { totpPendingSecret: r.secret });
-  return { ok: true, secret: r.secret, qrCode, otpauthUrl: r.otpauthUrl };
+  return { ok: true, secret: r.secret, qrCode: r.qrCode, otpauthUrl: r.otpauthUrl };
 }
 
 async function codeValid(secret: string, code: string): Promise<boolean> {

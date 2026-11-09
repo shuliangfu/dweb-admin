@@ -16,14 +16,14 @@ import {
   getAssertionJSON,
   passkeySupported,
 } from "@common/utils/webauthn-client.ts";
-import { loginFeatures } from "@common/service/security.ts";
-import {
-  peekChallenge,
-  readChallengeToken,
-} from "@common/service/challenge.ts";
 import { AuthShell } from "@backend/components/AuthShell.tsx";
 
 export async function load(ctx: LoadContext) {
+  // Server-only: dynamic import so strip-load drops these from the client chunk.
+  const { loginFeatures } = await import("@common/service/security.ts");
+  const { peekChallenge, readChallengeToken } = await import(
+    "@common/service/challenge.ts"
+  );
   const q = new URL(ctx.req.url).searchParams;
   const token = readChallengeToken(ctx.req);
   const hasPasskey = q.get("step") === "passkey" &&

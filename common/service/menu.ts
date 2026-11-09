@@ -4,7 +4,7 @@
  */
 import { Menu, type MenuDocument } from "@common/model/mod.ts";
 import { type Locale, pickLocalized } from "@common/i18n/mod.ts";
-import { canAccess } from "@common/service/rbac.ts";
+import { canAccess, hasPermission } from "@common/service/rbac.ts";
 
 export interface MenuNode {
   key: string;
@@ -35,8 +35,13 @@ export async function buildMenuTree(
     icon: m.icon,
     children: [],
   });
-  const visible = async (m: MenuDocument) =>
-    !m.path || await canAccess(roleCodes, "GET", m.path);
+  // path → GET route grant; optional permission → named hasPermission (AND).
+  const visible = async (m: MenuDocument) => {
+    if (m.path && !await canAccess(roleCodes, "GET", m.path)) return false;
+    if (m.permission && !await hasPermission(roleCodes, m.permission)) return false;
+    // Group nodes (no path): visible when any child remains after filter.
+    return true;
+  };
 
   const tops = rows.filter((m) => !m.parentKey);
   const tree: MenuNode[] = [];
