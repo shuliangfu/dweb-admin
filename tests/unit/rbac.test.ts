@@ -150,3 +150,125 @@ Deno.test("path classes: /chat and /api/chat are not AUTH_ONLY", () => {
   assert(!isAuthOnlyPath("/api/chat/sessions"));
   assert(!isAuthOnlyPath("/api/chat/claim"));
 });
+
+
+// ---- DataPanel auth caps (resolveResourceCaps / static) --------------------
+import {
+  resolveResourceCaps,
+  staticAuthCaps,
+  trimCapsForWrite,
+  CHROME_CAPS,
+} from "@common/resources/caps.ts";
+
+const fullDef = {
+  key: "user.index",
+  create: async () => ({ ok: true as const }),
+  update: async () => ({ ok: true as const }),
+  remove: async () => ({ removed: 0, failed: [] }),
+  setField: async () => ({ removed: 0, failed: [] }),
+  statusField: "status",
+  importRows: async () => ({ created: 0, failed: 0 }),
+};
+
+Deno.test("staticAuthCaps + chrome: auth vs non-auth split", () => {
+  const a = staticAuthCaps(fullDef);
+  assertEquals(a.create, true);
+  assertEquals(a.import, true);
+  assertEquals(a.export, true);
+  assertEquals(CHROME_CAPS.print, true);
+  assertEquals("print" in a, false);
+});
+
+Deno.test("trimCapsForWrite: no write → mutators off, view/export kept", () => {
+  const c = trimCapsForWrite(staticAuthCaps(fullDef), false, "user.index");
+  assertEquals(c.create, false);
+  assertEquals(c.update, false);
+  assertEquals(c.remove, false);
+  assertEquals(c.batchStatus, false);
+  assertEquals(c.import, false);
+  assertEquals(c.view, true);
+  assertEquals(c.export, true);
+});
+
+Deno.test("trimCapsForWrite: write → keep static; roles get synthetic create/update", () => {
+  const u = trimCapsForWrite(staticAuthCaps(fullDef), true, "user.index");
+  assertEquals(u.create, true);
+  assertEquals(u.remove, true);
+  const rolesDef = { key: "roles" as const };
+  const rolesStatic = staticAuthCaps(rolesDef);
+  assertEquals(rolesStatic.create, false);
+  const r = trimCapsForWrite(rolesStatic, true, "roles");
+  assertEquals(r.create, true);
+  assertEquals(r.update, true);
+  assertEquals(r.view, true);
+  const ro = trimCapsForWrite(rolesStatic, false, "roles");
+  assertEquals(ro.create, false);
+  assertEquals(ro.update, false);
+});
+
+Deno.test("resolveResourceCaps: super → write UI (incl. ItemAdmin synthetic)", async () => {
+  const c = await resolveResourceCaps({ roleCodes: [], isSuper: true }, { key: "roles" });
+  assertEquals(c.create, true);
+  assertEquals(c.update, true);
+  assertEquals(c.view, true);
+  assertEquals(c.export, true);
+});
+
+Deno.test("resolveResourceCaps: only-view panel keeps export, drops mutators via trim helper", () => {
+  // Pure mapping covered by trimCapsForWrite; resolveResourceCaps(non-super) needs live graph.
+  const viewOnly = trimCapsForWrite(staticAuthCaps(fullDef), false, "cms.article");
+  assertEquals(viewOnly.create, false);
+  assertEquals(viewOnly.import, false);
+  assertEquals(viewOnly.batchStatus, false);
+  assertEquals(viewOnly.view, true);
+  assertEquals(viewOnly.export, true);
+});
+
+
+// ---- DataPanel ActionCtrl (call-site overrides) ---------------------------
+import { resolveActionCtrl } from "../../../ui-view/src/desktop/data-display/data-panel-types.ts";
+
+Deno.test("resolveActionCtrl: undefined → fallback; false hides; disable defaults false", () => {
+  assertEquals(resolveActionCtrl(undefined, true), { show: true, disable: false });
+  assertEquals(resolveActionCtrl(undefined, false).show, false);
+  assertEquals(resolveActionCtrl(false, true).show, false);
+  assertEquals(resolveActionCtrl(true, false).show, true);
+  const o = resolveActionCtrl({ show: true, disable: true }, false);
+  assertEquals(o.show, true);
+  assertEquals(o.disable, true);
+});
+
+import {
+  assertRowActionsConfig,
+  assertToolbarConfig,
+  isRowBuiltin,
+  isToolbarBuiltin,
+} from "../../../ui-view/src/desktop/data-display/data-panel-types.ts";
+
+Deno.test("assertToolbarConfig / assertRowActionsConfig: custom requires action", () => {
+  assertToolbarConfig({ create: true, search: false });
+  assertRowActionsConfig({ view: false, edit: true });
+  let threw = false;
+  try {
+    assertToolbarConfig({ myBtn: true });
+  } catch (e) {
+    threw = true;
+    assertEquals(String(e).includes("myBtn"), true);
+    assertEquals(String(e).includes("action"), true);
+  }
+  assertEquals(threw, true);
+  threw = false;
+  try {
+    assertRowActionsConfig({ assign: { label: "A" } });
+  } catch (e) {
+    threw = true;
+    assertEquals(String(e).includes("assign"), true);
+  }
+  assertEquals(threw, true);
+  assertToolbarConfig({ myBtn: { label: "X", action: () => {} } });
+  assertRowActionsConfig({ assign: { label: "A", action: () => {} } });
+  assertEquals(isToolbarBuiltin("create"), true);
+  assertEquals(isToolbarBuiltin("myBtn"), false);
+  assertEquals(isRowBuiltin("view"), true);
+  assertEquals(isRowBuiltin("assign"), false);
+});

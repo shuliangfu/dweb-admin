@@ -67,7 +67,8 @@ Deno.test({ name: "auth: TOTP setup → enable → login needs code → wrong co
     const setup = await me.post("/api/account/totp/setup");
     assertEquals(setup.status, 200);
     assertMatch(setup.data.secret, /^[A-Z2-7]{16,}$/);
-    assertMatch(setup.data.qrCode, /^data:image\/png;base64,/);
+    assertMatch(setup.data.otpauthUrl, /^otpauth:\/\/totp\//);
+    assertMatch(setup.data.qrCode, /^data:image\//);
     assertEquals((await me.post("/api/account/totp/enable", { code: "123456" })).status >= 400, true);
     // Each TOTP step can be used once (anti-replay): enable = previous step, login = now, disable = next step.
     assertEquals((await me.post("/api/account/totp/enable", { code: await totpCode(setup.data.secret, Date.now() - 30000) })).status, 200);

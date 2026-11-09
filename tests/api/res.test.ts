@@ -1,6 +1,6 @@
 /** Generic resource API (/api/res): pagination, sort, search, export (real xlsx), batch, inline edit, validation, remove. */
 import { assert, assertEquals, assertNotEquals } from "@std/assert";
-import { type Api, adminApi, ensureServer } from "../helpers.ts";
+import { Api, adminApi, ensureServer, makeUser, removeUser } from "../helpers.ts";
 
 const OPTS = { sanitizeOps: false, sanitizeResources: false };
 const RES = "cms.article";
@@ -197,4 +197,25 @@ Deno.test({ name: "res: anonymous callers get 401 and nothing leaks", ...OPTS, f
   const anon = new Api();
   assertEquals((await anon.get(`/api/res?res=${RES}`)).status, 401);
   assertEquals((await anon.post("/api/res/create", { res: RES, title: "x", category: "y" })).status, 401);
+} });
+
+Deno.test({ name: "res: operator without write gets 403 on mutate (无权限)", ...OPTS, fn: async () => {
+  const admin = await adminApi();
+  const u = await makeUser(admin, ["operator"]);
+  try {
+    const a = new Api();
+    const login = await a.login(u.username, u.password);
+    assertEquals(login.status, 200, JSON.stringify(login.data));
+    // operator has cms.view routes but not cms.write → POST /api/res/cms.article forbidden
+    const create = await a.post("/api/res/create", { res: "cms.article", category: "x", title: "nope" });
+    assertEquals(create.status, 403, JSON.stringify(create.data));
+    assertEquals(create.data.error, "forbidden");
+    assert(String(create.data.message || "").length > 0, "localized 无权限 message expected");
+    const update = await a.post("/api/res/update", { res: "cms.article", id: "000000000000000000000000", title: "x" });
+    assertEquals(update.status, 403);
+    const remove = await a.post("/api/res/remove", { res: "cms.article", ids: ["000000000000000000000000"] });
+    assertEquals(remove.status, 403);
+  } finally {
+    await removeUser(admin, u);
+  }
 } });

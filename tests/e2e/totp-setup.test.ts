@@ -1,6 +1,6 @@
 /// <reference lib="dom" />
 /**
- * Security settings → TOTP: scannable QR (real PNG data URL) + plaintext secret.
+ * Security settings → TOTP: scannable QR (@dreamer/ui-view <QRCode>) + plaintext secret.
  * Framework: @dreamer/test. Browser helper pattern matches other e2e files.
  */
 import { describe, expect, it } from "@dreamer/test";
@@ -13,7 +13,7 @@ import {
 } from "../helpers.ts";
 
 describe("totp setup (browser)", () => {
-  it("security modal shows PNG QR and plaintext secret", async () => {
+  it("security modal shows ui-view QR and plaintext secret", async () => {
     await ensureServer();
     const admin = await adminApi();
     const u = await makeUser(admin, ["operator"]);
@@ -53,8 +53,9 @@ describe("totp setup (browser)", () => {
       await page.locator("[data-testid=totp-start] button").click();
       await page.waitForSelector("[data-testid=totp-qr]", { timeout: 8000 });
       await page.waitForSelector("[data-testid=totp-secret]");
-      const qrSrc = await page.getAttribute("[data-testid=totp-qr]", "src");
-      expect(qrSrc ?? "").toMatch(/^data:image\/png;base64,/);
+      // Client renders @dreamer/ui-view <QRCode> (svg[data-dreamer-qrcode]), not npm:qrcode <img>.
+      const qrSvg = await page.locator("[data-testid=totp-qr] [data-dreamer-qrcode]").count();
+      expect(qrSvg).toBeGreaterThan(0);
       const secret = (await page.locator("[data-testid=totp-secret]").innerText()).trim();
       expect(secret).toMatch(/^[A-Z2-7]{16,}$/);
       expect(await page.locator("[data-testid=totp-copy-secret]").count()).toBe(1);

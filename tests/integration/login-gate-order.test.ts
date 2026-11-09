@@ -35,7 +35,8 @@ describe("login gate order (integration)", () => {
       const setup = await me.post("/api/account/totp/setup");
       expect(setup.status).toBe(200);
       expect(String(setup.data.secret)).toMatch(/^[A-Z2-7]{16,}$/);
-      expect(String(setup.data.qrCode)).toMatch(/^data:image\/png;base64,/);
+      expect(String(setup.data.otpauthUrl)).toMatch(/^otpauth:\/\/totp\//);
+      expect(String(setup.data.qrCode)).toMatch(/^data:image\//);
       expect(
         (await me.post("/api/account/totp/enable", {
           code: await totpCode(setup.data.secret, Date.now() - 30000),

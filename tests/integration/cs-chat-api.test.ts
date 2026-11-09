@@ -18,12 +18,14 @@ describe("cs chat api (integration)", () => {
   it("guest can open a CS session on the api app", async () => {
     await ensureServer();
     const base = apiPublicBase();
+    // Contact gate requires phone OR email; reuse returns 200, fresh open 201.
+    const guestName = `ci-guest-${Date.now()}@example.com`;
     let res: Response;
     try {
       res = await fetch(`${base}/cs/open`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ guestName: "ci-guest" }),
+        body: JSON.stringify({ guestName }),
       });
     } catch (e) {
       // api may be down in pure-backend local runs — soft skip with clear signal
@@ -36,7 +38,7 @@ describe("cs chat api (integration)", () => {
       expect(true).toBe(true);
       return;
     }
-    expect(res.status).toBe(201);
+    expect([200, 201]).toContain(res.status);
     const data = await res.json() as {
       sessionId?: string;
       guestToken?: string;

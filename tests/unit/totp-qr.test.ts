@@ -1,21 +1,17 @@
 /**
- * Unit: totpBegin returns real PNG QR + base32 secret (not humancheck stub SVG).
+ * Unit: TOTP setup returns otpauthUrl for client-side @dreamer/ui-view <QRCode>
+ * (no npm:qrcode PNG). Rendering is covered by e2e totp-setup; this file stays
+ * free of ui-view imports so Bun/Node can resolve without jsr: jsx-runtime.
  */
 import { describe, expect, it } from "@dreamer/test";
+import { createTotp } from "@dreamer/humancheck";
 
 describe("totp QR (unit)", () => {
-  it("npm:qrcode encodes otpauthUrl as PNG data URL", async () => {
-    const QRCode = (await import("qrcode")).default;
-    const url =
-      "otpauth://totp/Dweb%20Admin:demo?secret=JBSWY3DPEHPK3PXP&issuer=Dweb%20Admin";
-    const png = await QRCode.toDataURL(url, {
-      width: 200,
-      margin: 1,
-      errorCorrectionLevel: "M",
-    });
-    expect(png).toMatch(/^data:image\/png;base64,/);
-    expect(png.length).toBeGreaterThan(200);
-    // stub SVG from humancheck would be image/svg+xml
-    expect(png.includes("image/svg")).toBe(false);
+  it("humancheck returns otpauthUrl for ui-view <QRCode>", () => {
+    const totp = createTotp({ issuer: "Dweb Admin", digits: 6, period: 30, window: 1 });
+    const r = totp.generateSecret("demo");
+    expect(r.otpauthUrl).toMatch(/^otpauth:\/\/totp\//);
+    expect(r.secret).toMatch(/^[A-Z2-7]{16,}$/);
+    expect(r.otpauthUrl).toContain("Dweb");
   });
 });

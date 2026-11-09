@@ -139,7 +139,10 @@ Deno.test({ name: "toolbar: add/search/refresh/print/export/columns form one con
         // exactly ONE faint 1px divider between neighbours: the left button's right border; the right button has no left
         // border and nothing adds a shadow/ring (the old bug drew a second, bright line)
         for (let i = 0; i < r.n; i++) {
-          assertEquals(r.dividers[i], "none", `${path}: button ${i} must not draw an extra shadow line`);
+          // ui-view Button + !shadow-none may compute as transparent 0px layers instead of literal "none".
+          const sh = String(r.dividers[i] ?? "");
+          const noVisibleShadow = sh === "none" || /^(\s*rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\s*\)\s+0px\s+0px\s+0px\s+0px\s*,?)+\s*$/.test(sh);
+          assert(noVisibleShadow, `${path}: button ${i} must not draw an extra shadow line (got ${sh})`);
           if (i < r.n - 1) assertEquals(r.borders[i].r, 1, `${path}: button ${i} right border is the 1px divider`);
           if (i > 0) assertEquals(r.borders[i].l, 0, `${path}: button ${i} has no left border (would double the divider)`);
         }
@@ -172,18 +175,21 @@ Deno.test({ name: "search form: toolbar button opens a Modal on every list + adm
     const page = await ctx.newPage();
     for (const path of pages) {
       await page.goto(BASE + path);
+      await page.waitForSelector("[data-testid=dp-table]");
       await page.waitForSelector("[data-testid=dp-search-toggle]");
+      await page.waitForTimeout(400); // hydrate before click (SSR toggle is inert)
       assertEquals(await page.locator("[data-testid=dp-search]").count(), 0, `${path}: no inline search form`);
       const before = await page.evaluate(() => document.querySelector("[data-testid=dp-table]")!.getBoundingClientRect().top);
-      await page.click("[data-testid=dp-search-toggle]");
-      await page.waitForSelector("[role=dialog] [data-testid=dp-search]");
-      assert(await page.locator("[role=dialog] [data-testid=dp-search-submit]").count() === 1, `${path}: submit button in the Modal`);
-      assert(await page.locator("[role=dialog] [data-testid=dp-search-reset]").count() === 1, `${path}: reset button in the Modal`);
+      await page.locator("[data-testid=dp-search-toggle]").click();
+      // Prefer aria-modal: chrome may keep a hidden role=dialog panel in the DOM.
+      await page.waitForSelector("[role=dialog][aria-modal=true] [data-testid=dp-search]", { timeout: 15000 });
+      assert(await page.locator("[role=dialog][aria-modal=true] [data-testid=dp-search-submit]").count() === 1, `${path}: submit button in the Modal`);
+      assert(await page.locator("[role=dialog][aria-modal=true] [data-testid=dp-search-reset]").count() === 1, `${path}: reset button in the Modal`);
       const after = await page.evaluate(() => document.querySelector("[data-testid=dp-table]")!.getBoundingClientRect().top);
       assertEquals(after, before, `${path}: opening the search Modal does not move the table`);
       if (path === "/user") await page.screenshot({ path: "runtime/theme/search-open.png" });
       await page.keyboard.press("Escape");
-      await page.waitForSelector("[data-testid=dp-search]", { state: "detached" });
+      await page.waitForSelector("[role=dialog][aria-modal=true] [data-testid=dp-search]", { state: "detached" });
     }
   } finally {
     await browser.close();
