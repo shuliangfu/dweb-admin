@@ -13,8 +13,8 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div class="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-      <header class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-900/90">
+    <div class="min-h-screen flex flex-col bg-[#f8fafc] text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      <header class="sticky top-0 z-50 border-b border-[#e2e8f0] bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-900/90">
         <div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <a
             href="/"
@@ -59,7 +59,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </main>
 
-      <footer class="border-t border-slate-200 bg-white py-8 dark:border-slate-800 dark:bg-slate-900">
+      <footer class="border-t border-[#e2e8f0] bg-white py-8 dark:border-slate-800 dark:bg-slate-900">
         <div class="mx-auto max-w-6xl px-4 text-center sm:px-6 lg:px-8">
           <p class="text-sm text-slate-500 dark:text-slate-400">
             © 2026 Dweb Admin · 基于 @dreamer/dweb 构建

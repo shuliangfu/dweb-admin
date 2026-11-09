@@ -14,7 +14,7 @@ export default function SupportPage() {
 
   return (
     <div class="mx-auto max-w-lg">
-      <div class="overflow-hidden rounded-2xl border border-indigo-100 bg-white shadow-sm dark:border-indigo-900/40 dark:bg-slate-900">
+      <div class="overflow-hidden rounded-[20px] border border-indigo-100 bg-white shadow-sm dark:border-indigo-900/40 dark:bg-slate-900">
         <div class="bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-500 px-6 py-8 text-white">
           <p class="m-0 text-xs font-semibold uppercase tracking-widest text-indigo-100">
             Support

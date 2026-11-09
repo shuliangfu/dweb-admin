@@ -33,6 +33,64 @@ function titleFor(path: string): string {
   return "首页";
 }
 
+
+function IconHome({ active }: { active: boolean }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class={`h-5 w-5 ${active ? "" : "opacity-90"}`}
+      aria-hidden="true"
+    >
+      <path d="M4 10.5 12 3.5l8 7" />
+      <path d="M6.5 9.5V20h11V9.5" />
+    </svg>
+  );
+}
+
+function IconInfo({ active }: { active: boolean }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class={`h-5 w-5 ${active ? "" : "opacity-90"}`}
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="8.25" />
+      <path d="M12 11v5" />
+      <path d="M12 8h.01" />
+    </svg>
+  );
+}
+
+function IconChat({ active }: { active: boolean }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class={`h-5 w-5 ${active ? "" : "opacity-90"}`}
+      aria-hidden="true"
+    >
+      <path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v7a2.5 2.5 0 0 1-2.5 2.5H10l-4 3.5V6.5z" />
+    </svg>
+  );
+}
+
 export default function Layout({ children, data }: LayoutProps) {
   const pathname = data?.pathname || "/";
   const isSupport = pathname === "/support" || pathname.startsWith("/support/");
@@ -41,11 +99,11 @@ export default function Layout({ children, data }: LayoutProps) {
   const supportActive = isSupport;
 
   return (
-    <div class="flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <div class="flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden bg-[#f8fafc] text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       {!isSupport
         ? (
           <header
-            class="z-40 shrink-0 border-b border-slate-200/80 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95"
+            class="z-40 shrink-0 border-b border-[#e2e8f0] bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95"
             style="padding-top: env(safe-area-inset-top)"
           >
             <div class="mx-auto flex h-11 max-w-lg items-center justify-between px-4">
@@ -73,20 +131,20 @@ export default function Layout({ children, data }: LayoutProps) {
       </main>
 
       <nav
-        class="z-40 shrink-0 border-t border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95"
+        class="z-40 shrink-0 border-t border-[#e2e8f0] bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95"
         style="padding-bottom: env(safe-area-inset-bottom)"
         aria-label="底部导航"
       >
         <ul class="mx-auto flex max-w-lg list-none items-stretch m-0 p-0">
           <li class="flex flex-1">
             <a href="/" class={tabClass(homeActive)} aria-current={homeActive ? "page" : undefined}>
-              <span class="text-lg leading-none" aria-hidden="true">⌂</span>
+              <IconHome active={homeActive} />
               <span>首页</span>
             </a>
           </li>
           <li class="flex flex-1">
             <a href="/about" class={tabClass(aboutActive)} aria-current={aboutActive ? "page" : undefined}>
-              <span class="text-lg leading-none" aria-hidden="true">ⓘ</span>
+              <IconInfo active={aboutActive} />
               <span>关于</span>
             </a>
           </li>
@@ -97,7 +155,7 @@ export default function Layout({ children, data }: LayoutProps) {
               class={tabClass(supportActive)}
               aria-current={supportActive ? "page" : undefined}
             >
-              <span class="text-lg leading-none" aria-hidden="true">💬</span>
+              <IconChat active={supportActive} />
               <span>在线客服</span>
             </a>
           </li>

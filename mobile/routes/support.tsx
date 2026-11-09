@@ -8,7 +8,7 @@ import { WebChat } from "@common/components/WebChat.tsx";
 export default function SupportPage() {
   return (
     <div
-      class="flex h-full max-h-full min-h-0 w-full flex-1 flex-col overflow-hidden bg-gradient-to-b from-indigo-50/40 via-white to-white dark:from-indigo-950/20 dark:via-slate-900 dark:to-slate-900"
+      class="flex h-full max-h-full min-h-0 w-full flex-1 flex-col overflow-hidden bg-[#f8fafc] dark:bg-slate-900"
       data-testid="mobile-support-shell"
     >
       <WebChat

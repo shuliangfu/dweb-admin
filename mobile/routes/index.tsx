@@ -12,16 +12,53 @@ const shortcuts = [
     title: "在线客服",
     desc: "整页即时会话",
     tone: "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-300",
-    icon: "💬",
+    kind: "chat" as const,
   },
   {
     href: "/about",
     title: "关于应用",
     desc: "版本与技术栈",
     tone: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200",
-    icon: "ⓘ",
+    kind: "info" as const,
   },
 ];
+
+function ShortcutIcon({ kind }: { kind: "chat" | "info" }) {
+  if (kind === "chat") {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="h-6 w-6"
+        aria-hidden="true"
+      >
+        <path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v7a2.5 2.5 0 0 1-2.5 2.5H10l-4 3.5V6.5z" />
+      </svg>
+    );
+  }
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="h-6 w-6"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="8.25" />
+      <path d="M12 11v5" />
+      <path d="M12 8h.01" />
+    </svg>
+  );
+}
 
 const capabilityRows = [
   {
@@ -53,7 +90,7 @@ const capabilityRows = [
 export default function Home() {
   return (
     <div class="space-y-4" data-testid="mobile-app-home">
-      <section class="rounded-2xl bg-white px-4 py-4 shadow-sm ring-1 ring-slate-200/80 dark:bg-slate-900 dark:ring-slate-800">
+      <section class="rounded-2xl border border-[#e2e8f0] bg-white px-4 py-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <p class="text-xs font-medium text-slate-500 dark:text-slate-400">
           你好
         </p>
@@ -71,7 +108,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section class="rounded-2xl bg-white px-4 py-3.5 shadow-sm ring-1 ring-slate-200/80 dark:bg-slate-900 dark:ring-slate-800">
+      <section class="rounded-2xl border border-[#e2e8f0] bg-white px-4 py-3.5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <h3 class="m-0 text-sm font-semibold text-slate-800 dark:text-slate-100">
           产品简介
         </h3>
@@ -92,11 +129,9 @@ export default function Home() {
             <a
               href={item.href}
               data-testid={item.testId}
-              class={`flex min-h-[5.5rem] flex-col justify-between rounded-2xl px-3.5 py-3.5 shadow-sm ring-1 ring-black/5 transition-transform active:scale-[0.98] ${item.tone}`}
+              class={`flex min-h-[5.5rem] flex-col justify-between rounded-2xl px-3.5 py-3.5 border border-[#e2e8f0]/70 shadow-sm transition-transform active:scale-[0.98] ${item.tone}`}
             >
-              <span class="text-2xl leading-none" aria-hidden="true">
-                {item.icon}
-              </span>
+              <ShortcutIcon kind={item.kind} />
               <div>
                 <p class="m-0 text-[15px] font-semibold">{item.title}</p>
                 <p class="m-0 mt-0.5 text-xs opacity-70">{item.desc}</p>
@@ -106,7 +141,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/80 dark:bg-slate-900 dark:ring-slate-800">
+      <section class="overflow-hidden rounded-2xl border border-[#e2e8f0] bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div class="border-b border-slate-100 px-4 py-3 dark:border-slate-800">
           <h3 class="m-0 text-sm font-semibold text-slate-800 dark:text-slate-100">
             能做什么
@@ -129,7 +164,7 @@ export default function Home() {
         </ul>
       </section>
 
-      <section class="rounded-2xl bg-white px-4 py-3.5 shadow-sm ring-1 ring-slate-200/80 dark:bg-slate-900 dark:ring-slate-800">
+      <section class="rounded-2xl border border-[#e2e8f0] bg-white px-4 py-3.5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <h3 class="m-0 text-sm font-semibold text-slate-800 dark:text-slate-100">
           今日概览
         </h3>

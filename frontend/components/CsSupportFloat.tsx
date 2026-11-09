@@ -28,7 +28,19 @@ export function CsSupportFloat() {
               class="fixed bottom-5 right-5 z-[1200] flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/30 transition hover:scale-105 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 dark:shadow-indigo-900/40"
               onClick={() => openCsSupport()}
             >
-              <span class="text-xl leading-none" aria-hidden="true">💬</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-6 w-6"
+                aria-hidden="true"
+              >
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
             </button>
           )
           : null}

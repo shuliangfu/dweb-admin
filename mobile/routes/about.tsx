@@ -17,7 +17,7 @@ const rows = [
 export default function About() {
   return (
     <div class="space-y-4">
-      <section class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/80 dark:bg-slate-900 dark:ring-slate-800">
+      <section class="overflow-hidden rounded-2xl border border-[#e2e8f0] bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div class="border-b border-slate-100 px-4 py-4 dark:border-slate-800">
           <p class="m-0 text-base font-semibold text-slate-900 dark:text-slate-50">
             关于
@@ -38,7 +38,7 @@ export default function About() {
         </ul>
       </section>
 
-      <section class="rounded-2xl bg-white px-4 py-3.5 shadow-sm ring-1 ring-slate-200/80 dark:bg-slate-900 dark:ring-slate-800">
+      <section class="rounded-2xl border border-[#e2e8f0] bg-white px-4 py-3.5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <h3 class="m-0 text-sm font-semibold text-slate-800 dark:text-slate-100">
           和 Web 前台的区别
         </h3>
@@ -49,7 +49,7 @@ export default function About() {
 
       <a
         href="/support"
-        class="flex min-h-12 items-center justify-center rounded-2xl bg-indigo-600 px-4 text-[15px] font-semibold text-white shadow-sm active:bg-indigo-700"
+        class="flex min-h-12 items-center justify-center rounded-[10px] bg-indigo-600 px-4 text-[15px] font-semibold text-white shadow-sm active:bg-indigo-700"
       >
         打开在线客服
       </a>

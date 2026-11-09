@@ -10,7 +10,7 @@ import { openCsSupport } from "@frontend/components/cs-support-open.ts";
 export default function About() {
   return (
     <div class="space-y-8">
-      <section class="rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 px-6 py-10 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950 sm:px-10">
+      <section class="rounded-[20px] border border-[#e2e8f0] bg-gradient-to-br from-white to-slate-50 px-6 py-10 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950 sm:px-10">
         <p class="mb-2 text-xs font-semibold uppercase tracking-widest text-indigo-500">
           About
         </p>
@@ -25,12 +25,12 @@ export default function About() {
       </section>
 
       <div class="grid gap-4 sm:grid-cols-2">
-        <Card bordered class="bg-white dark:bg-slate-900" title="产品定位">
+        <Card bordered class="rounded-2xl border-[#e2e8f0] bg-white dark:bg-slate-900" title="产品定位">
           <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
             管理端集中处理管理员账号、角色权限、菜单、内容运营与客服接待；本站（Frontend）向业务方与访客说明产品能力，并提供客服入口。手机端以 App 壳呈现同一产品信息与整页会话，两端分道、互不污染交互形态。
           </p>
         </Card>
-        <Card bordered class="bg-white dark:bg-slate-900" title="技术栈">
+        <Card bordered class="rounded-2xl border-[#e2e8f0] bg-white dark:bg-slate-900" title="技术栈">
           <ul class="ml-5 list-disc space-y-1.5 text-sm text-slate-600 dark:text-slate-300">
             <li><strong>@dreamer/dweb</strong> — 全栈 Web 框架（SSR／Hybrid）</li>
             <li><strong>@dreamer/view</strong> — 轻量 UI 运行时</li>
@@ -42,7 +42,7 @@ export default function About() {
       </div>
 
       <div class="grid gap-4 sm:grid-cols-2">
-        <Card bordered class="bg-white dark:bg-slate-900" title="管理端能力">
+        <Card bordered class="rounded-2xl border-[#e2e8f0] bg-white dark:bg-slate-900" title="管理端能力">
           <ul class="ml-5 list-disc space-y-1.5 text-sm text-slate-600 dark:text-slate-300">
             <li>RBAC：管理员／角色／权限／路由／分配</li>
             <li>账号安全：验证码登录、锁屏、Passkey、在线会话</li>
@@ -50,7 +50,7 @@ export default function About() {
             <li>DataPanel：搜索、列显隐、导入导出、打印</li>
           </ul>
         </Card>
-        <Card bordered class="bg-white dark:bg-slate-900" title="访客端能力">
+        <Card bordered class="rounded-2xl border-[#e2e8f0] bg-white dark:bg-slate-900" title="访客端能力">
           <ul class="ml-5 list-disc space-y-1.5 text-sm text-slate-600 dark:text-slate-300">
             <li>产品介绍：讲清 dweb-admin 是什么、能做什么</li>
             <li>在线客服浮窗：无需登录发起访客会话（切页保活）</li>
@@ -60,7 +60,7 @@ export default function About() {
         </Card>
       </div>
 
-      <section class="rounded-2xl border border-indigo-100 bg-indigo-50/60 px-6 py-8 text-center dark:border-indigo-900/40 dark:bg-indigo-950/30 sm:px-10">
+      <section class="rounded-[20px] border border-indigo-100 bg-indigo-50/60 px-6 py-8 text-center dark:border-indigo-900/40 dark:bg-indigo-950/30 sm:px-10">
         <h2 class="mb-2 text-lg font-semibold text-slate-800 dark:text-slate-100">
           需要帮助？
         </h2>

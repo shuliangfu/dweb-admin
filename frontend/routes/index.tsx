@@ -59,7 +59,7 @@ const ends = [
 export default function Home() {
   return (
     <div class="space-y-12">
-      <section class="relative overflow-hidden rounded-2xl border border-indigo-100 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 px-6 py-14 shadow-sm dark:border-indigo-900/40 sm:px-10 sm:py-16">
+      <section class="relative overflow-hidden rounded-[20px] border border-indigo-100 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 px-6 py-14 shadow-sm dark:border-indigo-900/40 sm:px-10 sm:py-16">
         <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(99,102,241,0.35),_transparent_55%)]" />
         <div class="relative mx-auto max-w-3xl text-center">
           <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-300">
@@ -82,14 +82,14 @@ export default function Home() {
           </p>
           <div class="flex flex-wrap items-center justify-center gap-3">
             <a href="/about" class="inline-block">
-              <Button type="button" variant="secondary" class="h-11 px-6 text-base">
+              <Button type="button" variant="secondary" class="h-11 rounded-[10px] px-6 text-base">
                 了解更多
               </Button>
             </a>
             <Button
               type="button"
               variant="primary"
-              class="h-11 px-6 text-base"
+              class="h-11 rounded-[10px] px-6 text-base"
               data-testid="contact-cs"
               onClick={() => openCsSupport()}
             >
@@ -99,7 +99,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section class="rounded-2xl border border-slate-200 bg-white px-6 py-8 dark:border-slate-800 dark:bg-slate-900 sm:px-10">
+      <section class="rounded-[20px] border border-[#e2e8f0] bg-white px-6 py-8 dark:border-slate-800 dark:bg-slate-900 sm:px-10">
         <h2 class="mb-3 text-xl font-semibold text-slate-800 dark:text-slate-100">
           它是什么
         </h2>
@@ -145,7 +145,7 @@ export default function Home() {
           {capabilities.map((f) => (
             <Card
               bordered
-              class="h-full bg-white dark:bg-slate-900"
+              class="h-full rounded-2xl border-[#e2e8f0] bg-white dark:bg-slate-900"
               title={f.title}
             >
               <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
@@ -164,7 +164,7 @@ export default function Home() {
           {modules.map((m) => (
             <Card
               bordered
-              class="h-full bg-white dark:bg-slate-900"
+              class="h-full rounded-2xl border-[#e2e8f0] bg-white dark:bg-slate-900"
               title={m.title}
             >
               <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
@@ -175,7 +175,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section class="rounded-2xl border border-slate-200 bg-slate-50 px-6 py-8 dark:border-slate-800 dark:bg-slate-900/60 sm:px-10">
+      <section class="rounded-[20px] border border-[#e2e8f0] bg-slate-50 px-6 py-8 dark:border-slate-800 dark:bg-slate-900/60 sm:px-10">
         <h2 class="mb-2 text-xl font-semibold text-slate-800 dark:text-slate-100">
           多端怎么分工
         </h2>
@@ -184,7 +184,7 @@ export default function Home() {
         </p>
         <ul class="m-0 grid list-none gap-3 p-0 sm:grid-cols-2">
           {ends.map((e) => (
-            <li class="rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
+            <li class="rounded-2xl border border-[#e2e8f0] bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
               <p class="m-0 text-sm font-semibold text-indigo-600 dark:text-indigo-400">
                 {e.name}
               </p>
@@ -196,7 +196,7 @@ export default function Home() {
         </ul>
       </section>
 
-      <section class="rounded-2xl border border-indigo-100 bg-indigo-50/70 px-6 py-8 text-center dark:border-indigo-900/40 dark:bg-indigo-950/30 sm:px-10">
+      <section class="rounded-[20px] border border-indigo-100 bg-indigo-50/70 px-6 py-8 text-center dark:border-indigo-900/40 dark:bg-indigo-950/30 sm:px-10">
         <h2 class="mb-2 text-lg font-semibold text-slate-800 dark:text-slate-100">
           需要人工协助？
         </h2>
