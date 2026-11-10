@@ -26,7 +26,7 @@ env:
 
 jobs:
   test:
-    name: ${{ matrix.runtime }} / ${{ matrix.os }}
+    name: test-${{ matrix.runtime }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
     strategy:
