@@ -14,11 +14,25 @@ async function openTabsAndCheckFlush(page: any, dark: boolean) {
     await page.goto(BASE + p);
     await page.waitForSelector("[data-testid=tag-view]");
     expected += 1;
+    // SSR can paint home+current without writing the cookie; wait until the CLIENT persist
+    // has stored enough non-home tabs (cookie JSON length + 1 === visible strip). Silent
+    // .catch previously let CI advance with only 3 tabs and fail the final assert.
     await page.waitForFunction(
-      (n: number) => document.querySelectorAll(".adm-tag-item").length >= Math.min(n, 4),
+      (n: number) => {
+        const want = Math.min(n, 4);
+        if (document.querySelectorAll(".adm-tag-item").length < want) return false;
+        const m = document.cookie.match(/(?:^|;\s*)dweb-admin-tags=([^;]*)/);
+        if (!m) return false;
+        try {
+          const arr = JSON.parse(decodeURIComponent(m[1])) as unknown;
+          return Array.isArray(arr) && arr.length + 1 >= want;
+        } catch {
+          return false;
+        }
+      },
       expected,
       { timeout: 8000 },
-    ).catch(() => {});
+    );
   }
   await page.goto(BASE + "/");
   await page.waitForSelector("[data-testid=dashboard]");

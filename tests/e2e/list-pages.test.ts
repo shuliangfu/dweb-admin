@@ -200,9 +200,13 @@ Deno.test({ name: "search form: toolbar button opens a Modal on every list + adm
 Deno.test({ name: "search form Modal: submit filters the list, reset clears it", ...OPTS, fn: async () => {
   await ensureServer();
   const api = await adminApi();
+  // CI fixtures ship no stub_user_index rows; seed TWO members so totalAll > 1 is self-contained.
   const name = `q_${rand()}`;
-  const r = await api.post("/api/res/create", { res: "user.index", username: name, email: `${name}@example.com` });
-  assertEquals(r.status, 201, JSON.stringify(r.data));
+  const other = `q_${rand()}_other`;
+  for (const u of [name, other]) {
+    const r = await api.post("/api/res/create", { res: "user.index", username: u, email: `${u}@example.com` });
+    assertEquals(r.status, 201, JSON.stringify(r.data));
+  }
   const { browser, ctx } = await browserLoggedIn();
   try {
     const page = await ctx.newPage();
@@ -231,8 +235,10 @@ Deno.test({ name: "search form Modal: submit filters the list, reset clears it",
     await page.keyboard.press("Escape");
   } finally {
     await browser.close();
-    const found = await api.get(`/api/res?res=user.index&username=${name}`);
-    if (found.data.rows?.[0]) await api.post("/api/res/remove", { res: "user.index", ids: [found.data.rows[0].id] });
+    for (const u of [name, other]) {
+      const found = await api.get(`/api/res?res=user.index&username=${u}`);
+      if (found.data.rows?.[0]) await api.post("/api/res/remove", { res: "user.index", ids: [found.data.rows[0].id] });
+    }
   }
 } });
 
