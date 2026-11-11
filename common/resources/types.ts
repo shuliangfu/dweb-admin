@@ -29,6 +29,11 @@ export interface ColDef {
   options?: Opt[];
   /** Inline edit (double click / direct toggle) through POST /api/res/field. */
   inline?: "switch" | "select" | "text" | "number";
+  /**
+   * Mark this column as the DataPanel batch「设为…」target.
+   * ui-view@1.2.9 only accepts this with `inline: "switch"` and exactly two options.
+   */
+  batch?: boolean;
   /** Show a sum of this column over the filtered rows in the footer. */
   total?: boolean;
   /** Hidden until switched on in the column menu. */

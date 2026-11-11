@@ -114,7 +114,7 @@ export default function ForgetPasswordPage(props: { data?: Data }) {
                         alt={tr("passwordFlow.captcha")}
                         width="150"
                         height="40"
-                        class="adm-captcha-img block h-10 w-37.5"
+                        class="adm-captcha-img block h-10 w-lock-input"
                       />
                     )}
                   </button>

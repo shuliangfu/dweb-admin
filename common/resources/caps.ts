@@ -2,15 +2,18 @@
  * Auth caps for DataPanel (create/update/view/remove/batch/import/export).
  *
  * Data flow (1 minute):
- *   me.roleCodes → canAccessStrict(POST /api/res/<key>) → resolveResourceCaps
- *   → meta.caps → admin DataPanel → ui-view buttons (visibility = caps only).
+ *   me.roleCodes → named *.write pack (resourcePerms) + canAccessStrict(POST /api/res/<key>)
+ *   → resolveResourceCaps → meta.caps → admin DataPanel → ui-view buttons (visibility = caps only).
+ *   Client overlays the same packs via can() / resourcePanelActions after PermissionsBootstrap.
  *
  * Chrome caps (print/columns/density/fullscreen/copy) are NOT auth — see CHROME_CAPS.
  */
 import type { ResourceDef, ResourceMeta } from "./types.ts";
 import { CHROME_CAPS } from "./chrome-caps.ts";
+import { resourcePerms } from "./resource-perms.ts";
 
 export { CHROME_CAPS };
+export { resourcePerms } from "./resource-perms.ts";
 
 export type AuthCaps = ResourceMeta["caps"];
 
@@ -57,12 +60,17 @@ function withItemAdminSynthetic(caps: AuthCaps, key: string, canWrite: boolean):
  * Resolve per-user auth caps for a resource.
  *
  * - Super → static caps + ItemAdmin synthetic (full write UI).
- * - Else write grant = canAccessStrict(POST /api/res/<key>) (same token authorize() uses):
- *     create / update / remove / batchStatus / import ← require write
- *     view / export ← keep static (page already GET-gated; export is not write)
+ * - Else write grant requires BOTH:
+ *     1) named *.write pack (resourcePerms) via hasPermission — same gate as can()
+ *     2) canAccessStrict(POST /api/res/<key>) — same token authorize() uses
+ *   create / update / remove / batchStatus / import ← require write
+ *   view / export ← keep static (page already GET-gated; export is not write)
  *
  * Named *.import / *.export / *.batch permissions are NOT seeded: write/view packs
  * already name the human intent; splitting would add N×3 noise without a second consumer.
+ *
+ * Resources without a POST /api/res/<key> route (e.g. assign) never get route write →
+ * mutator caps stay off; custom actions (AssignAdmin) still gate with can("admin.write").
  */
 export async function resolveResourceCaps(
   user: CapsUser,
@@ -70,10 +78,15 @@ export async function resolveResourceCaps(
 ): Promise<AuthCaps> {
   const base = staticAuthCaps(def);
   const isSuper = !!user.isSuper;
-  // Dynamic import: keep rbac/database out of the client chunk that only needs CHROME_CAPS.
-  const { canAccessStrict } = await import("@common/service/rbac.ts");
-  const canWrite = isSuper ||
-    await canAccessStrict(user.roleCodes ?? [], "POST", `/api/res/${def.key}`);
+  if (isSuper) return withItemAdminSynthetic(base, def.key, true);
+
+  // Dynamic import: keep rbac/database out of the client chunk that only needs CHROME_CAPS / resourcePerms.
+  const { canAccessStrict, hasPermission } = await import("@common/service/rbac.ts");
+  const { write } = resourcePerms(def.key);
+  const roleCodes = user.roleCodes ?? [];
+  const namedWrite = await hasPermission(roleCodes, write);
+  const routeWrite = await canAccessStrict(roleCodes, "POST", `/api/res/${def.key}`);
+  const canWrite = namedWrite && routeWrite;
 
   if (!canWrite) {
     return {

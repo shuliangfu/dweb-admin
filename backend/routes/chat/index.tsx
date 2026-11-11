@@ -40,7 +40,7 @@ export default function ChatPage(props: {
   setMePermissions({ permissions: perms, isSuper });
   return (
     <div
-      class="box-border flex h-[100dvh] w-screen flex-col overflow-hidden bg-white dark:bg-slate-950"
+      class="box-border flex h-dvh w-screen flex-col overflow-hidden bg-white dark:bg-slate-950"
       data-testid="cs-chat-page"
     >
       <PermissionsBootstrap permissions={perms} isSuper={isSuper} />

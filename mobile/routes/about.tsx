@@ -18,14 +18,14 @@ export default function About() {
   return (
     <div>
       <section
-        class="relative overflow-hidden rounded-b-[28px] bg-gradient-to-br from-[#151327] to-[#4f46e5] px-5 pb-7 text-white"
+        class="relative overflow-hidden bg-[#0d1020] px-5 pb-7 text-white"
         style="padding-top: calc(env(safe-area-inset-top) + 12px)"
       >
         <div class="mb-3 mt-2 grid h-14 w-14 place-items-center rounded-[18px] bg-white/15 text-[22px] font-extrabold">
           D
         </div>
         <h1 class="m-0 text-[26px] font-bold tracking-tight">关于</h1>
-        <p class="m-0 mt-2 text-[13px] leading-[1.6] text-[#ddd6fe]">
+        <p class="m-0 mt-2 text-[13px] leading-[1.6] text-[#c9c6d6]">
           dweb-admin：Deno 后台管理模板。本端用原生 App
           信息架构介绍产品，并用整页客服承接咨询；管理与接待在后台完成。
         </p>
@@ -60,7 +60,7 @@ export default function About() {
 
         <a
           href="/support"
-          class="flex h-12 items-center justify-center rounded-[14px] bg-[#4f46e5] text-[15px] font-bold text-white no-underline active:bg-[#4338ca]"
+          class="flex h-12 items-center justify-center rounded-[14px] bg-[#12101a] text-[15px] font-bold text-[#fffcf8] no-underline active:bg-[#2a2730]"
         >
           打开在线客服
         </a>

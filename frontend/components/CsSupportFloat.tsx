@@ -25,7 +25,7 @@ export function CsSupportFloat() {
               data-testid="cs-support-fab"
               aria-label="打开在线客服"
               title="在线客服"
-              class="fixed bottom-9 right-9 z-[1200] flex h-14 w-14 items-center justify-center rounded-[18px] bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] text-white shadow-[0_16px_30px_rgba(79,70,229,0.4)] transition hover:scale-105 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2"
+              class="fixed bottom-9 right-9 z-[1200] flex h-14 w-14 items-center justify-center rounded-[18px] bg-[#12101a] text-[#fffcf8] shadow-[0_12px_24px_rgba(18,16,26,0.22)] transition hover:bg-[#2a2730] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8a6a3d] focus-visible:ring-offset-2"
               onClick={() => openCsSupport()}
             >
               <svg
@@ -63,7 +63,8 @@ export function CsSupportFloat() {
         class="!max-h-none overflow-hidden"
         bodyClass="!p-0 !overflow-hidden flex min-h-0 flex-col"
         wrapClass="!items-end !justify-end p-5"
-        children={() => (
+      >
+        {() => (
           <div
             class="flex h-[min(78vh,40rem)] max-h-[min(78vh,40rem)] min-h-0 w-full flex-col overflow-hidden"
             data-testid="cs-support-float"
@@ -101,7 +102,7 @@ export function CsSupportFloat() {
             />
           </div>
         )}
-      />
+      </Modal>
     </>
   );
 }

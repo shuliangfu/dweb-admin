@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 /**
  * WebChat — shared CS chat core (唯一聊天核心 — 勿再复制三套).
  * Owns: message list + composer + WS + green「已连接」+ rich media toolbar.
@@ -455,8 +456,8 @@ export function WebChat(props: {
   let closed = false;
   type QueuedChat = { kind: CsMessageKind; text: string; media?: CsMediaMeta };
   const queue: QueuedChat[] = [];
-  let imageInput: any = null;
-  let fileInput: any = null;
+  let imageInput: HTMLInputElement | null = null;
+  let fileInput: HTMLInputElement | null = null;
   let composerInput: HTMLTextAreaElement | null = null;
   /** IME composition in progress — Enter must not send until confirmed. */
   let composerComposing = false;
@@ -492,15 +493,22 @@ export function WebChat(props: {
   function keepComposerFocus(e: Event) {
     e.preventDefault();
   }
-  let mediaRecorder: any = null;
+  let mediaRecorder: MediaRecorder | null = null;
   let recordChunks: Blob[] = [];
   let recordStartedAt = 0;
   let recordTimer: number | null = null;
-  let recordStream: any = null;
-  let listEl: any = null;
+  let recordStream: MediaStream | null = null;
+  let listEl: HTMLElement | null = null;
+  type SwipeDragState = {
+    sx: number;
+    sy: number;
+    moved: boolean;
+    base: number;
+    dragging: boolean;
+  };
+  const swipeDragState = new WeakMap<EventTarget, SwipeDragState>();
   /** Pin to bottom until user scrolls up — image onLoad / content RO re-pin. */
   let stickBottom = true;
-  let listContentEl: any = null;
   let listContentRo: ResizeObserver | null = null;
   let pollTimer: number | null = null;
   /** Guard overlapping admin list/detail fetches (remount / rapid ensureWs). */
@@ -844,7 +852,7 @@ export function WebChat(props: {
     }
   }
 
-  function bindListEl(el: any) {
+  function bindListEl(el: HTMLElement | null) {
     listEl = el;
     if (!el || typeof el.addEventListener !== "function") return;
     el.addEventListener("scroll", () => {
@@ -852,7 +860,7 @@ export function WebChat(props: {
     }, { passive: true });
   }
 
-  function bindListContent(el: any) {
+  function bindListContent(el: HTMLElement | null) {
     if (listContentRo) {
       try {
         listContentRo.disconnect();
@@ -861,7 +869,6 @@ export function WebChat(props: {
       }
       listContentRo = null;
     }
-    listContentEl = el;
     if (!el || typeof ResizeObserver === "undefined") return;
     listContentRo = new ResizeObserver(() => {
       if (stickBottom && listEl) listEl.scrollTop = listEl.scrollHeight;
@@ -1298,7 +1305,7 @@ export function WebChat(props: {
   }
 
   /** Resolve WS + ensureWs after session/token are set. */
-  async function finishGuestConnect() {
+  function finishGuestConnect() {
     wsUrl = resolveGuestWsUrl({ openWsUrl: wsUrl, apiBase: guestApi });
     if (wsUrl) {
       try {
@@ -1807,17 +1814,17 @@ export function WebChat(props: {
   async function startRecord() {
     if (recording.value || !inBrowser) return;
     try {
-      recordStream = await (navigator as any).mediaDevices.getUserMedia({ audio: true });
-      const mime = (globalThis as any).MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+      recordStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
         ? "audio/webm;codecs=opus"
-        : (globalThis as any).MediaRecorder.isTypeSupported("audio/mp4")
+        : MediaRecorder.isTypeSupported("audio/mp4")
         ? "audio/mp4"
         : "";
       mediaRecorder = mime
-        ? new (globalThis as any).MediaRecorder(recordStream, { mimeType: mime })
-        : new (globalThis as any).MediaRecorder(recordStream);
+        ? new MediaRecorder(recordStream, { mimeType: mime })
+        : new MediaRecorder(recordStream);
       recordChunks = [];
-      mediaRecorder.ondataavailable = (ev: any) => {
+      mediaRecorder.ondataavailable = (ev: BlobEvent) => {
         if (ev.data && ev.data.size > 0) recordChunks.push(ev.data);
       };
       mediaRecorder.onstop = () => {
@@ -1826,7 +1833,7 @@ export function WebChat(props: {
           clearInterval(recordTimer);
           recordTimer = null;
         }
-        recordStream?.getTracks().forEach((t: any) => t.stop());
+        recordStream?.getTracks().forEach((t) => t.stop());
         recordStream = null;
         recording.value = false;
         const blob = new Blob(recordChunks, {
@@ -1887,7 +1894,7 @@ export function WebChat(props: {
     if (mediaRecorder && mediaRecorder.state !== "inactive") {
       mediaRecorder.ondataavailable = null;
       mediaRecorder.onstop = () => {
-        recordStream?.getTracks().forEach((t: any) => t.stop());
+        recordStream?.getTracks().forEach((t) => t.stop());
         recordStream = null;
       };
       try {
@@ -1900,7 +1907,7 @@ export function WebChat(props: {
       clearInterval(recordTimer);
       recordTimer = null;
     }
-    recordStream?.getTracks().forEach((t: any) => t.stop());
+    recordStream?.getTracks().forEach((t) => t.stop());
     recordStream = null;
     recording.value = false;
     recordMs.value = 0;
@@ -2203,11 +2210,11 @@ export function WebChat(props: {
               type="button"
               class={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${mine ? "bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-100" : "bg-violet-50 text-violet-700"}`}
               onClick={() => {
-                const audio = (globalThis as any).document.getElementById(`wc-audio-${m.id}`) as any;
+                const audio = document.getElementById(`wc-audio-${m.id}`) as HTMLAudioElement | null;
                 if (!audio) return;
                 if (audio.paused) {
-                  (globalThis as any).document.querySelectorAll("audio[data-wc-voice]").forEach((el: any) => {
-                    (el as any).pause();
+                  document.querySelectorAll("audio[data-wc-voice]").forEach((el) => {
+                    (el as HTMLAudioElement).pause();
                   });
                   void audio.play();
                   playingId.value = m.id;
@@ -2219,7 +2226,7 @@ export function WebChat(props: {
             >
               {active ? "❚❚" : "▶"}
             </button>
-            <div class="min-w-[7rem]">
+            <div class="min-w-28">
               <div class={`mb-1 h-1.5 overflow-hidden rounded-full ${mine ? "bg-slate-200 dark:bg-slate-600" : "bg-slate-200 dark:bg-slate-600"}`}>
                 <div class={`h-full w-2/3 rounded-full ${mine ? "bg-slate-400" : "bg-violet-500"}`} />
               </div>
@@ -2252,7 +2259,7 @@ export function WebChat(props: {
             {" · "}
             {formatTime(m.time)}
           </p>
-          <p class="m-0 whitespace-pre-wrap break-words">{m.text}</p>
+          <p class="m-0 whitespace-pre-wrap wrap-break-word">{m.text}</p>
         </div>
       </div>
     );
@@ -2420,7 +2427,7 @@ export function WebChat(props: {
                                   variant="warning"
                                   size="xs"
                                   count={pending}
-                                  class="!bg-orange-500 !text-white dark:!bg-orange-500"
+                                  class="bg-orange-500! text-white! dark:bg-orange-500!"
                                   data-testid="cs-pending-badge"
                                 />
                               )
@@ -2604,7 +2611,7 @@ export function WebChat(props: {
                                   : null}
                               </div>
                               <div
-                                class={`relative z-[1] w-full touch-pan-y ${
+                                class={`relative z-1 w-full touch-pan-y ${
                                   active
                                     ? "bg-slate-100 dark:bg-slate-800"
                                     : "bg-white dark:bg-slate-900"
@@ -2618,46 +2625,48 @@ export function WebChat(props: {
                                   const t = e.currentTarget as HTMLElement;
                                   if (e.pointerType === "mouse" && e.button !== 0) return;
                                   t.setPointerCapture?.(e.pointerId);
-                                  (t as any)._sx = e.clientX;
-                                  (t as any)._sy = e.clientY;
-                                  (t as any)._moved = false;
-                                  (t as any)._base = open ? -128 : 0;
-                                  (t as any)._dragging = true;
+                                  swipeDragState.set(t, {
+                                    sx: e.clientX,
+                                    sy: e.clientY,
+                                    moved: false,
+                                    base: open ? -128 : 0,
+                                    dragging: true,
+                                  });
                                   t.style.transition = "none";
                                 }}
                                 onPointerMove={(e: PointerEvent) => {
                                   const t = e.currentTarget as HTMLElement;
-                                  if (!(t as any)._dragging) return;
-                                  const dx = e.clientX - ((t as any)._sx as number);
-                                  const dy = e.clientY - ((t as any)._sy as number);
-                                  if (!((t as any)._moved)) {
+                                  if (!(t as HTMLElement & Record<string, unknown>)._dragging) return;
+                                  const dx = e.clientX - ((t as HTMLElement & Record<string, unknown>)._sx as number);
+                                  const dy = e.clientY - ((t as HTMLElement & Record<string, unknown>)._sy as number);
+                                  if (!((t as HTMLElement & Record<string, unknown>)._moved)) {
                                     if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
                                     if (Math.abs(dy) > Math.abs(dx)) {
-                                      (t as any)._dragging = false;
+                                      (t as HTMLElement & Record<string, unknown>)._dragging = false;
                                       return;
                                     }
-                                    (t as any)._moved = true;
+                                    (t as HTMLElement & Record<string, unknown>)._moved = true;
                                     if (swipeOpenId.value && swipeOpenId.value !== row.id) {
                                       swipeOpenId.value = "";
                                     }
                                   }
-                                  const next = Math.min(0, Math.max(-128, ((t as any)._base as number) + dx));
+                                  const next = Math.min(0, Math.max(-128, ((t as HTMLElement & Record<string, unknown>)._base as number) + dx));
                                   t.style.transform = `translateX(${next}px)`;
                                 }}
                                 onPointerUp={(e: PointerEvent) => {
                                   const t = e.currentTarget as HTMLElement;
-                                  if (!(t as any)._dragging && !(t as any)._moved) {
+                                  if (!(t as HTMLElement & Record<string, unknown>)._dragging && !(t as HTMLElement & Record<string, unknown>)._moved) {
                                     if (swipeOpenId.value && swipeOpenId.value !== row.id) {
                                       swipeOpenId.value = "";
                                     }
                                     selectSession(row.id);
                                     return;
                                   }
-                                  const moved = !!(t as any)._moved;
-                                  const dx = e.clientX - ((t as any)._sx as number);
-                                  const base = (t as any)._base as number;
+                                  const moved = !!(t as HTMLElement & Record<string, unknown>)._moved;
+                                  const dx = e.clientX - ((t as HTMLElement & Record<string, unknown>)._sx as number);
+                                  const base = (t as HTMLElement & Record<string, unknown>)._base as number;
                                   const finalX = Math.min(0, Math.max(-128, base + dx));
-                                  (t as any)._dragging = false;
+                                  (t as HTMLElement & Record<string, unknown>)._dragging = false;
                                   t.style.transition = "transform 160ms ease-out";
                                   if (!moved) {
                                     if (swipeOpenId.value && swipeOpenId.value !== row.id) {
@@ -2681,7 +2690,7 @@ export function WebChat(props: {
                                 }}
                                 onPointerCancel={(e: PointerEvent) => {
                                   const t = e.currentTarget as HTMLElement;
-                                  (t as any)._dragging = false;
+                                  (t as HTMLElement & Record<string, unknown>)._dragging = false;
                                   t.style.transition = "transform 160ms ease-out";
                                   t.style.transform = swipeOpenId.value === row.id
                                     ? "translateX(-8rem)"
@@ -2694,7 +2703,7 @@ export function WebChat(props: {
                           )
                           : (
                             <Popconfirm
-                              class={`relative z-[1] block w-full ${
+                              class={`relative z-1 block w-full ${
                                 active
                                   ? "bg-slate-100 dark:bg-slate-800"
                                   : "bg-white dark:bg-slate-900"
@@ -2797,13 +2806,13 @@ export function WebChat(props: {
                 data-testid="cs-chat-thread"
               >
           <div
-            class="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-gradient-to-b from-indigo-50/40 to-slate-100/80 px-4 py-4 dark:from-slate-950/50 dark:to-slate-950/80"
-            ref={(el: any) => { bindListEl(el); }}
+            class="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-linear-to-b from-indigo-50/40 to-slate-100/80 px-4 py-4 dark:from-slate-950/50 dark:to-slate-950/80"
+            ref={(el: HTMLElement | null) => { bindListEl(el); }}
             data-testid="web-chat-message-list"
           >
             <div
               class="space-y-3"
-              ref={(el: any) => { bindListContent(el); }}
+              ref={(el: HTMLElement | null) => { bindListContent(el); }}
             >
             {() => {
               const rows = liveMessages.value;
@@ -3068,7 +3077,7 @@ export function WebChat(props: {
                   if (!p) {
                     return (
                       <textarea
-                        ref={(el: any) => { composerInput = el; }}
+                        ref={(el: HTMLTextAreaElement | null) => { composerInput = el; }}
                         data-testid="web-chat-composer"
                         rows={1}
                         class="box-border min-h-9 w-full resize-none overflow-y-hidden border-0 bg-transparent px-3 py-2 text-sm leading-5 text-slate-800 outline-none ring-0 placeholder:text-slate-400 dark:text-slate-100"
@@ -3145,7 +3154,7 @@ export function WebChat(props: {
                     <div class="flex items-center gap-2 px-2 py-1">
                       {thumb}
                       <textarea
-                        ref={(el: any) => { composerInput = el; }}
+                        ref={(el: HTMLTextAreaElement | null) => { composerInput = el; }}
                         data-testid="web-chat-composer"
                         rows={1}
                         class="box-border min-h-8 min-w-0 flex-1 resize-none overflow-y-hidden border-0 bg-transparent px-1 py-1.5 text-sm leading-5 text-slate-800 outline-none ring-0 placeholder:text-slate-400 dark:text-slate-100"
@@ -3185,15 +3194,15 @@ export function WebChat(props: {
       {showImage
         ? (
           <input
-            ref={(el: any) => { imageInput = el; }}
+            ref={(el: HTMLInputElement | null) => { imageInput = el; }}
             type="file"
             accept="image/jpeg,image/png,image/webp,image/gif"
             class="hidden"
             data-testid="web-chat-image-input"
             onChange={(e: Event) => {
-              const f = (e.target as any).files?.[0];
+              const f = (e.target as HTMLInputElement).files?.[0];
               if (f) pickImage(f);
-              (e.target as any).value = "";
+              (e.target as HTMLInputElement).value = "";
             }}
           />
         )
@@ -3201,15 +3210,15 @@ export function WebChat(props: {
       {showAttachment
         ? (
           <input
-            ref={(el: any) => { fileInput = el; }}
+            ref={(el: HTMLInputElement | null) => { fileInput = el; }}
             type="file"
             accept={attachmentAcceptAttr}
             class="hidden"
             data-testid="web-chat-attachment-input"
             onChange={(e: Event) => {
-              const f = (e.target as any).files?.[0];
+              const f = (e.target as HTMLInputElement).files?.[0];
               if (f) pickFile(f);
-              (e.target as any).value = "";
+              (e.target as HTMLInputElement).value = "";
             }}
           />
         )

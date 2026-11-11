@@ -11,13 +11,15 @@ import { createT, type Locale } from "@common/i18n/mod.ts";
 function codeTone(code: number): { accent: string; codeCls: string } {
   if (code === 403) {
     return {
-      accent: "bg-amber-100 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400",
+      accent:
+        "bg-amber-100 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400",
       codeCls: "text-amber-400/80 dark:text-amber-500/70",
     };
   }
   if (code === 404) {
     return {
-      accent: "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400",
+      accent:
+        "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400",
       codeCls: "text-slate-300 dark:text-slate-600",
     };
   }
@@ -51,7 +53,8 @@ export function ErrorPage(props: {
       data-testid={`error-${code}`}
       data-error-code={String(code)}
     >
-      <style>{`
+      <style>
+        {`
         .adm-error{box-sizing:border-box;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem 1rem;text-align:center;background:#f8fafc;color:#0f172a;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
         .adm-error-card{width:100%;max-width:28rem;border-radius:1rem;border:1px solid #e2e8f0;background:#fff;box-shadow:0 20px 40px -24px rgba(15,23,42,.35);padding:2rem 1.75rem}
         .adm-error-badge{display:inline-flex;align-items:center;justify-content:center;width:3.5rem;height:3.5rem;border-radius:9999px;margin:0 auto 0.75rem;font-size:1.25rem;font-weight:700}
@@ -69,15 +72,20 @@ export function ErrorPage(props: {
           .adm-error-detail{background:#020617;border-color:#1e293b;color:#94a3b8}
           .adm-error-code{color:#fb7185}
         }
-      `}</style>
-      <div class={`adm-error-card w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900`}>
+      `}
+      </style>
+      <div
+        class={`adm-error-card w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900`}
+      >
         <div
           class={`adm-error-badge ${tone.accent}`}
           aria-hidden="true"
         >
           !
         </div>
-        <p class={`adm-error-code m-0 text-7xl font-extrabold tracking-tight ${tone.codeCls}`}>
+        <p
+          class={`adm-error-code m-0 text-7xl font-extrabold tracking-tight ${tone.codeCls}`}
+        >
           {code}
         </p>
         <h1 class="adm-error-title m-0 mt-3 text-2xl font-semibold text-slate-800 dark:text-slate-100">
@@ -88,12 +96,17 @@ export function ErrorPage(props: {
         </p>
         {detail
           ? (
-            <pre class="adm-error-detail text-center" data-testid="error-detail">{detail}</pre>
+            <pre
+              class="adm-error-detail text-center"
+              data-testid="error-detail"
+            >{detail}</pre>
           )
           : null}
         <div class="adm-error-actions mt-6 flex flex-wrap items-center justify-center gap-3">
           <a href={href} class="no-underline">
-            <Button type="button" variant="primary">{tr("error.backHome")}</Button>
+            <Button type="button" variant="primary">
+              {tr("error.backHome")}
+            </Button>
           </a>
           {props.showReload
             ? (

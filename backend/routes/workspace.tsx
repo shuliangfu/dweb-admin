@@ -6,7 +6,7 @@ import { Button, Card } from "@dreamer/ui-view";
 import type { LoadContext } from "@dreamer/dweb";
 import { createT, type Locale, resolveLocale } from "@common/i18n/mod.ts";
 
-export async function load(ctx: LoadContext) {
+export function load(ctx: LoadContext) {
   return { locale: resolveLocale(ctx.req) };
 }
 

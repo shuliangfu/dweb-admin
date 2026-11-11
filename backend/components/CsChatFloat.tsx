@@ -60,7 +60,8 @@ export function CsChatFloat() {
       class="!max-h-none overflow-hidden"
       bodyClass="!p-0 overflow-hidden flex min-h-0 flex-col"
       wrapClass="!items-end !justify-end p-4"
-      children={() => (
+    >
+      {() => (
         <div
           class={desktop.value
             ? "flex h-[min(85vh,45rem)] max-h-[min(85vh,45rem)] min-h-0 w-full flex-col overflow-hidden"
@@ -105,6 +106,6 @@ export function CsChatFloat() {
           />
         </div>
       )}
-    />
+    </Modal>
   );
 }

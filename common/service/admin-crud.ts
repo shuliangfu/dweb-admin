@@ -232,6 +232,16 @@ async function checkParent(key: string, parentKey: string): Promise<string | nul
   return null;
 }
 
+
+/** Non-empty menu.permission must name an existing AuthItem permission. */
+async function checkMenuPermission(name: string): Promise<string | null> {
+  const perm = name.trim();
+  if (!perm) return null;
+  const item = await AuthItem.findOne({ name: perm, type: "permission" }) as AuthItemDocument | null;
+  if (!item) return "unknownPermission";
+  return null;
+}
+
 export async function createMenu(body: unknown): Promise<Ok | Fail> {
   const parsed = parseBody(
     body,
@@ -246,6 +256,8 @@ export async function createMenu(body: unknown): Promise<Ok | Fail> {
   if (bad) return { ok: false, error: bad, fields: ["parentKey"] };
   const status = (d.status as string) || "active";
   if (!STATUS.includes(status)) return { ok: false, error: "invalid" };
+  const badPerm = await checkMenuPermission(String(d.permission ?? ""));
+  if (badPerm) return { ok: false, error: badPerm, fields: ["permission"] };
   await Menu.create({
     key,
     parentKey,
@@ -278,7 +290,12 @@ export async function updateMenu(key: string, body: unknown): Promise<Ok | Fail>
   }
   if (d.title) patch.title = { ...menu.title, ...(d.title as object) };
   for (const f of ["path", "icon", "sort"] as const) if (d[f] !== undefined) patch[f] = d[f];
-  if (d.permission !== undefined) patch.permission = String(d.permission ?? "").trim();
+  if (d.permission !== undefined) {
+    const perm = String(d.permission ?? "").trim();
+    const badPerm = await checkMenuPermission(perm);
+    if (badPerm) return { ok: false, error: badPerm, fields: ["permission"] };
+    patch.permission = perm;
+  }
   if (d.status !== undefined) {
     if (!STATUS.includes(d.status as string)) return { ok: false, error: "invalid" };
     patch.status = d.status;

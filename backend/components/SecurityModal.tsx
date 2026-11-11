@@ -315,7 +315,8 @@ export function SecurityModal(props: { locale: Locale }) {
         onClose={() => {
           securityOpen.value = false;
         }}
-        children={() => (
+      >
+        {() => (
           <div>
             <Tabs
               activeKey={tab.value}
@@ -333,7 +334,7 @@ export function SecurityModal(props: { locale: Locale }) {
             </div>
           </div>
         )}
-      />
+      </Modal>
       <ConfirmDelete
         target={removing}
         title={tr("crud.deleteTitle")}

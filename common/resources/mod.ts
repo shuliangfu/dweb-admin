@@ -14,6 +14,7 @@ import { stubResources } from "./stubs.ts";
 import { type ListResult, type ResourceDef, type ResourceMeta, pick, type ListQuery } from "./types.ts";
 import { resolveResourceCaps, staticAuthCaps } from "./caps.ts";
 export { resolveResourceCaps, staticAuthCaps, CHROME_CAPS, trimCapsForWrite } from "./caps.ts";
+export { resourcePerms } from "./resource-perms.ts";
 
 const defs: ResourceDef[] = [
   adminsResource,

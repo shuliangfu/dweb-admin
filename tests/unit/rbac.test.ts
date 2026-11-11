@@ -154,19 +154,22 @@ Deno.test("path classes: /chat and /api/chat are not AUTH_ONLY", () => {
 // ---- DataPanel auth caps (resolveResourceCaps / static) --------------------
 import {
   resolveResourceCaps,
+  resourcePerms,
   staticAuthCaps,
   trimCapsForWrite,
   CHROME_CAPS,
 } from "@common/resources/caps.ts";
 
+
+
 const fullDef = {
   key: "user.index",
-  create: async () => ({ ok: true as const }),
-  update: async () => ({ ok: true as const }),
-  remove: async () => ({ removed: 0, failed: [] }),
-  setField: async () => ({ removed: 0, failed: [] }),
+  create: () => Promise.resolve({ ok: true as const }),
+  update: () => Promise.resolve({ ok: true as const }),
+  remove: () => Promise.resolve({ removed: 0, failed: [] }),
+  setField: () => Promise.resolve({ removed: 0, failed: [] }),
   statusField: "status",
-  importRows: async () => ({ created: 0, failed: 0 }),
+  importRows: () => Promise.resolve({ created: 0, failed: 0 }),
 };
 
 Deno.test("staticAuthCaps + chrome: auth vs non-auth split", () => {
@@ -221,6 +224,17 @@ Deno.test("resolveResourceCaps: only-view panel keeps export, drops mutators via
   assertEquals(viewOnly.batchStatus, false);
   assertEquals(viewOnly.view, true);
   assertEquals(viewOnly.export, true);
+});
+
+
+
+Deno.test("resourcePerms: maps resource keys to view/write seed packs", () => {
+  assertEquals(resourcePerms("admins"), { view: "admin.view", write: "admin.write" });
+  assertEquals(resourcePerms("assign"), { view: "admin.view", write: "admin.write" });
+  assertEquals(resourcePerms("roles"), { view: "rbac.view", write: "rbac.write" });
+  assertEquals(resourcePerms("menus"), { view: "developer.view", write: "developer.write" });
+  assertEquals(resourcePerms("cms.article"), { view: "cms.view", write: "cms.write" });
+  assertEquals(resourcePerms("user.index"), { view: "user.view", write: "user.write" });
 });
 
 

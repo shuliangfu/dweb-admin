@@ -14,12 +14,10 @@ import {
 } from "@common/models/mod.ts";
 import { randomToken, sha256 } from "@common/service/password.ts";
 import {
-  CS_GUEST_NAME_FALLBACK,
   canonicalGuestContact,
   displayGuestName,
   guestContactKey,
   isValidGuestContact,
-  normalizeGuestContact,
 } from "@common/utils/cs-contact.ts";
 import {
   dedupeCsLobbyRowsByContact,

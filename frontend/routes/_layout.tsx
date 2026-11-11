@@ -24,24 +24,21 @@ export default function Layout({ children, data }: LayoutProps) {
   const pathname = data?.pathname || "/";
   const isHome = pathname === "/" || pathname === "";
   const isAbout = pathname === "/about" || pathname.startsWith("/about/");
-  const isSupport = pathname === "/support" || pathname.startsWith("/support/");
 
   const headerClass = isHome
     ? "sticky top-0 z-50 border-b border-transparent bg-[#0d1020] text-white"
-    : isSupport
-    ? "sticky top-0 z-50 border-b border-transparent bg-transparent text-[#12101a]"
     : "sticky top-0 z-50 border-b border-[#e8e2d8] bg-[rgba(255,252,248,0.86)] text-[#12101a] backdrop-blur";
 
   const linkIdle = isHome
     ? "rounded-full px-3.5 py-2 text-sm text-[#e8e4f5] transition-colors hover:bg-white/10"
-    : "rounded-full px-3.5 py-2 text-sm text-[#5c5665] transition-colors hover:bg-[#efeaf7] hover:text-[#3d36d9]";
+    : "rounded-full px-3.5 py-2 text-sm text-[#5c5665] transition-colors hover:bg-[#efe8dc] hover:text-[#12101a]";
 
   const linkActive =
-    "rounded-full bg-[#efeaf7] px-3.5 py-2 text-sm font-semibold text-[#3d36d9]";
+    "rounded-full bg-[#efe8dc] px-3.5 py-2 text-sm font-semibold text-[#12101a]";
 
   const csClass = isHome
-    ? "rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#3d36d9] shadow-sm transition hover:bg-[#f4f0ea]"
-    : "rounded-full bg-[#4f46e5] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#4338ca]";
+    ? "rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#12101a] shadow-sm transition hover:bg-[#f4f0ea]"
+    : "rounded-full bg-[#12101a] px-4 py-2 text-sm font-semibold text-[#fffcf8] shadow-sm transition hover:bg-[#2a2730]";
 
   return (
     <div class="flex min-h-screen flex-col bg-[#f4f0ea] text-[#12101a] dark:bg-slate-950 dark:text-slate-100">
@@ -53,7 +50,13 @@ export default function Layout({ children, data }: LayoutProps) {
               isHome ? "text-white" : "text-[#12101a] dark:text-slate-50"
             }`}
           >
-            <span class="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-[13px] font-extrabold text-white">
+            <span
+              class={`grid h-7 w-7 place-items-center rounded-lg text-[13px] font-extrabold ${
+                isHome
+                  ? "bg-white/15 text-white"
+                  : "bg-[#12101a] text-[#fffcf8]"
+              }`}
+            >
               D
             </span>
             Dweb Admin

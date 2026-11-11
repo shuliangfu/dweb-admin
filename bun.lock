@@ -7,7 +7,7 @@
       "dependencies": {
         "@dreamer/cache": "npm:@jsr/dreamer__cache@^1.1.0",
         "@dreamer/database": "npm:@jsr/dreamer__database@^1.2.0",
-        "@dreamer/dweb": "npm:@jsr/dreamer__dweb@^3.9.2",
+        "@dreamer/dweb": "npm:@jsr/dreamer__dweb@^3.9.4",
         "@dreamer/humancheck": "npm:@jsr/dreamer__humancheck@^1.1.0",
         "@dreamer/i18n": "npm:@jsr/dreamer__i18n@^1.1.2",
         "@dreamer/logger": "npm:@jsr/dreamer__logger@^1.1.0",
@@ -19,7 +19,7 @@
         "@dreamer/runtime-adapter": "npm:@jsr/dreamer__runtime-adapter@^1.2.2",
         "@dreamer/storage": "npm:@jsr/dreamer__storage@^1.1.0",
         "@dreamer/theme": "npm:@jsr/dreamer__theme@^1.1.0",
-        "@dreamer/ui-view": "npm:@jsr/dreamer__ui-view@^1.2.8",
+        "@dreamer/ui-view": "npm:@jsr/dreamer__ui-view@^1.3.3",
         "@dreamer/upload": "npm:@jsr/dreamer__upload@^2.0.1",
         "@dreamer/utils": "npm:@jsr/dreamer__utils@^1.1.0",
         "@dreamer/view": "npm:@jsr/dreamer__view@^3.0.4",
@@ -32,7 +32,7 @@
         "tailwindcss": "^4.3.5",
       },
       "devDependencies": {
-        "@dreamer/test": "npm:@jsr/dreamer__test@^1.2.3",
+        "@dreamer/test": "npm:@jsr/dreamer__test@^1.2.4",
         "playwright": "1.59.1",
         "tsx": "^4.23.15",
       },
@@ -49,7 +49,7 @@
 
     "@dreamer/database": ["@jsr/dreamer__database@1.2.0", "https://npm.jsr.io/~/11/@jsr/dreamer__database/1.2.0.tgz", { "dependencies": { "@jsr/dreamer__cache": "^1.1.0", "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__runtime-adapter": "^1.2.2", "@jsr/dreamer__service": "^1.1.0", "mongodb": "7.0.0", "mysql2": "3.16.0", "pg": "8.16.3" } }, "sha512-tdnsTNjm/z52xde6ZtZgWrq8j5eHia/BX/I3+r3/9Ymha4pakFScOwZeJGP6tjbHqGfmAWOROflPfzmA+h3lgg=="],
 
-    "@dreamer/dweb": ["@jsr/dreamer__dweb@3.9.2", "https://npm.jsr.io/~/11/@jsr/dreamer__dweb/3.9.2.tgz", { "dependencies": { "@jsr/dreamer__config": "^1.1.1", "@jsr/dreamer__console": "^1.1.1", "@jsr/dreamer__database": "^1.2.0", "@jsr/dreamer__esbuild": "^1.5.0", "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__lifecycle": "^1.1.0", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__middleware": "^1.1.0", "@jsr/dreamer__middlewares": "^1.1.0", "@jsr/dreamer__plugin": "^1.1.0", "@jsr/dreamer__render": "^1.5.3", "@jsr/dreamer__router": "^1.2.2", "@jsr/dreamer__runtime-adapter": "^1.2.2", "@jsr/dreamer__server": "^1.3.0", "@jsr/dreamer__service": "^1.1.0", "@jsr/dreamer__session": "^1.1.0", "@jsr/dreamer__socket-io": "^1.2.1", "@jsr/dreamer__upload": "^2.0.1", "@jsr/dreamer__utils": "^1.1.0", "@jsr/dreamer__view": "^3.0.4", "@jsr/dreamer__websocket": "^1.1.0", "preact": "^11.2.0", "react": "^19.3.1" } }, "sha512-uG6rJNuKLSWAHnfuzecxHnxOr6htBTlqv7M6dMUHCRkFcp4azyxUyB94bzEIba7nGm3HY3ZaG25FUcU6Ia1++Q=="],
+    "@dreamer/dweb": ["@jsr/dreamer__dweb@3.9.4", "https://npm.jsr.io/~/11/@jsr/dreamer__dweb/3.9.4.tgz", { "dependencies": { "@jsr/dreamer__config": "^1.1.1", "@jsr/dreamer__console": "^1.1.1", "@jsr/dreamer__database": "^1.2.0", "@jsr/dreamer__esbuild": "^1.5.1", "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__lifecycle": "^1.1.0", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__middleware": "^1.1.0", "@jsr/dreamer__middlewares": "^1.1.0", "@jsr/dreamer__plugin": "^1.1.0", "@jsr/dreamer__render": "^1.5.3", "@jsr/dreamer__router": "^1.2.2", "@jsr/dreamer__runtime-adapter": "^1.2.2", "@jsr/dreamer__server": "^1.3.1", "@jsr/dreamer__service": "^1.1.0", "@jsr/dreamer__session": "^1.1.0", "@jsr/dreamer__socket-io": "^1.2.1", "@jsr/dreamer__upload": "^2.0.1", "@jsr/dreamer__utils": "^1.1.0", "@jsr/dreamer__view": "^3.0.4", "@jsr/dreamer__websocket": "^1.1.0", "preact": "^11.2.0", "react": "^19.3.1" } }, "sha512-iz9qZw48Dw7xg7cGfajg9ifr2OrjouqekxObXt2z2a8ZN67Gmvul3dvr+mWX2RN+q+FsOX5GKMzp+uscFwx+Pw=="],
 
     "@dreamer/humancheck": ["@jsr/dreamer__humancheck@1.1.0", "https://npm.jsr.io/~/11/@jsr/dreamer__humancheck/1.1.0.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-wusCxnmLJsUPkzqDXMU0tnhSbpkA4Tcn2OqqnoxxEsZ+UJUBXA5DcrbDW9Esji/QKHxzROFVJ203w60b9oDDzw=="],
 
@@ -71,11 +71,11 @@
 
     "@dreamer/storage": ["@jsr/dreamer__storage@1.1.0", "https://npm.jsr.io/~/11/@jsr/dreamer__storage/1.1.0.tgz", { "dependencies": { "@jsr/dreamer__runtime-adapter": "^1.2.2", "@jsr/dreamer__service": "^1.1.0" } }, "sha512-cQqemhGRnDLgFMpS6zxfX+HXSkFNLgMq6+p6otjSjncXoauli3dk6myuz57fLZiwWHXe8A9sd8ZymOVKyvQWbg=="],
 
-    "@dreamer/test": ["@jsr/dreamer__test@1.2.3", "https://npm.jsr.io/~/11/@jsr/dreamer__test/1.2.3.tgz", { "dependencies": { "@jsr/dreamer__esbuild": "^1.2.0", "@jsr/dreamer__i18n": "^1.0.1", "@jsr/dreamer__logger": "^1.0.3", "@jsr/dreamer__runtime-adapter": "^1.2.2", "playwright": "1.59.1" } }, "sha512-qe9IMKKH4WcXnlf11UUDY4vAMhMpooaQUcuajELJvTG0F1CSo+5urcJkEm+2eQG4swq6JihSzV2+r+z9WBxDgQ=="],
+    "@dreamer/test": ["@jsr/dreamer__test@1.2.4", "https://npm.jsr.io/~/11/@jsr/dreamer__test/1.2.4.tgz", { "dependencies": { "@jsr/dreamer__esbuild": "^1.4.0", "@jsr/dreamer__i18n": "^1.0.1", "@jsr/dreamer__logger": "^1.0.3", "@jsr/dreamer__runtime-adapter": "^1.2.2", "playwright": "1.59.1" } }, "sha512-MvKRE2d1WoKuyRvsD/ZJ+TUiLMw22PaD4PPYARERmL3nrFCImKCFVbPTIL8EPamDyXKcpYdom/Lhac6J6edueQ=="],
 
     "@dreamer/theme": ["@jsr/dreamer__theme@1.1.0", "https://npm.jsr.io/~/11/@jsr/dreamer__theme/1.1.0.tgz", {}, "sha512-SGAgacxBnKk7dRVMcTqgv93yGTzHwh6ckOxSwEJ3vzoboNetyF6ZcS8gzdUu4C5Ek6vWuUJ4dkNJEaiPoL4dNA=="],
 
-    "@dreamer/ui-view": ["@jsr/dreamer__ui-view@1.2.8", "https://npm.jsr.io/~/11/@jsr/dreamer__ui-view/1.2.8.tgz", { "dependencies": { "@jsr/dreamer__image": "^1.1.0", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__markdown": "^1.1.1", "@jsr/dreamer__plugin": "^1.1.0", "@jsr/dreamer__runtime-adapter": "^1.2.2", "@jsr/dreamer__service": "^1.1.0", "@jsr/dreamer__storage": "^1.1.0", "@jsr/dreamer__upload": "^2.0.1", "@jsr/dreamer__view": "^3.0.4", "chart.js": "4.6.1", "prismjs": "1.30.0", "tailwind-merge": "3.7.0" } }, "sha512-2z++onoSRi2jDwX5VIkzuFSNGqt70C1shAtvchJEjFb1Zn7fUZvDTGBzqhJk7g5pMhggybJAP1FUlm5iQ6xVWw=="],
+    "@dreamer/ui-view": ["@jsr/dreamer__ui-view@1.3.3", "https://npm.jsr.io/~/11/@jsr/dreamer__ui-view/1.3.3.tgz", { "dependencies": { "@jsr/dreamer__image": "^1.1.0", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__markdown": "^1.1.1", "@jsr/dreamer__plugin": "^1.1.0", "@jsr/dreamer__runtime-adapter": "^1.2.2", "@jsr/dreamer__service": "^1.1.0", "@jsr/dreamer__storage": "^1.1.0", "@jsr/dreamer__upload": "^2.0.1", "@jsr/dreamer__view": "^3.0.4", "chart.js": "4.6.1", "prismjs": "1.30.0", "tailwind-merge": "3.7.0" } }, "sha512-IPQiPZ1lmclIG3jrUu9FpFIOyqBn+PUHtH+erxAx/gcHCI2ncFvzQVVEvMSGxUCxqvY5igVxszxfaxs+QYBZtg=="],
 
     "@dreamer/upload": ["@jsr/dreamer__upload@2.0.1", "https://npm.jsr.io/~/11/@jsr/dreamer__upload/2.0.1.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-RWs68ddYK9Bs5Ojk10PwBjemLc97PawRjT4JvwOKUEySUJe/RoSoJzNAyZskI3I+4qDtd9xigPBUjAEKooFTvQ=="],
 
@@ -169,7 +169,7 @@
 
     "@jsr/dreamer__database": ["@jsr/dreamer__database@1.2.0", "https://npm.jsr.io/~/11/@jsr/dreamer__database/1.2.0.tgz", { "dependencies": { "@jsr/dreamer__cache": "^1.1.0", "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__runtime-adapter": "^1.2.2", "@jsr/dreamer__service": "^1.1.0", "mongodb": "7.0.0", "mysql2": "3.16.0", "pg": "8.16.3" } }, "sha512-tdnsTNjm/z52xde6ZtZgWrq8j5eHia/BX/I3+r3/9Ymha4pakFScOwZeJGP6tjbHqGfmAWOROflPfzmA+h3lgg=="],
 
-    "@jsr/dreamer__esbuild": ["@jsr/dreamer__esbuild@1.4.2", "https://npm.jsr.io/~/11/@jsr/dreamer__esbuild/1.4.2.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__image": "^1.1.0", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__runtime-adapter": "^1.2.2", "autoprefixer": "^10.5.0", "cssnano": "^7.1.7", "esbuild": "^0.27.7", "postcss": "^8.5.10" } }, "sha512-tWL1YiwAxCQehatFgLjpnAxc8R3n7vL0N+hjFlO/oDp9tS0KRefXK3MUzFKFNRet9CRxO40/g8fS27LtzMM+8Q=="],
+    "@jsr/dreamer__esbuild": ["@jsr/dreamer__esbuild@1.5.0", "https://npm.jsr.io/~/11/@jsr/dreamer__esbuild/1.5.0.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__image": "^1.1.0", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__runtime-adapter": "^1.2.2", "autoprefixer": "^10.5.0", "cssnano": "^7.1.7", "esbuild": "^0.27.7", "postcss": "^8.5.10" } }, "sha512-46w7IXMe1a6YvzEDBSrv9gNLEKktlZX8MoI8+i0U4l1GL6ZtW8ynCf3mmCFqJgBDmvBseFsKoyiM/L8LIqs5Nw=="],
 
     "@jsr/dreamer__i18n": ["@jsr/dreamer__i18n@1.1.2", "https://npm.jsr.io/~/11/@jsr/dreamer__i18n/1.1.2.tgz", {}, "sha512-PV+8rLUWLdfR1f0cPNVzh1VZ46FPhKJc4xPTs75Ii1PBeWYjpcZqecq2spLNxbZpBi6aR/9suuel9Ur9IZ9QbA=="],
 
@@ -195,7 +195,7 @@
 
     "@jsr/dreamer__runtime-adapter": ["@jsr/dreamer__runtime-adapter@1.2.2", "https://npm.jsr.io/~/11/@jsr/dreamer__runtime-adapter/1.2.2.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.0", "node-cron": "3.0.3", "ws": "^8.21.1" } }, "sha512-hWAYhVCbAthzlnAKZUdEnYVFkdpBOnJRwuWLEHaiFBvMIR3i9v+H0aqijKaziNEGAvaIulUAWsSkyK4BMHg2dg=="],
 
-    "@jsr/dreamer__server": ["@jsr/dreamer__server@1.3.0", "https://npm.jsr.io/~/11/@jsr/dreamer__server/1.3.0.tgz", { "dependencies": { "@jsr/dreamer__esbuild": "^1.3.0", "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__middleware": "^1.1.0", "@jsr/dreamer__router": "^1.2.0", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-helOjpL95x5cWqbJqkgZDP7Nx7u1ahzhuqTEspkP1ndWZfPGn/LP8+Lc04IMgEtgMmZYwETFPV04OZlnOF2PnA=="],
+    "@jsr/dreamer__server": ["@jsr/dreamer__server@1.3.1", "https://npm.jsr.io/~/11/@jsr/dreamer__server/1.3.1.tgz", { "dependencies": { "@jsr/dreamer__esbuild": "^1.4.0", "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__middleware": "^1.1.0", "@jsr/dreamer__router": "^1.2.0", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-LGZisut6bf/V5FTJAaqb8gygfbUxmD4j2QiO5qgcZ4f/wjjmX3mnSeGtUAkUZl5uv7zuNES+PHlYQ9iQSK0w/w=="],
 
     "@jsr/dreamer__service": ["@jsr/dreamer__service@1.1.0", "https://npm.jsr.io/~/11/@jsr/dreamer__service/1.1.0.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-bzNdEEHNmGgyat7TshFXzbeCGxlJLwhROYIAMZncCH5cMueVdjJrMezaLTaztFHUT9OcpUNIZ2csdprx0IQ5CQ=="],
 
@@ -965,11 +965,23 @@
 
     "zip-stream": ["zip-stream@4.1.1", "", { "dependencies": { "archiver-utils": "^3.0.4", "compress-commons": "^4.1.2", "readable-stream": "^3.6.0" } }, "sha512-9qv4rlDiopXg4E69k+vMHjNN63YFMe9sZMrdlvKnCjlCRWeCBswPPMPUfx+ipsAWq1LXHe70RcbaHdJJpS6hyQ=="],
 
-    "@dreamer/dweb/@jsr/dreamer__esbuild": ["@jsr/dreamer__esbuild@1.5.0", "https://npm.jsr.io/~/11/@jsr/dreamer__esbuild/1.5.0.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__image": "^1.1.0", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__runtime-adapter": "^1.2.2", "autoprefixer": "^10.5.0", "cssnano": "^7.1.7", "esbuild": "^0.27.7", "postcss": "^8.5.10" } }, "sha512-46w7IXMe1a6YvzEDBSrv9gNLEKktlZX8MoI8+i0U4l1GL6ZtW8ynCf3mmCFqJgBDmvBseFsKoyiM/L8LIqs5Nw=="],
+    "@dreamer/dweb/@jsr/dreamer__esbuild": ["@jsr/dreamer__esbuild@1.5.1", "https://npm.jsr.io/~/11/@jsr/dreamer__esbuild/1.5.1.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__image": "^1.1.0", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__runtime-adapter": "^1.2.2", "autoprefixer": "^10.5.0", "cssnano": "^7.1.7", "esbuild": "^0.27.7", "postcss": "^8.5.10" } }, "sha512-DQmxxH7xRxaG5peTyscFteAjnYL6ONhExRHtzDLkCUuyhl2M6aec9FayY5K/AbnrEgAwRhXfebzhXmXXahtW9g=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server": ["@jsr/dreamer__server@1.3.0", "https://npm.jsr.io/~/11/@jsr/dreamer__server/1.3.0.tgz", { "dependencies": { "@jsr/dreamer__esbuild": "^1.3.0", "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__middleware": "^1.1.0", "@jsr/dreamer__router": "^1.2.0", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-helOjpL95x5cWqbJqkgZDP7Nx7u1ahzhuqTEspkP1ndWZfPGn/LP8+Lc04IMgEtgMmZYwETFPV04OZlnOF2PnA=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild": ["@jsr/dreamer__esbuild@1.4.2", "https://npm.jsr.io/~/11/@jsr/dreamer__esbuild/1.4.2.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__image": "^1.1.0", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__runtime-adapter": "^1.2.2", "autoprefixer": "^10.5.0", "cssnano": "^7.1.7", "esbuild": "^0.27.7", "postcss": "^8.5.10" } }, "sha512-tWL1YiwAxCQehatFgLjpnAxc8R3n7vL0N+hjFlO/oDp9tS0KRefXK3MUzFKFNRet9CRxO40/g8fS27LtzMM+8Q=="],
+
+    "@dreamer/view/@jsr/dreamer__server": ["@jsr/dreamer__server@1.3.0", "https://npm.jsr.io/~/11/@jsr/dreamer__server/1.3.0.tgz", { "dependencies": { "@jsr/dreamer__esbuild": "^1.3.0", "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__middleware": "^1.1.0", "@jsr/dreamer__router": "^1.2.0", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-helOjpL95x5cWqbJqkgZDP7Nx7u1ahzhuqTEspkP1ndWZfPGn/LP8+Lc04IMgEtgMmZYwETFPV04OZlnOF2PnA=="],
 
     "@jsr/dreamer__esbuild/esbuild": ["esbuild@0.27.7", "", { "optionalDependencies": { "@esbuild/aix-ppc64": "0.27.7", "@esbuild/android-arm": "0.27.7", "@esbuild/android-arm64": "0.27.7", "@esbuild/android-x64": "0.27.7", "@esbuild/darwin-arm64": "0.27.7", "@esbuild/darwin-x64": "0.27.7", "@esbuild/freebsd-arm64": "0.27.7", "@esbuild/freebsd-x64": "0.27.7", "@esbuild/linux-arm": "0.27.7", "@esbuild/linux-arm64": "0.27.7", "@esbuild/linux-ia32": "0.27.7", "@esbuild/linux-loong64": "0.27.7", "@esbuild/linux-mips64el": "0.27.7", "@esbuild/linux-ppc64": "0.27.7", "@esbuild/linux-riscv64": "0.27.7", "@esbuild/linux-s390x": "0.27.7", "@esbuild/linux-x64": "0.27.7", "@esbuild/netbsd-arm64": "0.27.7", "@esbuild/netbsd-x64": "0.27.7", "@esbuild/openbsd-arm64": "0.27.7", "@esbuild/openbsd-x64": "0.27.7", "@esbuild/openharmony-arm64": "0.27.7", "@esbuild/sunos-x64": "0.27.7", "@esbuild/win32-arm64": "0.27.7", "@esbuild/win32-ia32": "0.27.7", "@esbuild/win32-x64": "0.27.7" }, "hasInstallScript": true, "bin": { "esbuild": "bin/esbuild" } }, "sha512-IxpibTjyVnmrIQo5aqNpCgoACA/dTKLTlhMHihVHhdkxKyPO1uBBthumT0rdHmcsk9uMonIWS0m4FljWzILh3w=="],
 
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server": ["@jsr/dreamer__server@1.3.0", "https://npm.jsr.io/~/11/@jsr/dreamer__server/1.3.0.tgz", { "dependencies": { "@jsr/dreamer__esbuild": "^1.3.0", "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__middleware": "^1.1.0", "@jsr/dreamer__router": "^1.2.0", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-helOjpL95x5cWqbJqkgZDP7Nx7u1ahzhuqTEspkP1ndWZfPGn/LP8+Lc04IMgEtgMmZYwETFPV04OZlnOF2PnA=="],
+
     "@jsr/dreamer__session/redis": ["redis@5.12.1", "", { "dependencies": { "@redis/bloom": "5.12.1", "@redis/client": "5.12.1", "@redis/json": "5.12.1", "@redis/search": "5.12.1", "@redis/time-series": "5.12.1" } }, "sha512-LDsoVvb/CpoV9EN3FXvgvSHNJWuCIzl9MiO3ppOevuGLpSGJhwfQjpEwfFJcQvNSddHADDdZaWx0HnmMxRXG7g=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild": ["@jsr/dreamer__esbuild@1.4.2", "https://npm.jsr.io/~/11/@jsr/dreamer__esbuild/1.4.2.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__image": "^1.1.0", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__runtime-adapter": "^1.2.2", "autoprefixer": "^10.5.0", "cssnano": "^7.1.7", "esbuild": "^0.27.7", "postcss": "^8.5.10" } }, "sha512-tWL1YiwAxCQehatFgLjpnAxc8R3n7vL0N+hjFlO/oDp9tS0KRefXK3MUzFKFNRet9CRxO40/g8fS27LtzMM+8Q=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__server": ["@jsr/dreamer__server@1.3.0", "https://npm.jsr.io/~/11/@jsr/dreamer__server/1.3.0.tgz", { "dependencies": { "@jsr/dreamer__esbuild": "^1.3.0", "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__middleware": "^1.1.0", "@jsr/dreamer__router": "^1.2.0", "@jsr/dreamer__runtime-adapter": "^1.2.2" } }, "sha512-helOjpL95x5cWqbJqkgZDP7Nx7u1ahzhuqTEspkP1ndWZfPGn/LP8+Lc04IMgEtgMmZYwETFPV04OZlnOF2PnA=="],
 
     "@peculiar/asn1-android/tslib": ["tslib@2.9.1", "", {}, "sha512-a4Ux9VKuIMHsOS7ENbEq6hK2ZGYIT27Rtl0E4eD9KqwxhKiQeMZE/9xb3IdYwWaSOyIBQLExhQgXDTYoiCxnWA=="],
 
@@ -1043,6 +1055,10 @@
 
     "@dreamer/dweb/@jsr/dreamer__esbuild/esbuild": ["esbuild@0.27.7", "", { "optionalDependencies": { "@esbuild/aix-ppc64": "0.27.7", "@esbuild/android-arm": "0.27.7", "@esbuild/android-arm64": "0.27.7", "@esbuild/android-x64": "0.27.7", "@esbuild/darwin-arm64": "0.27.7", "@esbuild/darwin-x64": "0.27.7", "@esbuild/freebsd-arm64": "0.27.7", "@esbuild/freebsd-x64": "0.27.7", "@esbuild/linux-arm": "0.27.7", "@esbuild/linux-arm64": "0.27.7", "@esbuild/linux-ia32": "0.27.7", "@esbuild/linux-loong64": "0.27.7", "@esbuild/linux-mips64el": "0.27.7", "@esbuild/linux-ppc64": "0.27.7", "@esbuild/linux-riscv64": "0.27.7", "@esbuild/linux-s390x": "0.27.7", "@esbuild/linux-x64": "0.27.7", "@esbuild/netbsd-arm64": "0.27.7", "@esbuild/netbsd-x64": "0.27.7", "@esbuild/openbsd-arm64": "0.27.7", "@esbuild/openbsd-x64": "0.27.7", "@esbuild/openharmony-arm64": "0.27.7", "@esbuild/sunos-x64": "0.27.7", "@esbuild/win32-arm64": "0.27.7", "@esbuild/win32-ia32": "0.27.7", "@esbuild/win32-x64": "0.27.7" }, "hasInstallScript": true, "bin": { "esbuild": "bin/esbuild" } }, "sha512-IxpibTjyVnmrIQo5aqNpCgoACA/dTKLTlhMHihVHhdkxKyPO1uBBthumT0rdHmcsk9uMonIWS0m4FljWzILh3w=="],
 
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild": ["@jsr/dreamer__esbuild@1.4.2", "https://npm.jsr.io/~/11/@jsr/dreamer__esbuild/1.4.2.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__image": "^1.1.0", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__runtime-adapter": "^1.2.2", "autoprefixer": "^10.5.0", "cssnano": "^7.1.7", "esbuild": "^0.27.7", "postcss": "^8.5.10" } }, "sha512-tWL1YiwAxCQehatFgLjpnAxc8R3n7vL0N+hjFlO/oDp9tS0KRefXK3MUzFKFNRet9CRxO40/g8fS27LtzMM+8Q=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild": ["esbuild@0.27.7", "", { "optionalDependencies": { "@esbuild/aix-ppc64": "0.27.7", "@esbuild/android-arm": "0.27.7", "@esbuild/android-arm64": "0.27.7", "@esbuild/android-x64": "0.27.7", "@esbuild/darwin-arm64": "0.27.7", "@esbuild/darwin-x64": "0.27.7", "@esbuild/freebsd-arm64": "0.27.7", "@esbuild/freebsd-x64": "0.27.7", "@esbuild/linux-arm": "0.27.7", "@esbuild/linux-arm64": "0.27.7", "@esbuild/linux-ia32": "0.27.7", "@esbuild/linux-loong64": "0.27.7", "@esbuild/linux-mips64el": "0.27.7", "@esbuild/linux-ppc64": "0.27.7", "@esbuild/linux-riscv64": "0.27.7", "@esbuild/linux-s390x": "0.27.7", "@esbuild/linux-x64": "0.27.7", "@esbuild/netbsd-arm64": "0.27.7", "@esbuild/netbsd-x64": "0.27.7", "@esbuild/openbsd-arm64": "0.27.7", "@esbuild/openbsd-x64": "0.27.7", "@esbuild/openharmony-arm64": "0.27.7", "@esbuild/sunos-x64": "0.27.7", "@esbuild/win32-arm64": "0.27.7", "@esbuild/win32-ia32": "0.27.7", "@esbuild/win32-x64": "0.27.7" }, "hasInstallScript": true, "bin": { "esbuild": "bin/esbuild" } }, "sha512-IxpibTjyVnmrIQo5aqNpCgoACA/dTKLTlhMHihVHhdkxKyPO1uBBthumT0rdHmcsk9uMonIWS0m4FljWzILh3w=="],
+
     "@jsr/dreamer__esbuild/esbuild/@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.27.7", "", { "os": "aix", "cpu": "ppc64" }, "sha512-EKX3Qwmhz1eMdEJokhALr0YiD0lhQNwDqkPYyPhiSwKrh7/4KRjQc04sZ8db+5DVVnZ1LmbNDI1uAMPEUBnQPg=="],
 
     "@jsr/dreamer__esbuild/esbuild/@esbuild/android-arm": ["@esbuild/android-arm@0.27.7", "", { "os": "android", "cpu": "arm" }, "sha512-jbPXvB4Yj2yBV7HUfE2KHe4GJX51QplCN1pGbYjvsyCZbQmies29EoJbkEc+vYuU5o45AfQn37vZlyXy4YJ8RQ=="],
@@ -1095,6 +1111,8 @@
 
     "@jsr/dreamer__esbuild/esbuild/@esbuild/win32-x64": ["@esbuild/win32-x64@0.27.7", "", { "os": "win32", "cpu": "x64" }, "sha512-56hiAJPhwQ1R4i+21FVF7V8kSD5zZTdHcVuRFMW0hn753vVfQN8xlx4uOPT4xoGH0Z/oVATuR82AiqSTDIpaHg=="],
 
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild": ["@jsr/dreamer__esbuild@1.4.2", "https://npm.jsr.io/~/11/@jsr/dreamer__esbuild/1.4.2.tgz", { "dependencies": { "@jsr/dreamer__i18n": "^1.1.2", "@jsr/dreamer__image": "^1.1.0", "@jsr/dreamer__logger": "^1.1.0", "@jsr/dreamer__runtime-adapter": "^1.2.2", "autoprefixer": "^10.5.0", "cssnano": "^7.1.7", "esbuild": "^0.27.7", "postcss": "^8.5.10" } }, "sha512-tWL1YiwAxCQehatFgLjpnAxc8R3n7vL0N+hjFlO/oDp9tS0KRefXK3MUzFKFNRet9CRxO40/g8fS27LtzMM+8Q=="],
+
     "@jsr/dreamer__session/redis/@redis/bloom": ["@redis/bloom@5.12.1", "", { "peerDependencies": { "@redis/client": "^5.12.1" } }, "sha512-PUUfv+ms7jgPSBVoo/DN4AkPHj4D5TZSd6SbJX7egzBplkYUcKmHRE8RKia7UtZ8bSQbLguLvxVO+asKtQfZWA=="],
 
     "@jsr/dreamer__session/redis/@redis/client": ["@redis/client@5.12.1", "", { "dependencies": { "cluster-key-slot": "1.1.2" }, "peerDependencies": { "@node-rs/xxhash": "^1.1.0", "@opentelemetry/api": ">=1 <2" }, "optionalPeers": ["@node-rs/xxhash", "@opentelemetry/api"] }, "sha512-7aPGWeqA3uFm43o19umzdl16CEjK/JQGtSXVPevplTaOU3VJA/rseBC1QvYUz9lLDIMBimc4SW/zrW4S89BaCA=="],
@@ -1104,6 +1122,8 @@
     "@jsr/dreamer__session/redis/@redis/search": ["@redis/search@5.12.1", "", { "peerDependencies": { "@redis/client": "^5.12.1" } }, "sha512-ItlxbxC9cKI6IU1TLWoczwJCRb6TdmkEpWv05UrPawqaAnWGRu3rcIqsc5vN483T2fSociuyV1UkWIL5I4//2w=="],
 
     "@jsr/dreamer__session/redis/@redis/time-series": ["@redis/time-series@5.12.1", "", { "peerDependencies": { "@redis/client": "^5.12.1" } }, "sha512-c6JL6E3EcZJuNqKFz+KM+l9l5mpcQiKvTwgA3blt5glWJ8hjDk0yeHN3beE/MpqYIQ8UEX44ItQzgkE/gCBELQ=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild": ["esbuild@0.27.7", "", { "optionalDependencies": { "@esbuild/aix-ppc64": "0.27.7", "@esbuild/android-arm": "0.27.7", "@esbuild/android-arm64": "0.27.7", "@esbuild/android-x64": "0.27.7", "@esbuild/darwin-arm64": "0.27.7", "@esbuild/darwin-x64": "0.27.7", "@esbuild/freebsd-arm64": "0.27.7", "@esbuild/freebsd-x64": "0.27.7", "@esbuild/linux-arm": "0.27.7", "@esbuild/linux-arm64": "0.27.7", "@esbuild/linux-ia32": "0.27.7", "@esbuild/linux-loong64": "0.27.7", "@esbuild/linux-mips64el": "0.27.7", "@esbuild/linux-ppc64": "0.27.7", "@esbuild/linux-riscv64": "0.27.7", "@esbuild/linux-s390x": "0.27.7", "@esbuild/linux-x64": "0.27.7", "@esbuild/netbsd-arm64": "0.27.7", "@esbuild/netbsd-x64": "0.27.7", "@esbuild/openbsd-arm64": "0.27.7", "@esbuild/openbsd-x64": "0.27.7", "@esbuild/openharmony-arm64": "0.27.7", "@esbuild/sunos-x64": "0.27.7", "@esbuild/win32-arm64": "0.27.7", "@esbuild/win32-ia32": "0.27.7", "@esbuild/win32-x64": "0.27.7" }, "hasInstallScript": true, "bin": { "esbuild": "bin/esbuild" } }, "sha512-IxpibTjyVnmrIQo5aqNpCgoACA/dTKLTlhMHihVHhdkxKyPO1uBBthumT0rdHmcsk9uMonIWS0m4FljWzILh3w=="],
 
     "csso/css-tree/mdn-data": ["mdn-data@2.0.28", "", {}, "sha512-aylIc7Z9y4yzHYAJNuESG3hfhC+0Ibp/MAMiaOZgNv4pmEdFyfZhhhny4MNiAfWdBQ1RQ2mfDWmM1x8SvGyp8g=="],
 
@@ -1160,5 +1180,217 @@
     "@dreamer/dweb/@jsr/dreamer__esbuild/esbuild/@esbuild/win32-ia32": ["@esbuild/win32-ia32@0.27.7", "", { "os": "win32", "cpu": "ia32" }, "sha512-SmwKXe6VHIyZYbBLJrhOoCJRB/Z1tckzmgTLfFYOfpMAx63BJEaL9ExI8x7v0oAO3Zh6D/Oi1gVxEYr5oUCFhw=="],
 
     "@dreamer/dweb/@jsr/dreamer__esbuild/esbuild/@esbuild/win32-x64": ["@esbuild/win32-x64@0.27.7", "", { "os": "win32", "cpu": "x64" }, "sha512-56hiAJPhwQ1R4i+21FVF7V8kSD5zZTdHcVuRFMW0hn753vVfQN8xlx4uOPT4xoGH0Z/oVATuR82AiqSTDIpaHg=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild": ["esbuild@0.27.7", "", { "optionalDependencies": { "@esbuild/aix-ppc64": "0.27.7", "@esbuild/android-arm": "0.27.7", "@esbuild/android-arm64": "0.27.7", "@esbuild/android-x64": "0.27.7", "@esbuild/darwin-arm64": "0.27.7", "@esbuild/darwin-x64": "0.27.7", "@esbuild/freebsd-arm64": "0.27.7", "@esbuild/freebsd-x64": "0.27.7", "@esbuild/linux-arm": "0.27.7", "@esbuild/linux-arm64": "0.27.7", "@esbuild/linux-ia32": "0.27.7", "@esbuild/linux-loong64": "0.27.7", "@esbuild/linux-mips64el": "0.27.7", "@esbuild/linux-ppc64": "0.27.7", "@esbuild/linux-riscv64": "0.27.7", "@esbuild/linux-s390x": "0.27.7", "@esbuild/linux-x64": "0.27.7", "@esbuild/netbsd-arm64": "0.27.7", "@esbuild/netbsd-x64": "0.27.7", "@esbuild/openbsd-arm64": "0.27.7", "@esbuild/openbsd-x64": "0.27.7", "@esbuild/openharmony-arm64": "0.27.7", "@esbuild/sunos-x64": "0.27.7", "@esbuild/win32-arm64": "0.27.7", "@esbuild/win32-ia32": "0.27.7", "@esbuild/win32-x64": "0.27.7" }, "hasInstallScript": true, "bin": { "esbuild": "bin/esbuild" } }, "sha512-IxpibTjyVnmrIQo5aqNpCgoACA/dTKLTlhMHihVHhdkxKyPO1uBBthumT0rdHmcsk9uMonIWS0m4FljWzILh3w=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.27.7", "", { "os": "aix", "cpu": "ppc64" }, "sha512-EKX3Qwmhz1eMdEJokhALr0YiD0lhQNwDqkPYyPhiSwKrh7/4KRjQc04sZ8db+5DVVnZ1LmbNDI1uAMPEUBnQPg=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/android-arm": ["@esbuild/android-arm@0.27.7", "", { "os": "android", "cpu": "arm" }, "sha512-jbPXvB4Yj2yBV7HUfE2KHe4GJX51QplCN1pGbYjvsyCZbQmies29EoJbkEc+vYuU5o45AfQn37vZlyXy4YJ8RQ=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/android-arm64": ["@esbuild/android-arm64@0.27.7", "", { "os": "android", "cpu": "arm64" }, "sha512-62dPZHpIXzvChfvfLJow3q5dDtiNMkwiRzPylSCfriLvZeq0a1bWChrGx/BbUbPwOrsWKMn8idSllklzBy+dgQ=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/android-x64": ["@esbuild/android-x64@0.27.7", "", { "os": "android", "cpu": "x64" }, "sha512-x5VpMODneVDb70PYV2VQOmIUUiBtY3D3mPBG8NxVk5CogneYhkR7MmM3yR/uMdITLrC1ml/NV1rj4bMJuy9MCg=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/darwin-arm64": ["@esbuild/darwin-arm64@0.27.7", "", { "os": "darwin", "cpu": "arm64" }, "sha512-5lckdqeuBPlKUwvoCXIgI2D9/ABmPq3Rdp7IfL70393YgaASt7tbju3Ac+ePVi3KDH6N2RqePfHnXkaDtY9fkw=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/darwin-x64": ["@esbuild/darwin-x64@0.27.7", "", { "os": "darwin", "cpu": "x64" }, "sha512-rYnXrKcXuT7Z+WL5K980jVFdvVKhCHhUwid+dDYQpH+qu+TefcomiMAJpIiC2EM3Rjtq0sO3StMV/+3w3MyyqQ=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/freebsd-arm64": ["@esbuild/freebsd-arm64@0.27.7", "", { "os": "freebsd", "cpu": "arm64" }, "sha512-B48PqeCsEgOtzME2GbNM2roU29AMTuOIN91dsMO30t+Ydis3z/3Ngoj5hhnsOSSwNzS+6JppqWsuhTp6E82l2w=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/freebsd-x64": ["@esbuild/freebsd-x64@0.27.7", "", { "os": "freebsd", "cpu": "x64" }, "sha512-jOBDK5XEjA4m5IJK3bpAQF9/Lelu/Z9ZcdhTRLf4cajlB+8VEhFFRjWgfy3M1O4rO2GQ/b2dLwCUGpiF/eATNQ=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-arm": ["@esbuild/linux-arm@0.27.7", "", { "os": "linux", "cpu": "arm" }, "sha512-RkT/YXYBTSULo3+af8Ib0ykH8u2MBh57o7q/DAs3lTJlyVQkgQvlrPTnjIzzRPQyavxtPtfg0EopvDyIt0j1rA=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-arm64": ["@esbuild/linux-arm64@0.27.7", "", { "os": "linux", "cpu": "arm64" }, "sha512-RZPHBoxXuNnPQO9rvjh5jdkRmVizktkT7TCDkDmQ0W2SwHInKCAV95GRuvdSvA7w4VMwfCjUiPwDi0ZO6Nfe9A=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-ia32": ["@esbuild/linux-ia32@0.27.7", "", { "os": "linux", "cpu": "ia32" }, "sha512-GA48aKNkyQDbd3KtkplYWT102C5sn/EZTY4XROkxONgruHPU72l+gW+FfF8tf2cFjeHaRbWpOYa/uRBz/Xq1Pg=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-loong64": ["@esbuild/linux-loong64@0.27.7", "", { "os": "linux", "cpu": "none" }, "sha512-a4POruNM2oWsD4WKvBSEKGIiWQF8fZOAsycHOt6JBpZ+JN2n2JH9WAv56SOyu9X5IqAjqSIPTaJkqN8F7XOQ5Q=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-mips64el": ["@esbuild/linux-mips64el@0.27.7", "", { "os": "linux", "cpu": "none" }, "sha512-KabT5I6StirGfIz0FMgl1I+R1H73Gp0ofL9A3nG3i/cYFJzKHhouBV5VWK1CSgKvVaG4q1RNpCTR2LuTVB3fIw=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-ppc64": ["@esbuild/linux-ppc64@0.27.7", "", { "os": "linux", "cpu": "ppc64" }, "sha512-gRsL4x6wsGHGRqhtI+ifpN/vpOFTQtnbsupUF5R5YTAg+y/lKelYR1hXbnBdzDjGbMYjVJLJTd2OFmMewAgwlQ=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-riscv64": ["@esbuild/linux-riscv64@0.27.7", "", { "os": "linux", "cpu": "none" }, "sha512-hL25LbxO1QOngGzu2U5xeXtxXcW+/GvMN3ejANqXkxZ/opySAZMrc+9LY/WyjAan41unrR3YrmtTsUpwT66InQ=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-s390x": ["@esbuild/linux-s390x@0.27.7", "", { "os": "linux", "cpu": "s390x" }, "sha512-2k8go8Ycu1Kb46vEelhu1vqEP+UeRVj2zY1pSuPdgvbd5ykAw82Lrro28vXUrRmzEsUV0NzCf54yARIK8r0fdw=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-x64": ["@esbuild/linux-x64@0.27.7", "", { "os": "linux", "cpu": "x64" }, "sha512-hzznmADPt+OmsYzw1EE33ccA+HPdIqiCRq7cQeL1Jlq2gb1+OyWBkMCrYGBJ+sxVzve2ZJEVeePbLM2iEIZSxA=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/netbsd-arm64": ["@esbuild/netbsd-arm64@0.27.7", "", { "os": "none", "cpu": "arm64" }, "sha512-b6pqtrQdigZBwZxAn1UpazEisvwaIDvdbMbmrly7cDTMFnw/+3lVxxCTGOrkPVnsYIosJJXAsILG9XcQS+Yu6w=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/netbsd-x64": ["@esbuild/netbsd-x64@0.27.7", "", { "os": "none", "cpu": "x64" }, "sha512-OfatkLojr6U+WN5EDYuoQhtM+1xco+/6FSzJJnuWiUw5eVcicbyK3dq5EeV/QHT1uy6GoDhGbFpprUiHUYggrw=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/openbsd-arm64": ["@esbuild/openbsd-arm64@0.27.7", "", { "os": "openbsd", "cpu": "arm64" }, "sha512-AFuojMQTxAz75Fo8idVcqoQWEHIXFRbOc1TrVcFSgCZtQfSdc1RXgB3tjOn/krRHENUB4j00bfGjyl2mJrU37A=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/openbsd-x64": ["@esbuild/openbsd-x64@0.27.7", "", { "os": "openbsd", "cpu": "x64" }, "sha512-+A1NJmfM8WNDv5CLVQYJ5PshuRm/4cI6WMZRg1by1GwPIQPCTs1GLEUHwiiQGT5zDdyLiRM/l1G0Pv54gvtKIg=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/openharmony-arm64": ["@esbuild/openharmony-arm64@0.27.7", "", { "os": "none", "cpu": "arm64" }, "sha512-+KrvYb/C8zA9CU/g0sR6w2RBw7IGc5J2BPnc3dYc5VJxHCSF1yNMxTV5LQ7GuKteQXZtspjFbiuW5/dOj7H4Yw=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/sunos-x64": ["@esbuild/sunos-x64@0.27.7", "", { "os": "sunos", "cpu": "x64" }, "sha512-ikktIhFBzQNt/QDyOL580ti9+5mL/YZeUPKU2ivGtGjdTYoqz6jObj6nOMfhASpS4GU4Q/Clh1QtxWAvcYKamA=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/win32-arm64": ["@esbuild/win32-arm64@0.27.7", "", { "os": "win32", "cpu": "arm64" }, "sha512-7yRhbHvPqSpRUV7Q20VuDwbjW5kIMwTHpptuUzV+AA46kiPze5Z7qgt6CLCK3pWFrHeNfDd1VKgyP4O+ng17CA=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/win32-ia32": ["@esbuild/win32-ia32@0.27.7", "", { "os": "win32", "cpu": "ia32" }, "sha512-SmwKXe6VHIyZYbBLJrhOoCJRB/Z1tckzmgTLfFYOfpMAx63BJEaL9ExI8x7v0oAO3Zh6D/Oi1gVxEYr5oUCFhw=="],
+
+    "@dreamer/view/@jsr/dreamer__esbuild/esbuild/@esbuild/win32-x64": ["@esbuild/win32-x64@0.27.7", "", { "os": "win32", "cpu": "x64" }, "sha512-56hiAJPhwQ1R4i+21FVF7V8kSD5zZTdHcVuRFMW0hn753vVfQN8xlx4uOPT4xoGH0Z/oVATuR82AiqSTDIpaHg=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild": ["esbuild@0.27.7", "", { "optionalDependencies": { "@esbuild/aix-ppc64": "0.27.7", "@esbuild/android-arm": "0.27.7", "@esbuild/android-arm64": "0.27.7", "@esbuild/android-x64": "0.27.7", "@esbuild/darwin-arm64": "0.27.7", "@esbuild/darwin-x64": "0.27.7", "@esbuild/freebsd-arm64": "0.27.7", "@esbuild/freebsd-x64": "0.27.7", "@esbuild/linux-arm": "0.27.7", "@esbuild/linux-arm64": "0.27.7", "@esbuild/linux-ia32": "0.27.7", "@esbuild/linux-loong64": "0.27.7", "@esbuild/linux-mips64el": "0.27.7", "@esbuild/linux-ppc64": "0.27.7", "@esbuild/linux-riscv64": "0.27.7", "@esbuild/linux-s390x": "0.27.7", "@esbuild/linux-x64": "0.27.7", "@esbuild/netbsd-arm64": "0.27.7", "@esbuild/netbsd-x64": "0.27.7", "@esbuild/openbsd-arm64": "0.27.7", "@esbuild/openbsd-x64": "0.27.7", "@esbuild/openharmony-arm64": "0.27.7", "@esbuild/sunos-x64": "0.27.7", "@esbuild/win32-arm64": "0.27.7", "@esbuild/win32-ia32": "0.27.7", "@esbuild/win32-x64": "0.27.7" }, "hasInstallScript": true, "bin": { "esbuild": "bin/esbuild" } }, "sha512-IxpibTjyVnmrIQo5aqNpCgoACA/dTKLTlhMHihVHhdkxKyPO1uBBthumT0rdHmcsk9uMonIWS0m4FljWzILh3w=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.27.7", "", { "os": "aix", "cpu": "ppc64" }, "sha512-EKX3Qwmhz1eMdEJokhALr0YiD0lhQNwDqkPYyPhiSwKrh7/4KRjQc04sZ8db+5DVVnZ1LmbNDI1uAMPEUBnQPg=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/android-arm": ["@esbuild/android-arm@0.27.7", "", { "os": "android", "cpu": "arm" }, "sha512-jbPXvB4Yj2yBV7HUfE2KHe4GJX51QplCN1pGbYjvsyCZbQmies29EoJbkEc+vYuU5o45AfQn37vZlyXy4YJ8RQ=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/android-arm64": ["@esbuild/android-arm64@0.27.7", "", { "os": "android", "cpu": "arm64" }, "sha512-62dPZHpIXzvChfvfLJow3q5dDtiNMkwiRzPylSCfriLvZeq0a1bWChrGx/BbUbPwOrsWKMn8idSllklzBy+dgQ=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/android-x64": ["@esbuild/android-x64@0.27.7", "", { "os": "android", "cpu": "x64" }, "sha512-x5VpMODneVDb70PYV2VQOmIUUiBtY3D3mPBG8NxVk5CogneYhkR7MmM3yR/uMdITLrC1ml/NV1rj4bMJuy9MCg=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/darwin-arm64": ["@esbuild/darwin-arm64@0.27.7", "", { "os": "darwin", "cpu": "arm64" }, "sha512-5lckdqeuBPlKUwvoCXIgI2D9/ABmPq3Rdp7IfL70393YgaASt7tbju3Ac+ePVi3KDH6N2RqePfHnXkaDtY9fkw=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/darwin-x64": ["@esbuild/darwin-x64@0.27.7", "", { "os": "darwin", "cpu": "x64" }, "sha512-rYnXrKcXuT7Z+WL5K980jVFdvVKhCHhUwid+dDYQpH+qu+TefcomiMAJpIiC2EM3Rjtq0sO3StMV/+3w3MyyqQ=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/freebsd-arm64": ["@esbuild/freebsd-arm64@0.27.7", "", { "os": "freebsd", "cpu": "arm64" }, "sha512-B48PqeCsEgOtzME2GbNM2roU29AMTuOIN91dsMO30t+Ydis3z/3Ngoj5hhnsOSSwNzS+6JppqWsuhTp6E82l2w=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/freebsd-x64": ["@esbuild/freebsd-x64@0.27.7", "", { "os": "freebsd", "cpu": "x64" }, "sha512-jOBDK5XEjA4m5IJK3bpAQF9/Lelu/Z9ZcdhTRLf4cajlB+8VEhFFRjWgfy3M1O4rO2GQ/b2dLwCUGpiF/eATNQ=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-arm": ["@esbuild/linux-arm@0.27.7", "", { "os": "linux", "cpu": "arm" }, "sha512-RkT/YXYBTSULo3+af8Ib0ykH8u2MBh57o7q/DAs3lTJlyVQkgQvlrPTnjIzzRPQyavxtPtfg0EopvDyIt0j1rA=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-arm64": ["@esbuild/linux-arm64@0.27.7", "", { "os": "linux", "cpu": "arm64" }, "sha512-RZPHBoxXuNnPQO9rvjh5jdkRmVizktkT7TCDkDmQ0W2SwHInKCAV95GRuvdSvA7w4VMwfCjUiPwDi0ZO6Nfe9A=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-ia32": ["@esbuild/linux-ia32@0.27.7", "", { "os": "linux", "cpu": "ia32" }, "sha512-GA48aKNkyQDbd3KtkplYWT102C5sn/EZTY4XROkxONgruHPU72l+gW+FfF8tf2cFjeHaRbWpOYa/uRBz/Xq1Pg=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-loong64": ["@esbuild/linux-loong64@0.27.7", "", { "os": "linux", "cpu": "none" }, "sha512-a4POruNM2oWsD4WKvBSEKGIiWQF8fZOAsycHOt6JBpZ+JN2n2JH9WAv56SOyu9X5IqAjqSIPTaJkqN8F7XOQ5Q=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-mips64el": ["@esbuild/linux-mips64el@0.27.7", "", { "os": "linux", "cpu": "none" }, "sha512-KabT5I6StirGfIz0FMgl1I+R1H73Gp0ofL9A3nG3i/cYFJzKHhouBV5VWK1CSgKvVaG4q1RNpCTR2LuTVB3fIw=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-ppc64": ["@esbuild/linux-ppc64@0.27.7", "", { "os": "linux", "cpu": "ppc64" }, "sha512-gRsL4x6wsGHGRqhtI+ifpN/vpOFTQtnbsupUF5R5YTAg+y/lKelYR1hXbnBdzDjGbMYjVJLJTd2OFmMewAgwlQ=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-riscv64": ["@esbuild/linux-riscv64@0.27.7", "", { "os": "linux", "cpu": "none" }, "sha512-hL25LbxO1QOngGzu2U5xeXtxXcW+/GvMN3ejANqXkxZ/opySAZMrc+9LY/WyjAan41unrR3YrmtTsUpwT66InQ=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-s390x": ["@esbuild/linux-s390x@0.27.7", "", { "os": "linux", "cpu": "s390x" }, "sha512-2k8go8Ycu1Kb46vEelhu1vqEP+UeRVj2zY1pSuPdgvbd5ykAw82Lrro28vXUrRmzEsUV0NzCf54yARIK8r0fdw=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-x64": ["@esbuild/linux-x64@0.27.7", "", { "os": "linux", "cpu": "x64" }, "sha512-hzznmADPt+OmsYzw1EE33ccA+HPdIqiCRq7cQeL1Jlq2gb1+OyWBkMCrYGBJ+sxVzve2ZJEVeePbLM2iEIZSxA=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/netbsd-arm64": ["@esbuild/netbsd-arm64@0.27.7", "", { "os": "none", "cpu": "arm64" }, "sha512-b6pqtrQdigZBwZxAn1UpazEisvwaIDvdbMbmrly7cDTMFnw/+3lVxxCTGOrkPVnsYIosJJXAsILG9XcQS+Yu6w=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/netbsd-x64": ["@esbuild/netbsd-x64@0.27.7", "", { "os": "none", "cpu": "x64" }, "sha512-OfatkLojr6U+WN5EDYuoQhtM+1xco+/6FSzJJnuWiUw5eVcicbyK3dq5EeV/QHT1uy6GoDhGbFpprUiHUYggrw=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/openbsd-arm64": ["@esbuild/openbsd-arm64@0.27.7", "", { "os": "openbsd", "cpu": "arm64" }, "sha512-AFuojMQTxAz75Fo8idVcqoQWEHIXFRbOc1TrVcFSgCZtQfSdc1RXgB3tjOn/krRHENUB4j00bfGjyl2mJrU37A=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/openbsd-x64": ["@esbuild/openbsd-x64@0.27.7", "", { "os": "openbsd", "cpu": "x64" }, "sha512-+A1NJmfM8WNDv5CLVQYJ5PshuRm/4cI6WMZRg1by1GwPIQPCTs1GLEUHwiiQGT5zDdyLiRM/l1G0Pv54gvtKIg=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/openharmony-arm64": ["@esbuild/openharmony-arm64@0.27.7", "", { "os": "none", "cpu": "arm64" }, "sha512-+KrvYb/C8zA9CU/g0sR6w2RBw7IGc5J2BPnc3dYc5VJxHCSF1yNMxTV5LQ7GuKteQXZtspjFbiuW5/dOj7H4Yw=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/sunos-x64": ["@esbuild/sunos-x64@0.27.7", "", { "os": "sunos", "cpu": "x64" }, "sha512-ikktIhFBzQNt/QDyOL580ti9+5mL/YZeUPKU2ivGtGjdTYoqz6jObj6nOMfhASpS4GU4Q/Clh1QtxWAvcYKamA=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/win32-arm64": ["@esbuild/win32-arm64@0.27.7", "", { "os": "win32", "cpu": "arm64" }, "sha512-7yRhbHvPqSpRUV7Q20VuDwbjW5kIMwTHpptuUzV+AA46kiPze5Z7qgt6CLCK3pWFrHeNfDd1VKgyP4O+ng17CA=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/win32-ia32": ["@esbuild/win32-ia32@0.27.7", "", { "os": "win32", "cpu": "ia32" }, "sha512-SmwKXe6VHIyZYbBLJrhOoCJRB/Z1tckzmgTLfFYOfpMAx63BJEaL9ExI8x7v0oAO3Zh6D/Oi1gVxEYr5oUCFhw=="],
+
+    "@jsr/dreamer__view/@jsr/dreamer__esbuild/esbuild/@esbuild/win32-x64": ["@esbuild/win32-x64@0.27.7", "", { "os": "win32", "cpu": "x64" }, "sha512-56hiAJPhwQ1R4i+21FVF7V8kSD5zZTdHcVuRFMW0hn753vVfQN8xlx4uOPT4xoGH0Z/oVATuR82AiqSTDIpaHg=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.27.7", "", { "os": "aix", "cpu": "ppc64" }, "sha512-EKX3Qwmhz1eMdEJokhALr0YiD0lhQNwDqkPYyPhiSwKrh7/4KRjQc04sZ8db+5DVVnZ1LmbNDI1uAMPEUBnQPg=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/android-arm": ["@esbuild/android-arm@0.27.7", "", { "os": "android", "cpu": "arm" }, "sha512-jbPXvB4Yj2yBV7HUfE2KHe4GJX51QplCN1pGbYjvsyCZbQmies29EoJbkEc+vYuU5o45AfQn37vZlyXy4YJ8RQ=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/android-arm64": ["@esbuild/android-arm64@0.27.7", "", { "os": "android", "cpu": "arm64" }, "sha512-62dPZHpIXzvChfvfLJow3q5dDtiNMkwiRzPylSCfriLvZeq0a1bWChrGx/BbUbPwOrsWKMn8idSllklzBy+dgQ=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/android-x64": ["@esbuild/android-x64@0.27.7", "", { "os": "android", "cpu": "x64" }, "sha512-x5VpMODneVDb70PYV2VQOmIUUiBtY3D3mPBG8NxVk5CogneYhkR7MmM3yR/uMdITLrC1ml/NV1rj4bMJuy9MCg=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/darwin-arm64": ["@esbuild/darwin-arm64@0.27.7", "", { "os": "darwin", "cpu": "arm64" }, "sha512-5lckdqeuBPlKUwvoCXIgI2D9/ABmPq3Rdp7IfL70393YgaASt7tbju3Ac+ePVi3KDH6N2RqePfHnXkaDtY9fkw=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/darwin-x64": ["@esbuild/darwin-x64@0.27.7", "", { "os": "darwin", "cpu": "x64" }, "sha512-rYnXrKcXuT7Z+WL5K980jVFdvVKhCHhUwid+dDYQpH+qu+TefcomiMAJpIiC2EM3Rjtq0sO3StMV/+3w3MyyqQ=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/freebsd-arm64": ["@esbuild/freebsd-arm64@0.27.7", "", { "os": "freebsd", "cpu": "arm64" }, "sha512-B48PqeCsEgOtzME2GbNM2roU29AMTuOIN91dsMO30t+Ydis3z/3Ngoj5hhnsOSSwNzS+6JppqWsuhTp6E82l2w=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/freebsd-x64": ["@esbuild/freebsd-x64@0.27.7", "", { "os": "freebsd", "cpu": "x64" }, "sha512-jOBDK5XEjA4m5IJK3bpAQF9/Lelu/Z9ZcdhTRLf4cajlB+8VEhFFRjWgfy3M1O4rO2GQ/b2dLwCUGpiF/eATNQ=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-arm": ["@esbuild/linux-arm@0.27.7", "", { "os": "linux", "cpu": "arm" }, "sha512-RkT/YXYBTSULo3+af8Ib0ykH8u2MBh57o7q/DAs3lTJlyVQkgQvlrPTnjIzzRPQyavxtPtfg0EopvDyIt0j1rA=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-arm64": ["@esbuild/linux-arm64@0.27.7", "", { "os": "linux", "cpu": "arm64" }, "sha512-RZPHBoxXuNnPQO9rvjh5jdkRmVizktkT7TCDkDmQ0W2SwHInKCAV95GRuvdSvA7w4VMwfCjUiPwDi0ZO6Nfe9A=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-ia32": ["@esbuild/linux-ia32@0.27.7", "", { "os": "linux", "cpu": "ia32" }, "sha512-GA48aKNkyQDbd3KtkplYWT102C5sn/EZTY4XROkxONgruHPU72l+gW+FfF8tf2cFjeHaRbWpOYa/uRBz/Xq1Pg=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-loong64": ["@esbuild/linux-loong64@0.27.7", "", { "os": "linux", "cpu": "none" }, "sha512-a4POruNM2oWsD4WKvBSEKGIiWQF8fZOAsycHOt6JBpZ+JN2n2JH9WAv56SOyu9X5IqAjqSIPTaJkqN8F7XOQ5Q=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-mips64el": ["@esbuild/linux-mips64el@0.27.7", "", { "os": "linux", "cpu": "none" }, "sha512-KabT5I6StirGfIz0FMgl1I+R1H73Gp0ofL9A3nG3i/cYFJzKHhouBV5VWK1CSgKvVaG4q1RNpCTR2LuTVB3fIw=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-ppc64": ["@esbuild/linux-ppc64@0.27.7", "", { "os": "linux", "cpu": "ppc64" }, "sha512-gRsL4x6wsGHGRqhtI+ifpN/vpOFTQtnbsupUF5R5YTAg+y/lKelYR1hXbnBdzDjGbMYjVJLJTd2OFmMewAgwlQ=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-riscv64": ["@esbuild/linux-riscv64@0.27.7", "", { "os": "linux", "cpu": "none" }, "sha512-hL25LbxO1QOngGzu2U5xeXtxXcW+/GvMN3ejANqXkxZ/opySAZMrc+9LY/WyjAan41unrR3YrmtTsUpwT66InQ=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-s390x": ["@esbuild/linux-s390x@0.27.7", "", { "os": "linux", "cpu": "s390x" }, "sha512-2k8go8Ycu1Kb46vEelhu1vqEP+UeRVj2zY1pSuPdgvbd5ykAw82Lrro28vXUrRmzEsUV0NzCf54yARIK8r0fdw=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-x64": ["@esbuild/linux-x64@0.27.7", "", { "os": "linux", "cpu": "x64" }, "sha512-hzznmADPt+OmsYzw1EE33ccA+HPdIqiCRq7cQeL1Jlq2gb1+OyWBkMCrYGBJ+sxVzve2ZJEVeePbLM2iEIZSxA=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/netbsd-arm64": ["@esbuild/netbsd-arm64@0.27.7", "", { "os": "none", "cpu": "arm64" }, "sha512-b6pqtrQdigZBwZxAn1UpazEisvwaIDvdbMbmrly7cDTMFnw/+3lVxxCTGOrkPVnsYIosJJXAsILG9XcQS+Yu6w=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/netbsd-x64": ["@esbuild/netbsd-x64@0.27.7", "", { "os": "none", "cpu": "x64" }, "sha512-OfatkLojr6U+WN5EDYuoQhtM+1xco+/6FSzJJnuWiUw5eVcicbyK3dq5EeV/QHT1uy6GoDhGbFpprUiHUYggrw=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/openbsd-arm64": ["@esbuild/openbsd-arm64@0.27.7", "", { "os": "openbsd", "cpu": "arm64" }, "sha512-AFuojMQTxAz75Fo8idVcqoQWEHIXFRbOc1TrVcFSgCZtQfSdc1RXgB3tjOn/krRHENUB4j00bfGjyl2mJrU37A=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/openbsd-x64": ["@esbuild/openbsd-x64@0.27.7", "", { "os": "openbsd", "cpu": "x64" }, "sha512-+A1NJmfM8WNDv5CLVQYJ5PshuRm/4cI6WMZRg1by1GwPIQPCTs1GLEUHwiiQGT5zDdyLiRM/l1G0Pv54gvtKIg=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/openharmony-arm64": ["@esbuild/openharmony-arm64@0.27.7", "", { "os": "none", "cpu": "arm64" }, "sha512-+KrvYb/C8zA9CU/g0sR6w2RBw7IGc5J2BPnc3dYc5VJxHCSF1yNMxTV5LQ7GuKteQXZtspjFbiuW5/dOj7H4Yw=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/sunos-x64": ["@esbuild/sunos-x64@0.27.7", "", { "os": "sunos", "cpu": "x64" }, "sha512-ikktIhFBzQNt/QDyOL580ti9+5mL/YZeUPKU2ivGtGjdTYoqz6jObj6nOMfhASpS4GU4Q/Clh1QtxWAvcYKamA=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/win32-arm64": ["@esbuild/win32-arm64@0.27.7", "", { "os": "win32", "cpu": "arm64" }, "sha512-7yRhbHvPqSpRUV7Q20VuDwbjW5kIMwTHpptuUzV+AA46kiPze5Z7qgt6CLCK3pWFrHeNfDd1VKgyP4O+ng17CA=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/win32-ia32": ["@esbuild/win32-ia32@0.27.7", "", { "os": "win32", "cpu": "ia32" }, "sha512-SmwKXe6VHIyZYbBLJrhOoCJRB/Z1tckzmgTLfFYOfpMAx63BJEaL9ExI8x7v0oAO3Zh6D/Oi1gVxEYr5oUCFhw=="],
+
+    "@dreamer/middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/win32-x64": ["@esbuild/win32-x64@0.27.7", "", { "os": "win32", "cpu": "x64" }, "sha512-56hiAJPhwQ1R4i+21FVF7V8kSD5zZTdHcVuRFMW0hn753vVfQN8xlx4uOPT4xoGH0Z/oVATuR82AiqSTDIpaHg=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.27.7", "", { "os": "aix", "cpu": "ppc64" }, "sha512-EKX3Qwmhz1eMdEJokhALr0YiD0lhQNwDqkPYyPhiSwKrh7/4KRjQc04sZ8db+5DVVnZ1LmbNDI1uAMPEUBnQPg=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/android-arm": ["@esbuild/android-arm@0.27.7", "", { "os": "android", "cpu": "arm" }, "sha512-jbPXvB4Yj2yBV7HUfE2KHe4GJX51QplCN1pGbYjvsyCZbQmies29EoJbkEc+vYuU5o45AfQn37vZlyXy4YJ8RQ=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/android-arm64": ["@esbuild/android-arm64@0.27.7", "", { "os": "android", "cpu": "arm64" }, "sha512-62dPZHpIXzvChfvfLJow3q5dDtiNMkwiRzPylSCfriLvZeq0a1bWChrGx/BbUbPwOrsWKMn8idSllklzBy+dgQ=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/android-x64": ["@esbuild/android-x64@0.27.7", "", { "os": "android", "cpu": "x64" }, "sha512-x5VpMODneVDb70PYV2VQOmIUUiBtY3D3mPBG8NxVk5CogneYhkR7MmM3yR/uMdITLrC1ml/NV1rj4bMJuy9MCg=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/darwin-arm64": ["@esbuild/darwin-arm64@0.27.7", "", { "os": "darwin", "cpu": "arm64" }, "sha512-5lckdqeuBPlKUwvoCXIgI2D9/ABmPq3Rdp7IfL70393YgaASt7tbju3Ac+ePVi3KDH6N2RqePfHnXkaDtY9fkw=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/darwin-x64": ["@esbuild/darwin-x64@0.27.7", "", { "os": "darwin", "cpu": "x64" }, "sha512-rYnXrKcXuT7Z+WL5K980jVFdvVKhCHhUwid+dDYQpH+qu+TefcomiMAJpIiC2EM3Rjtq0sO3StMV/+3w3MyyqQ=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/freebsd-arm64": ["@esbuild/freebsd-arm64@0.27.7", "", { "os": "freebsd", "cpu": "arm64" }, "sha512-B48PqeCsEgOtzME2GbNM2roU29AMTuOIN91dsMO30t+Ydis3z/3Ngoj5hhnsOSSwNzS+6JppqWsuhTp6E82l2w=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/freebsd-x64": ["@esbuild/freebsd-x64@0.27.7", "", { "os": "freebsd", "cpu": "x64" }, "sha512-jOBDK5XEjA4m5IJK3bpAQF9/Lelu/Z9ZcdhTRLf4cajlB+8VEhFFRjWgfy3M1O4rO2GQ/b2dLwCUGpiF/eATNQ=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-arm": ["@esbuild/linux-arm@0.27.7", "", { "os": "linux", "cpu": "arm" }, "sha512-RkT/YXYBTSULo3+af8Ib0ykH8u2MBh57o7q/DAs3lTJlyVQkgQvlrPTnjIzzRPQyavxtPtfg0EopvDyIt0j1rA=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-arm64": ["@esbuild/linux-arm64@0.27.7", "", { "os": "linux", "cpu": "arm64" }, "sha512-RZPHBoxXuNnPQO9rvjh5jdkRmVizktkT7TCDkDmQ0W2SwHInKCAV95GRuvdSvA7w4VMwfCjUiPwDi0ZO6Nfe9A=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-ia32": ["@esbuild/linux-ia32@0.27.7", "", { "os": "linux", "cpu": "ia32" }, "sha512-GA48aKNkyQDbd3KtkplYWT102C5sn/EZTY4XROkxONgruHPU72l+gW+FfF8tf2cFjeHaRbWpOYa/uRBz/Xq1Pg=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-loong64": ["@esbuild/linux-loong64@0.27.7", "", { "os": "linux", "cpu": "none" }, "sha512-a4POruNM2oWsD4WKvBSEKGIiWQF8fZOAsycHOt6JBpZ+JN2n2JH9WAv56SOyu9X5IqAjqSIPTaJkqN8F7XOQ5Q=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-mips64el": ["@esbuild/linux-mips64el@0.27.7", "", { "os": "linux", "cpu": "none" }, "sha512-KabT5I6StirGfIz0FMgl1I+R1H73Gp0ofL9A3nG3i/cYFJzKHhouBV5VWK1CSgKvVaG4q1RNpCTR2LuTVB3fIw=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-ppc64": ["@esbuild/linux-ppc64@0.27.7", "", { "os": "linux", "cpu": "ppc64" }, "sha512-gRsL4x6wsGHGRqhtI+ifpN/vpOFTQtnbsupUF5R5YTAg+y/lKelYR1hXbnBdzDjGbMYjVJLJTd2OFmMewAgwlQ=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-riscv64": ["@esbuild/linux-riscv64@0.27.7", "", { "os": "linux", "cpu": "none" }, "sha512-hL25LbxO1QOngGzu2U5xeXtxXcW+/GvMN3ejANqXkxZ/opySAZMrc+9LY/WyjAan41unrR3YrmtTsUpwT66InQ=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-s390x": ["@esbuild/linux-s390x@0.27.7", "", { "os": "linux", "cpu": "s390x" }, "sha512-2k8go8Ycu1Kb46vEelhu1vqEP+UeRVj2zY1pSuPdgvbd5ykAw82Lrro28vXUrRmzEsUV0NzCf54yARIK8r0fdw=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/linux-x64": ["@esbuild/linux-x64@0.27.7", "", { "os": "linux", "cpu": "x64" }, "sha512-hzznmADPt+OmsYzw1EE33ccA+HPdIqiCRq7cQeL1Jlq2gb1+OyWBkMCrYGBJ+sxVzve2ZJEVeePbLM2iEIZSxA=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/netbsd-arm64": ["@esbuild/netbsd-arm64@0.27.7", "", { "os": "none", "cpu": "arm64" }, "sha512-b6pqtrQdigZBwZxAn1UpazEisvwaIDvdbMbmrly7cDTMFnw/+3lVxxCTGOrkPVnsYIosJJXAsILG9XcQS+Yu6w=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/netbsd-x64": ["@esbuild/netbsd-x64@0.27.7", "", { "os": "none", "cpu": "x64" }, "sha512-OfatkLojr6U+WN5EDYuoQhtM+1xco+/6FSzJJnuWiUw5eVcicbyK3dq5EeV/QHT1uy6GoDhGbFpprUiHUYggrw=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/openbsd-arm64": ["@esbuild/openbsd-arm64@0.27.7", "", { "os": "openbsd", "cpu": "arm64" }, "sha512-AFuojMQTxAz75Fo8idVcqoQWEHIXFRbOc1TrVcFSgCZtQfSdc1RXgB3tjOn/krRHENUB4j00bfGjyl2mJrU37A=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/openbsd-x64": ["@esbuild/openbsd-x64@0.27.7", "", { "os": "openbsd", "cpu": "x64" }, "sha512-+A1NJmfM8WNDv5CLVQYJ5PshuRm/4cI6WMZRg1by1GwPIQPCTs1GLEUHwiiQGT5zDdyLiRM/l1G0Pv54gvtKIg=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/openharmony-arm64": ["@esbuild/openharmony-arm64@0.27.7", "", { "os": "none", "cpu": "arm64" }, "sha512-+KrvYb/C8zA9CU/g0sR6w2RBw7IGc5J2BPnc3dYc5VJxHCSF1yNMxTV5LQ7GuKteQXZtspjFbiuW5/dOj7H4Yw=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/sunos-x64": ["@esbuild/sunos-x64@0.27.7", "", { "os": "sunos", "cpu": "x64" }, "sha512-ikktIhFBzQNt/QDyOL580ti9+5mL/YZeUPKU2ivGtGjdTYoqz6jObj6nOMfhASpS4GU4Q/Clh1QtxWAvcYKamA=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/win32-arm64": ["@esbuild/win32-arm64@0.27.7", "", { "os": "win32", "cpu": "arm64" }, "sha512-7yRhbHvPqSpRUV7Q20VuDwbjW5kIMwTHpptuUzV+AA46kiPze5Z7qgt6CLCK3pWFrHeNfDd1VKgyP4O+ng17CA=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/win32-ia32": ["@esbuild/win32-ia32@0.27.7", "", { "os": "win32", "cpu": "ia32" }, "sha512-SmwKXe6VHIyZYbBLJrhOoCJRB/Z1tckzmgTLfFYOfpMAx63BJEaL9ExI8x7v0oAO3Zh6D/Oi1gVxEYr5oUCFhw=="],
+
+    "@jsr/dreamer__middlewares/@jsr/dreamer__server/@jsr/dreamer__esbuild/esbuild/@esbuild/win32-x64": ["@esbuild/win32-x64@0.27.7", "", { "os": "win32", "cpu": "x64" }, "sha512-56hiAJPhwQ1R4i+21FVF7V8kSD5zZTdHcVuRFMW0hn753vVfQN8xlx4uOPT4xoGH0Z/oVATuR82AiqSTDIpaHg=="],
   }
 }

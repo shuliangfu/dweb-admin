@@ -250,6 +250,43 @@ export default {
     routeSave: "保存变更",
     routeScanned: "已刷新，发现 {n} 个未纳入管理的路由",
     routeNone: "没有未保存的变更",
+    itemDesc: {
+      super_admin: "超级管理员：拥有全部权限",
+      operator: "运营：只读及客服（不可删除会话）",
+      cs_agent: "客服坐席",
+      admin: {
+        view: "查看管理员、分配与在线状态",
+        write: "新建、更新、删除管理员",
+      },
+      rbac: {
+        view: "查看角色、权限与路由",
+        write: "新建、更新、删除角色、权限与路由",
+      },
+      system: {
+        view: "查看系统设置页面",
+        write: "更新系统设置",
+      },
+      user: {
+        view: "查看会员列表",
+        write: "新建、更新、删除会员",
+      },
+      cms: {
+        view: "查看内容列表",
+        write: "新建、更新、删除内容",
+      },
+      developer: {
+        view: "查看开发者页面（菜单、日志等）",
+        write: "新建、更新、删除开发者资源",
+      },
+      cs: {
+        view: "进入客服大厅与会话",
+        claim: "认领客服会话",
+        reply: "回复客服会话",
+        upload: "上传客服附件",
+        hide: "隐藏客服会话",
+        remove: "删除客服会话",
+      },
+    },
   },
   menus: {
     title: "菜单管理",
@@ -472,6 +509,7 @@ export default {
     usernameExists: "用户名已存在",
     roleExists: "角色编码已存在",
     menuExists: "菜单标识已存在",
+    unknownPermission: "权限名不存在",
     lastSuperAdmin: "不能删除/停用/降权最后一个超级管理员",
     cannotDeleteSelf: "不能删除当前登录账号",
     cannotKickSelf: "不能踢自己的当前会话",

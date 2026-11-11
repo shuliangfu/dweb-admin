@@ -12,10 +12,10 @@ export default function SupportPage() {
   });
 
   return (
-    <div class="min-h-[calc(100vh-72px-88px)] bg-[radial-gradient(1200px_500px_at_80%_20%,#ddd6fe,transparent_60%),radial-gradient(800px_400px_at_10%_80%,rgba(253,230,138,0.33),transparent_55%),#f4f0ea] dark:bg-slate-950">
+    <div class="min-h-[calc(100vh-72px-88px)]">
       <div class="mx-auto grid max-w-[1440px] items-start gap-12 px-6 py-14 sm:px-10 lg:grid-cols-[1fr_420px] lg:px-16 lg:pb-20 lg:pt-14">
         <div>
-          <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.16em] text-[#4f46e5]">
+          <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.16em] text-[#8a6a3d]">
             Support
           </p>
           <h1 class="mb-4 text-4xl font-bold leading-[1.15] tracking-tight text-[#12101a] dark:text-slate-50 sm:text-5xl">
@@ -31,7 +31,7 @@ export default function SupportPage() {
               "关闭后可用右下角按钮再次打开",
             ].map((text) => (
               <div class="flex items-start gap-3 text-[15px] leading-[1.6] text-[#3f3a45] dark:text-slate-300">
-                <span class="mt-0.5 grid h-[22px] w-[22px] shrink-0 place-items-center rounded-full bg-[#4f46e5] text-xs text-white">
+                <span class="mt-0.5 grid h-[22px] w-[22px] shrink-0 place-items-center rounded-full bg-[#12101a] text-xs text-[#fffcf8]">
                   ✓
                 </span>
                 <span>{text}</span>
@@ -41,7 +41,7 @@ export default function SupportPage() {
           <button
             type="button"
             data-testid="contact-cs"
-            class="inline-flex h-12 w-[220px] items-center justify-center rounded-[14px] bg-[#4f46e5] px-5 text-[15px] font-semibold text-white transition hover:bg-[#4338ca]"
+            class="inline-flex h-12 w-[220px] items-center justify-center rounded-[14px] bg-[#12101a] px-5 text-[15px] font-semibold text-[#fffcf8] transition hover:bg-[#2a2730]"
             onClick={() => openCsSupport()}
           >
             重新打开在线客服浮窗
@@ -50,22 +50,22 @@ export default function SupportPage() {
 
         {/* Decorative chat preview only — real float is CsSupportFloat */}
         <div
-          class="hidden h-[520px] flex-col overflow-hidden rounded-[24px] border border-[#e8e2d8] bg-[#fffcf8] shadow-[0_30px_60px_rgba(18,16,26,0.1)] lg:flex dark:border-slate-700 dark:bg-slate-900"
+          class="hidden h-[520px] flex-col overflow-hidden rounded-[24px] border border-[#e8e2d8] bg-[#fffcf8] shadow-[0_10px_30px_rgba(18,16,26,0.03)] lg:flex dark:border-slate-700 dark:bg-slate-900"
           aria-hidden="true"
         >
-          <div class="flex items-center gap-3 bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] px-[18px] py-4 text-white">
-            <div class="grid h-9 w-9 place-items-center rounded-full bg-white text-sm font-extrabold text-[#4f46e5]">
+          <div class="flex items-center gap-3 border-b border-[#e8e2d8] bg-[#f4f0ea] px-[18px] py-4">
+            <div class="grid h-9 w-9 place-items-center rounded-full bg-[#12101a] text-sm font-extrabold text-[#fffcf8]">
               客
             </div>
             <div>
-              <div class="font-bold">在线客服</div>
-              <div class="text-[11px] opacity-80">通常即时回复</div>
+              <div class="font-bold text-[#12101a]">在线客服</div>
+              <div class="text-[11px] text-[#6b6570]">通常即时回复</div>
             </div>
           </div>
           <div class="mx-4 mt-2.5 max-w-[78%] rounded-2xl rounded-bl-sm bg-[#f3efe8] px-3.5 py-2.5 text-[13px] leading-[1.55] text-[#2a2730]">
             你好，我是 Dweb Admin 在线客服，可以介绍产品能力或协助接入。
           </div>
-          <div class="ml-auto mr-4 mt-2.5 max-w-[78%] rounded-2xl rounded-br-sm bg-[#4f46e5] px-3.5 py-2.5 text-[13px] leading-[1.55] text-white">
+          <div class="ml-auto mr-4 mt-2.5 max-w-[78%] rounded-2xl rounded-br-sm bg-[#12101a] px-3.5 py-2.5 text-[13px] leading-[1.55] text-[#fffcf8]">
             想了解权限和多端是怎么配合的。
           </div>
           <div class="mx-4 mt-2.5 max-w-[78%] rounded-2xl rounded-bl-sm bg-[#f3efe8] px-3.5 py-2.5 text-[13px] leading-[1.55] text-[#2a2730]">

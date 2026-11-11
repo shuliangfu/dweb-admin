@@ -8,10 +8,20 @@ export interface ApiResult<T = Record<string, unknown>> {
   data: T & { error?: string; message?: string; fields?: string[] };
 }
 
-function csrfToken(): string {
+/** 从 `_csrf` cookie 读取双提交 CSRF token */
+export function csrfToken(): string {
   const doc = (globalThis as { document?: { cookie?: string } }).document;
   const m = (doc?.cookie ?? "").match(/(?:^|;\s*)_csrf=([^;]+)/);
   return m ? decodeURIComponent(m[1]) : "";
+}
+
+/**
+ * DataPanel / createApiDataSource 写请求用的 CSRF 头。
+ * 无 cookie 时返回空对象（由中间件拒绝）。
+ */
+export function csrfHeaders(): HeadersInit {
+  const token = csrfToken();
+  return token ? { "X-CSRF-Token": token } : {};
 }
 
 export async function api<T = Record<string, unknown>>(
@@ -33,8 +43,16 @@ export async function api<T = Record<string, unknown>>(
     try {
       data = await res.json();
     } catch { /* empty body */ }
-    return { ok: res.ok, status: res.status, data: data as ApiResult<T>["data"] };
+    return {
+      ok: res.ok,
+      status: res.status,
+      data: data as ApiResult<T>["data"],
+    };
   } catch {
-    return { ok: false, status: 0, data: { error: "network" } as ApiResult<T>["data"] };
+    return {
+      ok: false,
+      status: 0,
+      data: { error: "network" } as ApiResult<T>["data"],
+    };
   }
 }

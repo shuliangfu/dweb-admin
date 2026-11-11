@@ -9,7 +9,6 @@ import {
   AuthRoute,
   type AuthRouteDocument,
   type ItemType,
-  type MenuDocument,
 } from "@common/model/mod.ts";
 import { createMenu, createUser, deleteMenu, deleteUser, listAllMenus, updateMenu, updateUser } from "@common/service/admin-crud.ts";
 import { roleOptions } from "@common/service/rbac-admin.ts";
@@ -20,6 +19,7 @@ import { buildWhere, docToRow } from "./mongo.ts";
 import { type ColDef, type Ctx, type Fail, type FormDef, l, type ListQuery, type ListResult, type Opt, type RemoveResult, type ResourceDef, type Row, type SearchDef } from "./types.ts";
 import { escapeRe } from "@common/service/list.ts";
 import { pickLocalized } from "@common/i18n/mod.ts";
+import { itemDescription } from "@common/i18n/item-desc.ts";
 
 const ts = (v: unknown) => (v ? new Date(v as string).toISOString() : "");
 
@@ -52,7 +52,7 @@ const adminColumns: ColDef[] = [
   { prop: "nickname", label: l("昵称", "Nickname"), sortable: true },
   { prop: "email", label: l("邮箱", "Email"), sortable: true },
   { prop: "roleCodes", label: l("角色", "Roles") },
-  { prop: "status", label: l("状态", "Status"), type: "tag", options: STATUS_OPTS, inline: "switch", sortable: true },
+  { prop: "status", label: l("状态", "Status"), type: "tag", options: STATUS_OPTS, inline: "switch", batch: true, sortable: true },
   { prop: "loginCount", label: l("登录次数", "Logins"), type: "number", sortable: true },
   { prop: "lastLoginIp", label: l("登录IP", "Login IP"), hidden: true },
   { prop: "lastLoginAt", label: l("最后登录", "Last login"), type: "datetime", sortable: true },
@@ -131,8 +131,8 @@ export const adminsResource: ResourceDef = {
   statusField: "status",
   statusValues: STATUS_OPTS,
   form: adminForm,
-  async dynamicOptions() {
-    return { roleCodes: (await roleOptions()).map((r) => ({ value: r.name, label: r.description ? `${r.name} · ${r.description}` : r.name })) };
+  async dynamicOptions(ctx) {
+    return { roleCodes: (await roleOptions(ctx.locale)).map((r) => ({ value: r.name, label: r.description ? `${r.name} · ${r.description}` : r.name })) };
   },
   async create(body, ctx) {
     const b = adminBody(body, true, ctx);
@@ -184,23 +184,41 @@ function itemResource(type: ItemType): ResourceDef {
     columns,
     search,
     defaultSort: { prop: "name", order: "asc" },
-    async list(q): Promise<ListResult> {
-      const where = { type, ...buildWhere(search, q.filters) } as Record<string, unknown>;
-      const sort: Record<string, 1 | -1> = q.sort ? { [q.sort]: q.order } : { name: 1 };
-      const r = await AuthItem.paginate(where as never, q.page, q.pageSize, sort);
-      return {
-        rows: (r.data as unknown as AuthItemDocument[]).map((i) => ({
-          id: i.name,
-          name: i.name,
-          description: i.description ?? "",
-          ruleName: i.ruleName ?? "",
-          isSuper: !!i.isSuper,
-          locked: !!i.isSuper,
-          createdAt: ts(i.createdAt),
-          updatedAt: ts(i.updatedAt),
-        })),
-        total: r.total,
-      };
+    async list(q, ctx): Promise<ListResult> {
+      const nameQ = (q.filters.name ?? "").trim();
+      const infoQ = (q.filters.info ?? "").trim();
+      const all = (await AuthItem.findAll({ type } as never, undefined, { sort: { name: 1 } })) as unknown as AuthItemDocument[];
+      let rows = all.map((i) => ({
+        id: i.name,
+        name: i.name,
+        description: itemDescription(i.name, i.description ?? "", ctx.locale),
+        ruleName: i.ruleName ?? "",
+        isSuper: !!i.isSuper,
+        locked: !!i.isSuper,
+        createdAt: ts(i.createdAt),
+        updatedAt: ts(i.updatedAt),
+      }));
+      if (nameQ) {
+        const re = new RegExp(escapeRe(nameQ), "i");
+        rows = rows.filter((r) => re.test(r.name));
+      }
+      if (infoQ) {
+        const re = new RegExp(escapeRe(infoQ), "i");
+        rows = rows.filter((r) => re.test(r.description));
+      }
+      const sortProp = (q.sort && ["name", "description", "createdAt", "updatedAt"].includes(q.sort))
+        ? q.sort
+        : "name";
+      rows.sort((a, b) => {
+        const av = String(a[sortProp as keyof typeof a] ?? "");
+        const bv = String(b[sortProp as keyof typeof b] ?? "");
+        if (sortProp === "createdAt" || sortProp === "updatedAt") {
+          return (new Date(av).getTime() - new Date(bv).getTime()) * q.order;
+        }
+        return av.localeCompare(bv, ctx.locale) * q.order;
+      });
+      const start = (q.page - 1) * q.pageSize;
+      return { rows: rows.slice(start, start + q.pageSize), total: rows.length };
     },
     remove: (ids) => eachResult(ids, (id) => deleteItem(type, id)),
   };
@@ -248,7 +266,7 @@ export const menusResource: ResourceDef = {
     { prop: "permission", label: l("权限名", "Permission") },
     { prop: "icon", label: l("图标", "Icon") },
     { prop: "sort", label: l("排序", "Sort"), type: "number", sortable: true },
-    { prop: "status", label: l("显示", "Visible"), type: "tag", options: STATUS_OPTS, inline: "switch", sortable: true },
+    { prop: "status", label: l("显示", "Visible"), type: "tag", options: STATUS_OPTS, inline: "switch", batch: true, sortable: true },
     { prop: "key", label: l("标识", "Key"), sortable: true },
   ],
   search: menuSearch,

@@ -20,7 +20,7 @@ export function load(ctx: { pathname?: string }) {
 function tabClass(active: boolean): string {
   return [
     "flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 px-1 text-[10px] font-semibold transition-colors",
-    active ? "text-[#4f46e5]" : "text-[#8a8490]",
+    active ? "text-[#12101a]" : "text-[#8a8490]",
   ].join(" ");
 }
 

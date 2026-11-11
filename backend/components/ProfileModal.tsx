@@ -60,7 +60,8 @@ export function ProfileModal(props: { locale: Locale }) {
       onClose={() => {
         profileOpen.value = false;
       }}
-      children={() => (
+    >
+      {() => (
         <div class="grid gap-3" data-testid="profile-form">
           <FormItem label={tr("profile.username")}>
             <Input value={username} readOnly disabled />
@@ -101,6 +102,6 @@ export function ProfileModal(props: { locale: Locale }) {
           </div>
         </div>
       )}
-    />
+    </Modal>
   );
 }

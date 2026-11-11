@@ -61,12 +61,6 @@ Deno.test("light sidebar is slate-800 (lighter than the dark-mode sidebar)", () 
   assert(lum(L("--adm-side")) > lum(D("--adm-side")));
 });
 
-const hsl = (c: string) => {
-  const [r, g, b] = hex(c).map((v) => v / 255);
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  return (max + min) / 2; // lightness 0..1
-};
-
 Deno.test("light navbar and logo strip are exactly the sidebar colour #1e293b", () => {
   assertEquals(L("--adm-side").toLowerCase(), "#1e293b");
   assertEquals(L("--adm-top-bg").toLowerCase(), "#1e293b");

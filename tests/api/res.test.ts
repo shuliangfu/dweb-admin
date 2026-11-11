@@ -206,7 +206,8 @@ Deno.test({ name: "res: operator without write gets 403 on mutate (无权限)", 
     const a = new Api();
     const login = await a.login(u.username, u.password);
     assertEquals(login.status, 200, JSON.stringify(login.data));
-    // operator has cms.view routes but not cms.write → POST /api/res/cms.article forbidden
+    // operator has *.view packs/routes but not *.write → POST /api/res/<key> forbidden
+    // (SSR resolveResourceCaps dual-gates the same named write + route token).
     const create = await a.post("/api/res/create", { res: "cms.article", category: "x", title: "nope" });
     assertEquals(create.status, 403, JSON.stringify(create.data));
     assertEquals(create.data.error, "forbidden");
@@ -215,7 +216,61 @@ Deno.test({ name: "res: operator without write gets 403 on mutate (无权限)", 
     assertEquals(update.status, 403);
     const remove = await a.post("/api/res/remove", { res: "cms.article", ids: ["000000000000000000000000"] });
     assertEquals(remove.status, 403);
+    const adminsWrite = await a.post("/api/res/create", {
+      res: "admins",
+      username: `opdeny_${Date.now().toString(36)}`,
+      email: "opdeny@example.com",
+      password: "Passw0rd!x",
+      password2: "Passw0rd!x",
+      roleCodes: ["operator"],
+      status: "active",
+    });
+    assertEquals(adminsWrite.status, 403, JSON.stringify(adminsWrite.data));
   } finally {
     await removeUser(admin, u);
+  }
+} });
+
+Deno.test({ name: "res: menus reject unknown permission names (no fake AuthItem)", ...OPTS, fn: async () => {
+  const api = await adminApi();
+  const key = `t_perm_${Date.now().toString(36)}`;
+  try {
+    const bad = await api.post("/api/res/create", {
+      res: "menus",
+      key,
+      parentKey: "",
+      titleZh: "tmp",
+      titleEn: "tmp",
+      path: "/tmp-unknown-perm",
+      permission: "no.such.permission.pack",
+      icon: "star",
+      sort: 9999,
+      status: "active",
+    });
+    assertEquals(bad.status, 400, JSON.stringify(bad.data));
+    assertEquals(bad.data.error, "unknownPermission");
+    // Empty permission is allowed (path-only gate).
+    const ok = await api.post("/api/res/create", {
+      res: "menus",
+      key,
+      parentKey: "",
+      titleZh: "tmp",
+      titleEn: "tmp",
+      path: "/tmp-unknown-perm",
+      permission: "",
+      icon: "star",
+      sort: 9999,
+      status: "active",
+    });
+    assertEquals(ok.status, 201, JSON.stringify(ok.data));
+    // Known pack succeeds.
+    const upd = await api.post("/api/res/update", {
+      res: "menus",
+      id: key,
+      permission: "admin.view",
+    });
+    assertEquals(upd.status, 200, JSON.stringify(upd.data));
+  } finally {
+    await api.post("/api/res/remove", { res: "menus", ids: [key] });
   }
 } });

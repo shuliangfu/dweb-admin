@@ -245,7 +245,7 @@ function sessionSortIso(
   return Number.isNaN(t.getTime()) ? new Date().toISOString() : t.toISOString();
 }
 
-async function publishGuestOnline(
+function publishGuestOnline(
   sid: string,
   actorName: string,
   row: {
@@ -258,7 +258,7 @@ async function publishGuestOnline(
     claimedByName?: string | null;
     claimedAt?: Date | string | null;
   } | null,
-): Promise<void> {
+): void {
   const claimedBy = row?.claimedByAdminId
     ? String(row.claimedByAdminId).trim()
     : "";

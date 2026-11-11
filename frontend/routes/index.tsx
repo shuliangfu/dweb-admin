@@ -12,28 +12,28 @@ const capabilities = [
     body:
       "管理员账号、登录验证码、锁屏与会话在线列表；支持 Passkey／安全挑战等账号安全能力，便于团队安全入驻。",
     icon: "盾",
-    tone: "feat" as const,
+    ico: "bg-[#eee8dc] text-[#6a5848]",
   },
   {
     title: "权限与 RBAC",
     body:
       "角色、权限项、路由图与权限分配一体：按角色控制菜单与接口可见范围，贴近 Yii2 风格后台权限模型。",
     icon: "钥",
-    tone: "t2" as const,
+    ico: "bg-[#efe4d4] text-[#7a5c40]",
   },
   {
     title: "在线客服",
     body:
       "访客可从本站或手机端发起会话，WebSocket 实时同步到管理端接待窗；无需登录即可咨询。",
     icon: "聊",
-    tone: "t3" as const,
+    ico: "bg-[#eadfd0] text-[#6e5340]",
   },
   {
     title: "多端协同",
     body:
       "同仓覆盖管理后台、Web 前台、手机端与 API：业务配置在后台，访客触达在前台／手机，接口层统一对接。",
     icon: "联",
-    tone: "wide" as const,
+    ico: "bg-[#e6e4d8] text-[#545044]",
   },
 ];
 
@@ -42,25 +42,21 @@ const modules = [
     no: "01",
     title: "会员管理",
     body: "会员列表、活跃与僵尸分册，便于运营按活跃度筛查（模板页可按业务接真模型）。",
-    band: "bg-[#4f46e5]",
   },
   {
     no: "02",
     title: "内容／CMS",
     body: "文章、新闻、公告、图集等叶子页，支撑站内内容运营与公告发布。",
-    band: "bg-[#7c3aed]",
   },
   {
     no: "03",
     title: "系统与开发",
     body: "基本设置、地区、时间等系统项；开发侧含菜单管理，侧栏结构可配置。",
-    band: "bg-[#f59e0b]",
   },
   {
     no: "04",
     title: "数据面板约定",
     body: "列表统一搜索、列显隐、导入导出与打印等 DataPanel 能力，减少各页重复造轮子。",
-    band: "bg-[#10b981]",
   },
 ];
 
@@ -125,20 +121,16 @@ export default function Home() {
       {/* Dark full-bleed hero (header above is same #0d1020) */}
       <section class="relative overflow-hidden bg-[#0d1020] text-white">
         <div
-          class="pointer-events-none absolute -right-[40px] -top-[180px] h-[640px] w-[640px] rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.55),transparent_68%)] blur-sm"
+          class="pointer-events-none absolute -right-[40px] -top-[180px] h-[560px] w-[560px] rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.28),transparent_68%)] blur-sm"
           aria-hidden="true"
         />
         <div
-          class="pointer-events-none absolute -bottom-20 -left-20 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle,rgba(245,158,11,0.22),transparent_70%)] blur-sm"
-          aria-hidden="true"
-        />
-        <div
-          class="pointer-events-none absolute left-[38%] top-20 h-[280px] w-[280px] rounded-full bg-[radial-gradient(circle,rgba(167,139,250,0.4),transparent_70%)] blur-sm"
+          class="pointer-events-none absolute -bottom-20 -left-20 h-[360px] w-[360px] rounded-full bg-[radial-gradient(circle,rgba(245,158,11,0.12),transparent_70%)] blur-sm"
           aria-hidden="true"
         />
         <div class="relative z-[1] mx-auto grid max-w-[1440px] items-center gap-10 px-6 pb-20 pt-6 sm:px-10 lg:grid-cols-[1.05fr_0.95fr] lg:px-16 lg:pb-20 lg:pt-6">
           <div>
-            <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] py-1 pl-1.5 pr-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#c7c4ff]">
+            <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] py-1 pl-1.5 pr-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#d8d2c4]">
               <span class="h-2 w-2 rounded-full bg-emerald-400" />
               DENO · 多端门户
             </div>
@@ -146,7 +138,7 @@ export default function Home() {
               把后台、门户与客服
               <br />
               收进同一套{" "}
-              <em class="bg-gradient-to-r from-indigo-300 via-violet-300 to-amber-200 bg-clip-text not-italic text-transparent">
+              <em class="not-italic text-[#e8dfd0]">
                 可运行模板
               </em>
             </h1>
@@ -162,7 +154,7 @@ export default function Home() {
               <button
                 type="button"
                 data-testid="contact-cs"
-                class="inline-flex h-12 items-center justify-center rounded-[14px] bg-white px-[22px] text-[15px] font-semibold text-[#2c28b0] shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition hover:bg-[#f4f0ea]"
+                class="inline-flex h-12 items-center justify-center rounded-[14px] bg-white px-[22px] text-[15px] font-semibold text-[#12101a] shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition hover:bg-[#f4f0ea]"
                 onClick={() => openCsSupport()}
               >
                 在线客服
@@ -200,12 +192,12 @@ export default function Home() {
       {/* 4-in-1 featured */}
       <section class="px-6 py-[72px] sm:px-10 lg:px-16">
         <div class="mx-auto grid max-w-[1440px] items-center gap-10 rounded-[28px] border border-[#e8e2d8] bg-[#fffcf8] px-8 py-10 shadow-[0_20px_50px_rgba(18,16,26,0.04)] dark:border-slate-700 dark:bg-slate-900 lg:grid-cols-[280px_1fr] lg:px-12">
-          <div class="mx-auto flex h-60 w-60 flex-col items-center justify-center rounded-[32px] bg-gradient-to-br from-[#4f46e5] via-[#7c3aed] to-[#f59e0b] text-white shadow-[0_24px_40px_rgba(79,70,229,0.28)]">
-            <strong class="text-[88px] leading-none tracking-tighter">4</strong>
-            <span class="mt-1.5 text-base opacity-90">端一体</span>
+          <div class="mx-auto flex h-60 w-60 flex-col items-center justify-center rounded-full border border-[#e8e2d8] bg-[#f4f0ea]">
+            <strong class="text-[88px] leading-none tracking-tighter text-[#12101a]">4</strong>
+            <span class="mt-1.5 text-base text-[#6b6570]">端一体</span>
           </div>
           <div>
-            <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.16em] text-[#4f46e5]">
+            <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.16em] text-[#8a6a3d]">
               它是什么
             </p>
             <h2 class="mb-3 text-2xl font-bold tracking-tight text-[#12101a] dark:text-slate-50 sm:text-[32px]">
@@ -221,10 +213,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Bento capabilities */}
+      {/* Capabilities — equal 2×2 paper cards */}
       <section class="px-6 pb-[72px] sm:px-10 lg:px-16">
         <div class="mx-auto max-w-[1440px]">
-          <p class="mb-2.5 text-center text-xs font-bold uppercase tracking-[0.16em] text-[#4f46e5]">
+          <p class="mb-2.5 text-center text-xs font-bold uppercase tracking-[0.16em] text-[#8a6a3d]">
             能力
           </p>
           <h2 class="mb-2 text-center text-2xl font-bold tracking-tight text-[#12101a] dark:text-slate-50 sm:text-[32px]">
@@ -233,47 +225,22 @@ export default function Home() {
           <p class="mb-7 text-center text-[15px] text-[#6b6570] dark:text-slate-400">
             下列能力对应仓内已落地模块，而非空口号。
           </p>
-          <div class="grid gap-4 md:grid-cols-3 md:grid-rows-[auto_auto]">
-            {capabilities.map((f) => {
-              if (f.tone === "feat") {
-                return (
-                  <div class="relative min-h-[360px] overflow-hidden rounded-[24px] border border-transparent bg-gradient-to-b from-[#1a1630] to-[#12101f] p-6 text-white shadow-[0_10px_30px_rgba(18,16,26,0.03)] md:row-span-2">
-                    <div class="mb-4 grid h-11 w-11 place-items-center rounded-[14px] bg-white/12 text-lg text-[#c7c4ff]">
-                      {f.icon}
-                    </div>
-                    <h3 class="mb-2 text-lg font-semibold">{f.title}</h3>
-                    <p class="m-0 text-sm leading-[1.7] text-[#c9c4d8]">
-                      {f.body}
-                    </p>
-                  </div>
-                );
-              }
-              const ico =
-                f.tone === "t2"
-                  ? "bg-[#ede9fe] text-[#6d28d9]"
-                  : f.tone === "t3"
-                  ? "bg-[#fef3c7] text-[#b45309]"
-                  : "bg-[#d1fae5] text-[#047857]";
-              return (
+          <div class="grid gap-4 sm:grid-cols-2">
+            {capabilities.map((f) => (
+              <div class="min-h-[200px] rounded-[24px] border border-[#e8e2d8] bg-[#fffcf8] p-6 shadow-[0_10px_30px_rgba(18,16,26,0.03)] dark:border-slate-700 dark:bg-slate-900">
                 <div
-                  class={`min-h-[170px] rounded-[24px] border border-[#e8e2d8] bg-[#fffcf8] p-6 shadow-[0_10px_30px_rgba(18,16,26,0.03)] dark:border-slate-700 dark:bg-slate-900 ${
-                    f.tone === "wide" ? "md:col-span-2" : ""
-                  }`}
+                  class={`mb-4 grid h-11 w-11 place-items-center rounded-[14px] text-lg ${f.ico}`}
                 >
-                  <div
-                    class={`mb-4 grid h-11 w-11 place-items-center rounded-[14px] text-lg ${ico}`}
-                  >
-                    {f.icon}
-                  </div>
-                  <h3 class="mb-2 text-lg font-semibold text-[#12101a] dark:text-slate-50">
-                    {f.title}
-                  </h3>
-                  <p class="m-0 text-sm leading-[1.7] text-[#5c5665] dark:text-slate-300">
-                    {f.body}
-                  </p>
+                  {f.icon}
                 </div>
-              );
-            })}
+                <h3 class="mb-2 text-lg font-semibold text-[#12101a] dark:text-slate-50">
+                  {f.title}
+                </h3>
+                <p class="m-0 text-sm leading-[1.7] text-[#5c5665] dark:text-slate-300">
+                  {f.body}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -281,7 +248,7 @@ export default function Home() {
       {/* Modules */}
       <section class="px-6 pb-[72px] sm:px-10 lg:px-16">
         <div class="mx-auto max-w-[1440px]">
-          <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.16em] text-[#4f46e5]">
+          <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.16em] text-[#8a6a3d]">
             模块
           </p>
           <h2 class="mb-7 text-2xl font-bold tracking-tight text-[#12101a] dark:text-slate-50 sm:text-[32px]">
@@ -290,7 +257,7 @@ export default function Home() {
           <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {modules.map((m) => (
               <div class="overflow-hidden rounded-[24px] border border-[#e8e2d8] bg-[#fffcf8] shadow-[0_10px_30px_rgba(18,16,26,0.03)] dark:border-slate-700 dark:bg-slate-900">
-                <div class={`h-2 ${m.band}`} />
+                <div class="h-px bg-[#c4b49a]" />
                 <div class="px-5 pb-6 pt-[22px]">
                   <div class="mb-2 text-xs font-bold tracking-[0.12em] text-[#9b97ab]">
                     {m.no}
@@ -311,7 +278,7 @@ export default function Home() {
       {/* Ends strip */}
       <section class="px-6 pb-[72px] sm:px-10 lg:px-16">
         <div class="mx-auto max-w-[1440px]">
-          <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.16em] text-[#4f46e5]">
+          <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.16em] text-[#8a6a3d]">
             分工
           </p>
           <h2 class="mb-2 text-2xl font-bold tracking-tight text-[#12101a] dark:text-slate-50 sm:text-[32px]">
@@ -329,7 +296,7 @@ export default function Home() {
                     : ""
                 }`}
               >
-                <div class="mb-2 text-[13px] font-bold tracking-wide text-[#4f46e5]">
+                <div class="mb-2 text-[13px] font-bold tracking-wide text-[#8a6a3d]">
                   {e.name}
                 </div>
                 <p class="m-0 text-sm leading-[1.65] text-[#5c5665] dark:text-slate-300">
@@ -341,24 +308,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA band */}
+      {/* CTA band — same paper family as cards */}
       <section class="px-6 pb-16 sm:px-10 lg:px-16">
-        <div class="relative mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-6 overflow-hidden rounded-[32px] bg-gradient-to-br from-[#151327] via-[#2a1f66] to-[#4f46e5] px-8 py-12 text-white shadow-[0_30px_60px_rgba(79,70,229,0.22)] sm:flex-row sm:items-center sm:px-14">
-          <div
-            class="pointer-events-none absolute -right-10 -top-20 h-[280px] w-[280px] rounded-full bg-[radial-gradient(circle,rgba(253,230,138,0.28),transparent_70%)]"
-            aria-hidden="true"
-          />
-          <div class="relative">
-            <h2 class="m-0 text-2xl font-bold tracking-tight sm:text-[28px]">
+        <div class="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-6 rounded-[32px] border border-[#e8e2d8] bg-[#fffcf8] px-8 py-12 shadow-[0_10px_30px_rgba(18,16,26,0.03)] sm:flex-row sm:items-center sm:px-14">
+          <div>
+            <h2 class="m-0 text-2xl font-bold tracking-tight text-[#12101a] dark:text-slate-50 sm:text-[28px]">
               需要人工协助？
             </h2>
-            <p class="mt-2 max-w-[560px] text-[15px] leading-[1.6] text-[#d5d0ea]">
+            <p class="mt-2 max-w-[560px] text-[15px] leading-[1.6] text-[#6b6570] dark:text-slate-300">
               点右下角或下方按钮即可打开在线客服浮窗；切页保活，消息实时同步到管理端接待窗，无需先注册账号。
             </p>
           </div>
           <button
             type="button"
-            class="relative inline-flex h-12 shrink-0 items-center justify-center rounded-[14px] bg-white px-[22px] text-[15px] font-semibold text-[#2c28b0] shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition hover:bg-[#f4f0ea]"
+            class="inline-flex h-12 shrink-0 items-center justify-center rounded-[14px] bg-[#12101a] px-[22px] text-[15px] font-semibold text-[#fffcf8] transition hover:bg-[#2a2730]"
             onClick={() => openCsSupport()}
           >
             打开在线客服浮窗

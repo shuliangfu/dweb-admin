@@ -168,11 +168,11 @@ async function authorizeCsUpload(
 }
 
 /** guest 仅本 session；admin 可读任意 chat/（及过渡 cs/）下 key。 */
-async function authorizeCsFile(
+function authorizeCsFile(
   ctx: UiViewUploadAuthContext | undefined,
   key: string,
   _request: Request,
-): Promise<boolean | Response> {
+): boolean | Response {
   const role = String(ctx?.claims?.role ?? "");
   const parts = key.split("/");
   const prefixPart = parts[0] ?? "";
@@ -268,7 +268,7 @@ export const csUploadStorage = csUploadPlugin.storage;
 /**
  * @deprecated 杀毒已由 virusScan 透传；保留日志供 ops 确认开关。
  */
-export async function installClamAvCompleteGuard(app: App): Promise<void> {
+export function installClamAvCompleteGuard(app: App): void {
   const { enable, host, port, required } = clamEnv();
   if (!app.container.has("uploadHandler")) {
     console.warn(

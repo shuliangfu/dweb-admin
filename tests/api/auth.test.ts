@@ -23,6 +23,9 @@ Deno.test({ name: "auth: session cookie works for /api/auth/me and dies after lo
   const me = await a.get("/api/auth/me");
   assertEquals(me.status, 200);
   assertEquals(me.data.user.username, "admin");
+  assertEquals(me.data.isSuper, true);
+  assert(Array.isArray(me.data.permissions) && me.data.permissions.includes("admin.view"));
+  assert(Array.isArray(me.data.user.permissions) && me.data.user.permissions.includes("admin.write"));
   const out = await a.post("/api/auth/logout");
   assertEquals(out.status, 302);
   const after = await a.get("/api/auth/me");

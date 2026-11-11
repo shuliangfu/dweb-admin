@@ -259,6 +259,43 @@ export default {
     routeSave: "Save changes",
     routeScanned: "Refreshed: {n} unmanaged route(s) found",
     routeNone: "No pending changes",
+    itemDesc: {
+      super_admin: "Super admin: every permission",
+      operator: "Operator: read + CS (no remove)",
+      cs_agent: "Customer-service agent",
+      admin: {
+        view: "View administrators / assign / online",
+        write: "Create / update / remove admins",
+      },
+      rbac: {
+        view: "View roles / permissions / routes",
+        write: "Mutate roles / permissions / routes",
+      },
+      system: {
+        view: "View system settings pages",
+        write: "Update system settings",
+      },
+      user: {
+        view: "View member list pages",
+        write: "Mutate member resources",
+      },
+      cms: {
+        view: "View CMS list pages",
+        write: "Mutate CMS resources",
+      },
+      developer: {
+        view: "View developer pages (menus/logs/…)",
+        write: "Mutate developer resources",
+      },
+      cs: {
+        view: "Open CS lobby / chat",
+        claim: "Claim CS sessions",
+        reply: "Reply in CS chat",
+        upload: "Upload CS attachments",
+        hide: "Hide CS sessions",
+        remove: "Delete CS sessions",
+      },
+    },
   },
   menus: {
     title: "Menus",
@@ -487,6 +524,7 @@ export default {
     usernameExists: "Username already exists",
     roleExists: "Role code already exists",
     menuExists: "Menu key already exists",
+    unknownPermission: "Unknown permission name",
     lastSuperAdmin: "Cannot delete/disable/demote the last super admin",
     cannotDeleteSelf: "You cannot delete your own account",
     cannotKickSelf: "You cannot kick your own current session",

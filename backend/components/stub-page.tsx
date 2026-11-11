@@ -9,7 +9,7 @@ import { StubDatetime } from "@backend/components/StubDatetime.tsx";
 import { StubChart } from "@backend/components/StubChart.tsx";
 
 export function stubLoad(key: string) {
-  return async (ctx: LoadContext) => {
+  return (ctx: LoadContext) => {
     const page = STUB_BY_KEY[key];
     if (!page) throw new Error(`Unknown stub page: ${key}`);
     const locale = resolveLocale(ctx.req);

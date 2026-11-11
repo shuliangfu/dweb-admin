@@ -7,7 +7,7 @@ import type { ApiContext } from "@dreamer/dweb";
 import { getCsOnlineGuestIds } from "@api/ws-chat.ts";
 import { jsonResponse } from "@common/utils/http.ts";
 
-export async function online(_ctx: ApiContext) {
+export function online(_ctx: ApiContext) {
   return jsonResponse({
     ids: getCsOnlineGuestIds(),
     marker: "presence-live-v4",

@@ -59,10 +59,10 @@ export function itemHandlers(type: ItemType) {
         name = decodeURIComponent(name);
       } catch { /* keep raw */ }
       if (name) {
-        const d = await itemDetail(type, name);
+        const d = await itemDetail(type, name, resolveLocale(ctx.req));
         return d ? jsonResponse(d) : respond(ctx.req, { ok: false, error: "notFound" });
       }
-      return jsonResponse(await listItems(type, readPage(url)));
+      return jsonResponse(await listItems(type, readPage(url), resolveLocale(ctx.req)));
     },
     create: async (ctx: ApiContext) => respond(ctx.req, await createItem(type, await readBody(ctx)), 201),
     update: async (ctx: ApiContext) => respond(ctx.req, await updateItem(type, nameOf(ctx), await readBody(ctx))),

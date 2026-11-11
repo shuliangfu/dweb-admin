@@ -35,7 +35,7 @@ let _queue: ReturnType<QueueManager["createQueue"]> | null = null;
 
 function ensureClaimQueue(): Promise<void> {
   if (_ready) return _ready;
-  _ready = (async () => {
+  _ready = Promise.resolve().then(() => {
     // In-process mutex is enough for single api listen (8813). Atomic Mongo
     // claim still protects cross-process races if api is scaled later.
     const adapter = new MemoryQueueAdapter();
@@ -45,8 +45,8 @@ function ensureClaimQueue(): Promise<void> {
       retry: 0,
       timeout: 15_000,
     });
-    q.process(async (job: Job<ClaimJobData>) => {
-      const d = job.data;
+    q.process(async (job: Job) => {
+      const d = job.data as ClaimJobData;
       const waiters = pending.get(d.requestId);
       try {
         const result = await claimCsSessionAtomic(d.sessionId, {
@@ -61,7 +61,7 @@ function ensureClaimQueue(): Promise<void> {
       }
     });
     _queue = q;
-  })();
+  });
   return _ready;
 }
 

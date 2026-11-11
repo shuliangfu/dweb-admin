@@ -21,7 +21,7 @@ export default function About() {
     <div>
       <section class="px-6 pb-0 pt-16 sm:px-10 lg:px-16">
         <div class="mx-auto max-w-[1440px]">
-          <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.16em] text-[#4f46e5]">
+          <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.16em] text-[#8a6a3d]">
             About
           </p>
           <h1 class="mb-4 text-4xl font-bold tracking-tight text-[#12101a] dark:text-slate-50 sm:text-5xl lg:text-[56px]">
@@ -38,8 +38,8 @@ export default function About() {
 
       <section class="px-6 pb-0 pt-9 sm:px-10 lg:px-16">
         <div class="mx-auto grid max-w-[1440px] gap-4 md:grid-cols-2">
-          <article class="min-h-[220px] rounded-[24px] border border-[#e8e2d8] bg-[#fffcf8] p-7 dark:border-slate-700 dark:bg-slate-900">
-            <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.14em] text-[#4f46e5]">
+          <article class="min-h-[220px] rounded-[24px] border border-[#e8e2d8] bg-[#fffcf8] p-7 shadow-[0_10px_30px_rgba(18,16,26,0.03)] dark:border-slate-700 dark:bg-slate-900">
+            <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.14em] text-[#8a6a3d]">
               定位
             </p>
             <h3 class="mb-2.5 text-[22px] font-semibold text-[#12101a] dark:text-slate-50">
@@ -51,8 +51,8 @@ export default function About() {
             </p>
           </article>
 
-          <article class="min-h-[220px] rounded-[24px] border border-[#e8e2d8] bg-[#fffcf8] p-7 dark:border-slate-700 dark:bg-slate-900">
-            <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.14em] text-[#4f46e5]">
+          <article class="min-h-[220px] rounded-[24px] border border-[#e8e2d8] bg-[#fffcf8] p-7 shadow-[0_10px_30px_rgba(18,16,26,0.03)] dark:border-slate-700 dark:bg-slate-900">
+            <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.14em] text-[#8a6a3d]">
               栈
             </p>
             <h3 class="mb-2.5 text-[22px] font-semibold text-[#12101a] dark:text-slate-50">
@@ -60,7 +60,7 @@ export default function About() {
             </h3>
             <div class="mt-3.5 flex flex-wrap gap-2">
               {techChips.map((chip) => (
-                <span class="rounded-full bg-[#efeaf7] px-3 py-1.5 text-xs font-semibold text-[#3d36d9]">
+                <span class="rounded-full border border-[#e8e2d8] bg-[#f4f0ea] px-3 py-1.5 text-xs font-semibold text-[#3f3a45]">
                   {chip}
                 </span>
               ))}
@@ -71,8 +71,8 @@ export default function About() {
             </p>
           </article>
 
-          <article class="min-h-[220px] rounded-[24px] border border-[#e8e2d8] bg-[#fffcf8] p-7 dark:border-slate-700 dark:bg-slate-900">
-            <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.14em] text-[#4f46e5]">
+          <article class="min-h-[220px] rounded-[24px] border border-[#e8e2d8] bg-[#fffcf8] p-7 shadow-[0_10px_30px_rgba(18,16,26,0.03)] dark:border-slate-700 dark:bg-slate-900">
+            <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.14em] text-[#8a6a3d]">
               后台
             </p>
             <h3 class="mb-2.5 text-[22px] font-semibold text-[#12101a] dark:text-slate-50">
@@ -86,8 +86,8 @@ export default function About() {
             </ul>
           </article>
 
-          <article class="min-h-[220px] rounded-[24px] border border-[#e8e2d8] bg-[#fffcf8] p-7 dark:border-slate-700 dark:bg-slate-900">
-            <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.14em] text-[#4f46e5]">
+          <article class="min-h-[220px] rounded-[24px] border border-[#e8e2d8] bg-[#fffcf8] p-7 shadow-[0_10px_30px_rgba(18,16,26,0.03)] dark:border-slate-700 dark:bg-slate-900">
+            <p class="mb-2.5 text-xs font-bold uppercase tracking-[0.14em] text-[#8a6a3d]">
               访客
             </p>
             <h3 class="mb-2.5 text-[22px] font-semibold text-[#12101a] dark:text-slate-50">
@@ -104,22 +104,18 @@ export default function About() {
       </section>
 
       <section class="px-6 pb-16 pt-12 sm:px-10 lg:px-16">
-        <div class="relative mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-6 overflow-hidden rounded-[32px] bg-gradient-to-br from-[#151327] via-[#2a1f66] to-[#4f46e5] px-8 py-12 text-white shadow-[0_30px_60px_rgba(79,70,229,0.22)] sm:flex-row sm:items-center sm:px-14">
-          <div
-            class="pointer-events-none absolute -right-10 -top-20 h-[280px] w-[280px] rounded-full bg-[radial-gradient(circle,rgba(253,230,138,0.28),transparent_70%)]"
-            aria-hidden="true"
-          />
-          <div class="relative">
-            <h2 class="m-0 text-2xl font-bold tracking-tight sm:text-[28px]">
+        <div class="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-6 rounded-[32px] border border-[#e8e2d8] bg-[#fffcf8] px-8 py-12 shadow-[0_10px_30px_rgba(18,16,26,0.03)] sm:flex-row sm:items-center sm:px-14">
+          <div>
+            <h2 class="m-0 text-2xl font-bold tracking-tight text-[#12101a] dark:text-slate-50 sm:text-[28px]">
               需要帮助？
             </h2>
-            <p class="mt-2 max-w-[560px] text-[15px] leading-[1.6] text-[#d5d0ea]">
+            <p class="mt-2 max-w-[560px] text-[15px] leading-[1.6] text-[#6b6570] dark:text-slate-300">
               无需登录即可发起访客会话，消息实时同步到管理端。
             </p>
           </div>
           <button
             type="button"
-            class="relative inline-flex h-12 shrink-0 items-center justify-center rounded-[14px] bg-white px-[22px] text-[15px] font-semibold text-[#2c28b0] shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition hover:bg-[#f4f0ea]"
+            class="inline-flex h-12 shrink-0 items-center justify-center rounded-[14px] bg-[#12101a] px-[22px] text-[15px] font-semibold text-[#fffcf8] transition hover:bg-[#2a2730]"
             onClick={() => openCsSupport()}
           >
             在线客服

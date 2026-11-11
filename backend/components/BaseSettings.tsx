@@ -99,7 +99,8 @@ export function BaseSettings(props: { locale: Locale; website: string; shortName
             </Button>
           </div>
         }
-        children={() => (
+      >
+        {() => (
           <div class="flex flex-col gap-3">
             <label class="flex flex-col gap-1.5 text-sm">
               <span>{tr("base.website")}</span>
@@ -123,7 +124,7 @@ export function BaseSettings(props: { locale: Locale; website: string; shortName
             </label>
           </div>
         )}
-      />
+      </Modal>
     </div>
   );
 }

@@ -28,6 +28,8 @@ import { invalidateRbacCache, loadGraph, wouldCycle } from "@common/service/rbac
 import { scanRoutes } from "@common/service/route-scan.ts";
 import { parseBody } from "@common/utils/validate.ts";
 import { type Fail, type Ok, type Page } from "@common/service/admin-crud.ts";
+import { type Locale } from "@common/i18n/mod.ts";
+import { itemDescription } from "@common/i18n/item-desc.ts";
 
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -59,7 +61,7 @@ export type ItemListQuery = Page & {
   info?: string;
 };
 
-export async function listItems(type: ItemType, q: ItemListQuery) {
+export async function listItems(type: ItemType, q: ItemListQuery, locale: Locale) {
   const where: Record<string, unknown> = { type };
   const and: Record<string, unknown>[] = [];
   const nameQ = (q.name ?? "").trim().slice(0, 64);
@@ -81,7 +83,7 @@ export async function listItems(type: ItemType, q: ItemListQuery) {
     items: (r.data as unknown as AuthItemDocument[]).map((i) => ({
       name: i.name,
       type: i.type,
-      description: i.description ?? "",
+      description: itemDescription(i.name, i.description ?? "", locale),
       ruleName: i.ruleName ?? "",
       data: i.data ?? "",
       isSuper: !!i.isSuper,
@@ -95,9 +97,9 @@ export async function listItems(type: ItemType, q: ItemListQuery) {
 }
 
 /** All role names (for the admin-user role select). */
-export async function roleOptions() {
+export async function roleOptions(locale: Locale) {
   const roles = (await AuthItem.findAll({ type: "role" }, undefined, { sort: { name: 1 } })) as unknown as AuthItemDocument[];
-  return roles.map((r) => ({ name: r.name, description: r.description ?? "" }));
+  return roles.map((r) => ({ name: r.name, description: itemDescription(r.name, r.description ?? "", locale) }));
 }
 
 export async function createItem(type: ItemType, body: unknown): Promise<Ok | Fail> {
@@ -156,7 +158,7 @@ export async function deleteItem(type: ItemType, name: string): Promise<Ok | Fai
  * assigned  = current direct children
  * available = everything that may still be added (no self, no cycles, managed routes only)
  */
-export async function itemDetail(type: ItemType, name: string) {
+export async function itemDetail(type: ItemType, name: string, locale: Locale) {
   const item = await AuthItem.findOne({ name, type }) as AuthItemDocument | null;
   if (!item) return null;
   const kids = (await AuthItemChild.findAll({ parent: name })) as unknown as AuthItemChildDocument[];
@@ -183,6 +185,7 @@ export async function itemDetail(type: ItemType, name: string) {
       name: item.name,
       type: item.type,
       description: item.description ?? "",
+      displayDescription: itemDescription(item.name, item.description ?? "", locale),
       ruleName: item.ruleName ?? "",
       data: item.data ?? "",
       isSuper: !!item.isSuper,
