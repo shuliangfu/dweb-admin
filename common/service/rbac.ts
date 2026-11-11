@@ -56,7 +56,6 @@ const AUTH_ONLY_EXACT = new Set([
   "/api/auth/me",
   "/api/auth/unlock",
   "/api/menus/mine",
-  "/__debug/throw500",
 ]);
 
 /** Normalize a request path: collapse slashes, drop trailing slash. */
