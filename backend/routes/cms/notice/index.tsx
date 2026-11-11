@@ -45,7 +45,7 @@ export default function Page() {
       {
         prop: "visits",
         label: "阅读量",
-        type: "number" as const,
+        type: "text" as const,
         placeholder: "请输入阅读量查询",
       },
       {

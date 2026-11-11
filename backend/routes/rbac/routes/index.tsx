@@ -12,9 +12,9 @@ const METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "*"].map((m) => ({
 }));
 
 const SOURCE = [
-  { value: "manual", label: "手动添加", tone: "info" },
-  { value: "scan", label: "扫描", tone: "success" },
-  { value: "seed", label: "初始化", tone: "default" },
+  { value: "manual", label: "手动添加", tone: "info" as const },
+  { value: "scan", label: "扫描", tone: "success" as const },
+  { value: "seed", label: "初始化", tone: "default" as const },
 ];
 
 export default function RoutesPage() {

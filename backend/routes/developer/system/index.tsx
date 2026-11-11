@@ -43,7 +43,7 @@ export default function Page() {
       {
         prop: "level",
         label: "级别",
-        type: "number" as const,
+        type: "text" as const,
         placeholder: "请输入级别查询",
       },
     ],

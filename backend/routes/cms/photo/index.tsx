@@ -58,13 +58,13 @@ export default function Page() {
       {
         prop: "images",
         label: "相册图片",
-        type: "number" as const,
+        type: "text" as const,
         placeholder: "请输入相册图片查询",
       },
       {
         prop: "visits",
         label: "查看量",
-        type: "number" as const,
+        type: "text" as const,
         placeholder: "请输入查看量查询",
       },
       {

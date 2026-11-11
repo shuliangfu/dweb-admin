@@ -40,7 +40,7 @@ export default function Page() {
       {
         prop: "level",
         label: "等级",
-        type: "number" as const,
+        type: "text" as const,
         placeholder: "请输入等级查询",
       },
     ],

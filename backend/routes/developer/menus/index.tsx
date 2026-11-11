@@ -114,6 +114,15 @@ export default function MenusPage(props: { data?: Data } & Data) {
       sortable: true,
     },
     { prop: "key", label: "标识", sortable: true, minWidth: 140 },
+    {
+      type: "actions",
+      width: 200,
+      actions: {
+        view: true,
+        edit: true,
+        remove: true,
+      },
+    },
   ];
 
   return (
@@ -232,7 +241,6 @@ export default function MenusPage(props: { data?: Data } & Data) {
           ],
         }}
         toolbar={{ search: true, refresh: true, create: true, export: false }}
-        rowActions={{ view: true, edit: true, remove: true }}
         baseRoute="/api"
         apiMode="action"
         apiHeaders={() => csrfHeaders()}
