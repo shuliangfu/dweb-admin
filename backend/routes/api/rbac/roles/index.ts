@@ -2,15 +2,19 @@
  * Role list action API (`apiMode: action`, baseRoute `/api/rbac/roles`).
  * GET without a detail name lists via the `roles` resource (`{ rows, total }`).
  * GET `?name=` (and no page/pageSize) still returns Transfer detail for assign.
- * POST create / update (body.id) / remove (body.ids) are the action verbs.
- * Existing `/api/rbac/roles/:name/update|remove|children` routes are unchanged.
+ * POST create / update (body.id) / remove (body.ids) / children (body.name, add, remove).
  */
 import type { ApiContext } from "@dreamer/dweb";
 import { authorize, failResponse, isResponse } from "@backend/api-res.ts";
 import { respond } from "@backend/api-util.ts";
 import { resolveLocale } from "@common/i18n/mod.ts";
 import { allRows, parseListQuery } from "@common/service/list.ts";
-import { createItem, itemDetail, updateItem } from "@common/service/rbac-admin.ts";
+import {
+  changeChildren,
+  createItem,
+  itemDetail,
+  updateItem,
+} from "@common/service/rbac-admin.ts";
 import { jsonResponse, readBody } from "@common/utils/http.ts";
 
 const KEY = "roles";
@@ -18,7 +22,10 @@ const KEY = "roles";
 /** Detail intent: `?name=` without list pagination (ItemAdmin / assign Modal). */
 function detailName(ctx: ApiContext): string {
   const url = new URL(ctx.req.url);
-  if (url.searchParams.has("page") || url.searchParams.has("pageSize") || url.searchParams.get("export") === "1") {
+  if (
+    url.searchParams.has("page") || url.searchParams.has("pageSize") ||
+    url.searchParams.get("export") === "1"
+  ) {
     return "";
   }
   let name = (url.searchParams.get("name") ?? "").trim();
@@ -35,7 +42,9 @@ export async function index(ctx: ApiContext) {
     const a = await authorize(ctx.req, KEY, "read");
     if (isResponse(a)) return a;
     const d = await itemDetail("role", name, resolveLocale(ctx.req));
-    return d ? jsonResponse(d) : respond(ctx.req, { ok: false, error: "notFound" });
+    return d
+      ? jsonResponse(d)
+      : respond(ctx.req, { ok: false, error: "notFound" });
   }
   const a = await authorize(ctx.req, KEY, "read");
   if (isResponse(a)) return a;
@@ -50,14 +59,20 @@ export async function create(ctx: ApiContext) {
   const body = await readBody(ctx);
   const a = await authorize(ctx.req, KEY, "write");
   if (isResponse(a)) return a;
-  if (body && typeof body === "object" && Array.isArray((body as { rows?: unknown }).rows)) {
+  if (
+    body && typeof body === "object" &&
+    Array.isArray((body as { rows?: unknown }).rows)
+  ) {
     const rows = (body as { rows: Record<string, unknown>[] }).rows;
     let created = 0;
     for (const row of rows) {
       const r = await createItem("role", row);
       if (r.ok) created++;
     }
-    return jsonResponse({ created, failed: rows.length - created }, created ? 201 : 400);
+    return jsonResponse(
+      { created, failed: rows.length - created },
+      created ? 201 : 400,
+    );
   }
   const r = await createItem("role", body);
   return r.ok ? jsonResponse({ ok: true }, 201) : failResponse(a.locale, r);
@@ -75,8 +90,22 @@ export async function remove(ctx: ApiContext) {
   const body = await readBody(ctx);
   const a = await authorize(ctx.req, KEY, "write");
   if (isResponse(a)) return a;
-  if (!a.def.remove) return failResponse(a.locale, { ok: false, error: "invalid" });
-  const ids = Array.isArray(body.ids) ? body.ids.map(String).filter(Boolean).slice(0, 1000) : [];
+  if (!a.def.remove) {
+    return failResponse(a.locale, { ok: false, error: "invalid" });
+  }
+  const ids = Array.isArray(body.ids)
+    ? body.ids.map(String).filter(Boolean).slice(0, 1000)
+    : [];
   const r = await a.def.remove(ids, a.ctx);
   return jsonResponse({ removed: r.removed ?? 0, failed: r.failed ?? [] });
+}
+
+export async function children(ctx: ApiContext) {
+  const body = await readBody(ctx);
+  const a = await authorize(ctx.req, KEY, "write");
+  if (isResponse(a)) return a;
+  const name = String(body.id ?? body.name ?? "");
+  const arr = (v: unknown) => (Array.isArray(v) ? v.map(String) : []);
+  const r = await changeChildren("role", name, arr(body.add), arr(body.remove));
+  return r.ok ? jsonResponse({ ok: true }) : failResponse(a.locale, r);
 }

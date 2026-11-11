@@ -2,8 +2,7 @@
  * Permission list action API (`apiMode: action`, `/api/rbac/permissions`).
  * GET without a detail name lists via the `permissions` resource (`{ rows, total }`).
  * GET `?name=` (and no page/pageSize) still returns Transfer detail for assign.
- * POST create / update (body.id) / remove (body.ids) are the action verbs.
- * Existing `/api/rbac/permissions/:name/update|remove|children` routes are unchanged.
+ * POST create / update (body.id) / remove (body.ids) / children (body.name, add, remove).
  */
 import type { ApiContext } from "@dreamer/dweb";
 import { authorize, failResponse, isResponse } from "@backend/api-res.ts";
@@ -11,6 +10,7 @@ import { respond } from "@backend/api-util.ts";
 import { resolveLocale } from "@common/i18n/mod.ts";
 import { allRows, parseListQuery } from "@common/service/list.ts";
 import {
+  changeChildren,
   createItem,
   itemDetail,
   updateItem,
@@ -102,4 +102,19 @@ export async function remove(ctx: ApiContext) {
     : [];
   const r = await a.def.remove(ids, a.ctx);
   return jsonResponse({ removed: r.removed ?? 0, failed: r.failed ?? [] });
+}
+
+export async function children(ctx: ApiContext) {
+  const body = await readBody(ctx);
+  const a = await authorize(ctx.req, KEY, "write");
+  if (isResponse(a)) return a;
+  const name = String(body.id ?? body.name ?? "");
+  const arr = (v: unknown) => (Array.isArray(v) ? v.map(String) : []);
+  const r = await changeChildren(
+    "permission",
+    name,
+    arr(body.add),
+    arr(body.remove),
+  );
+  return r.ok ? jsonResponse({ ok: true }) : failResponse(a.locale, r);
 }

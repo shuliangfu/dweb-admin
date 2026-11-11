@@ -89,8 +89,8 @@ export default function PermissionsPage() {
     const name = assignName.value;
     const r = await api(
       "POST",
-      `/api/rbac/permissions/${encodeURIComponent(name)}/children`,
-      { add, remove },
+      "/api/rbac/permissions/children",
+      { name, add, remove },
     );
     if (!r.ok) {
       targetKeys.value = prev;

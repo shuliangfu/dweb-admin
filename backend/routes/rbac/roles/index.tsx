@@ -89,8 +89,8 @@ export default function RolesPage() {
     const name = assignName.value;
     const r = await api(
       "POST",
-      `/api/rbac/roles/${encodeURIComponent(name)}/children`,
-      { add, remove },
+      "/api/rbac/roles/children",
+      { name, add, remove },
     );
     if (!r.ok) {
       targetKeys.value = prev;
