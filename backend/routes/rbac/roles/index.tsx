@@ -1,7 +1,7 @@
 /**
- * Role list — gold-standard DataPanel (same shape as `rbac/admins/index.tsx`).
- * Action API at `/api/rbac/roles`. Assign Transfer lives in a page Modal,
- * opened from the view footer (same bypass as the gold password Modal).
+ * 角色列表：ui-view DataPanel 直写本页（参照 `rbac/admins/index.tsx`）。
+ * Action API 在 `/api/rbac/roles`。分配 Transfer 放在本页 Modal，
+ * 从详情底栏「分配」打开（与金标改密 Modal 同一路绕过）。
  */
 import { createSignal } from "@dreamer/view";
 import {
@@ -29,57 +29,15 @@ interface RoleDetail {
 
 const ORDER = { role: 0, permission: 1, route: 2 } as const;
 
-const columns: Column[] = [
-  { type: "selection" },
-  { type: "index", label: "#" },
-  { prop: "name", label: "角色名称", sortable: true },
-  { prop: "description", label: "角色说明", sortable: true },
-  { prop: "createdAt", label: "创建时间", type: "datetime", sortable: true, headerAlign: "center" },
-  { type: "actions", width: 200, actions: [{ name: "view" }, { name: "edit" }, { name: "remove" }] },
-];
-
-const search = [
-  { prop: "name", label: "角色名称", placeholder: "请输入角色名称查询" },
-  { prop: "info", label: "角色说明", placeholder: "请输入角色说明查询" },
-];
-
-const form = [
-  {
-    prop: "name",
-    label: "角色名称",
-    required: true,
-    createOnly: true,
-    rules: [
-      { required: true, message: "请输入角色名称" },
-      { min: 2, max: 64, message: "名称长度为 2～64 个字符" },
-      { pattern: /^[^\s/]+$/, message: "名称不能包含空格或斜杠" },
-    ],
-  },
-  { prop: "ruleName", label: "规则名" },
-  {
-    prop: "description",
-    label: "角色说明",
-    type: "textarea" as const,
-    required: true,
-    rules: [{ required: true, message: "请输入角色说明" }],
-  },
-];
-
-const viewProps = [
-  { prop: "name", label: "角色名称" },
-  { prop: "ruleName", label: "规则名" },
-  { prop: "description", label: "角色说明" },
-  { prop: "createdAt", label: "创建时间" },
-  { prop: "updatedAt", label: "更新时间" },
-];
-
 function groupLabel(type: ChildEntry["type"]): string {
   if (type === "role") return "角色";
   if (type === "permission") return "权限";
   return "路由";
 }
 
-function groupTone(type: ChildEntry["type"]): "primary" | "success" | "default" {
+function groupTone(
+  type: ChildEntry["type"],
+): "primary" | "success" | "default" {
   if (type === "role") return "primary";
   if (type === "permission") return "success";
   return "default";
@@ -102,10 +60,18 @@ export default function RolesPage() {
     available.value = [];
     targetKeys.value = [];
     assignOpen.value = true;
-    const r = await api<RoleDetail>("GET", `/api/rbac/roles?name=${encodeURIComponent(name)}`);
+    const r = await api<RoleDetail>(
+      "GET",
+      `/api/rbac/roles?name=${encodeURIComponent(name)}`,
+    );
     assignLoading.value = false;
     if (!r.ok || !r.data?.item) {
-      message.error(r.data && "message" in r.data ? String((r.data as { message?: string }).message ?? "") || "加载分配列表失败" : "加载分配列表失败");
+      message.error(
+        r.data && "message" in r.data
+          ? String((r.data as { message?: string }).message ?? "") ||
+            "加载分配列表失败"
+          : "加载分配列表失败",
+      );
       assignOpen.value = false;
       return;
     }
@@ -121,7 +87,11 @@ export default function RolesPage() {
     const remove = prev.filter((k) => !next.includes(k));
     targetKeys.value = next;
     const name = assignName.value;
-    const r = await api("POST", `/api/rbac/roles/${encodeURIComponent(name)}/children`, { add, remove });
+    const r = await api(
+      "POST",
+      `/api/rbac/roles/${encodeURIComponent(name)}/children`,
+      { add, remove },
+    );
     if (!r.ok) {
       targetKeys.value = prev;
       message.error((r.data as { message?: string }).message || "保存分配失败");
@@ -132,39 +102,120 @@ export default function RolesPage() {
 
   const transferItems = () =>
     [...available.value, ...assigned.value]
-      .sort((a, b) => ORDER[a.type] - ORDER[b.type] || a.label.localeCompare(b.label))
+      .sort((a, b) =>
+        ORDER[a.type] - ORDER[b.type] || a.label.localeCompare(b.label)
+      )
       .map((e) => ({ key: e.key, title: e.label }));
+
+  /** 表格列（与 search／form／view 同级抽出，避免 JSX 内堆配置） */
+  const columns: Column[] = [
+    { type: "selection" },
+    { type: "index" },
+    { prop: "name", label: "角色名称", sortable: true },
+    { prop: "description", label: "角色说明", sortable: true },
+    {
+      prop: "createdAt",
+      label: "创建时间",
+      type: "datetime",
+      sortable: true,
+      headerAlign: "center",
+    },
+    {
+      type: "actions",
+      width: 200,
+      actions: {
+        view: true,
+        edit: true,
+        remove: true,
+      },
+    },
+  ];
+
+  /** 搜索区字段 */
+  const search = {
+    props: [
+      { prop: "name", label: "角色名称", placeholder: "请输入角色名称查询" },
+      { prop: "info", label: "角色说明", placeholder: "请输入角色说明查询" },
+    ],
+  };
+
+  /** 新建／编辑表单字段 */
+  const form = {
+    props: [
+      {
+        prop: "name",
+        label: "角色名称",
+        required: true,
+        createOnly: true,
+        rules: [
+          { required: true, message: "请输入角色名称" },
+          { min: 2, max: 64, message: "名称长度为 2～64 个字符" },
+          { pattern: /^[^\s/]+$/, message: "名称不能包含空格或斜杠" },
+        ],
+      },
+      { prop: "ruleName", label: "规则名" },
+      {
+        prop: "description",
+        label: "角色说明",
+        type: "textarea" as const,
+        required: true,
+        rules: [{ required: true, message: "请输入角色说明" }],
+      },
+    ],
+  };
+
+  /** 详情抽屉字段与底栏操作 */
+  const view = {
+    title: (row: Row) => `角色明细 · ${String(row.name ?? "")}`,
+    props: [
+      { prop: "name", label: "角色名称" },
+      { prop: "ruleName", label: "规则名" },
+      { prop: "description", label: "角色说明" },
+      { prop: "createdAt", label: "创建时间" },
+      { prop: "updatedAt", label: "更新时间" },
+    ],
+    actions: {
+      assign: {
+        label: "分配",
+        action: (row: Row) => {
+          void openAssign(row);
+        },
+      },
+      close: true,
+    },
+  };
 
   return (
     <>
       <DataPanel
         title="角色列表"
         panelKey="roles"
-        baseRoute="/api/rbac/roles"
+        baseRoute="/api"
         apiMode="action"
+        /** POST 须带双提交 CSRF，否则中间件 403 → 面板显示 request failed */
         apiHeaders={() => csrfHeaders()}
         apiCredentials="same-origin"
         columns={columns}
+        caps={{
+          import: false,
+          print: false,
+          columns: false,
+          density: false,
+          fullscreen: false,
+          copy: false,
+        }}
         search={search}
         form={form}
-        view={{
-          title: (row: Row) => `角色明细 · ${String(row.name ?? "")}`,
-          props: viewProps,
-          actions: {
-            assign: {
-              label: "分配",
-              action: (row: Row) => {
-                void openAssign(row);
-              },
-            },
-            close: true,
-          },
-        }}
-        toolbar={{ create: true, search: true, refresh: true, export: true }}
-        caps={{ import: false, print: false, columns: false, density: false, fullscreen: false, copy: false }}
+        view={view}
         defaultSort={{ prop: "name", order: "asc" }}
-        pageSize={10}
+        toolbar={{
+          create: true,
+          search: true,
+          refresh: true,
+          export: true,
+        }}
         class="adm-data-panel adm-panel-card"
+        pageSize={10}
       />
       <Modal
         open={assignOpen}
@@ -188,10 +239,14 @@ export default function RolesPage() {
               listStyle={{ width: 280, height: 260 }}
               onChange={onTransfer}
               render={(item) => {
-                const type = String(item.key).split(":")[0] as ChildEntry["type"];
+                const type = String(item.key).split(
+                  ":",
+                )[0] as ChildEntry["type"];
                 return (
                   <span class="flex items-center gap-2">
-                    <Tag size="xs" variant={groupTone(type)}>{groupLabel(type)}</Tag>
+                    <Tag size="xs" variant={groupTone(type)}>
+                      {groupLabel(type)}
+                    </Tag>
                     <span class="truncate">{String(item.title)}</span>
                   </span>
                 );
